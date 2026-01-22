@@ -1,1 +1,7 @@
 // app global css in SCSS form
+
+// Tailwind CSS directives
+// 注意：Tailwind指令放在最后，确保在Quasar样式之后加载
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
