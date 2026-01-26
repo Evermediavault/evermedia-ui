@@ -1,7 +1,6 @@
 /**
  * i18n工具函数
  */
-import type { Locale } from 'vue-i18n';
 
 /**
  * 语言类型

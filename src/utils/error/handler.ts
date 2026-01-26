@@ -80,12 +80,20 @@ export function handleError(error: unknown): ErrorInfo {
     globalConfig.onError(appError);
   }
 
-  return {
+  const errorInfo: ErrorInfo = {
     code: appError.code,
     message: appError.message,
-    statusCode: appError.statusCode,
-    details: appError.details,
   };
+
+  if (appError.statusCode !== undefined) {
+    errorInfo.statusCode = appError.statusCode;
+  }
+
+  if (appError.details !== undefined) {
+    errorInfo.details = appError.details;
+  }
+
+  return errorInfo;
 }
 
 /**

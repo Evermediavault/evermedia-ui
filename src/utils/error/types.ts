@@ -55,9 +55,15 @@ export class AppError extends Error {
     super(message);
     this.name = 'AppError';
     this.code = code;
-    this.statusCode = statusCode;
-    this.details = details;
-    this.originalError = originalError;
+    if (statusCode !== undefined) {
+      this.statusCode = statusCode;
+    }
+    if (details !== undefined) {
+      this.details = details;
+    }
+    if (originalError !== undefined) {
+      this.originalError = originalError;
+    }
 
     // 保持原型链
     if (Error.captureStackTrace) {

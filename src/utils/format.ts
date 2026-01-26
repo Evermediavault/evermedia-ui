@@ -97,6 +97,9 @@ export function formatEmail(email: string): string {
     return email;
   }
   const [username, domain] = email.split('@');
+  if (!username || !domain) {
+    return email;
+  }
   if (username.length <= 2) {
     return `${username[0]}***@${domain}`;
   }

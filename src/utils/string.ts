@@ -75,7 +75,7 @@ export function escapeHtml(str: string): string {
     '"': '&quot;',
     "'": '&#039;',
   };
-  return str.replace(/[&<>"']/g, (char) => map[char]);
+  return str.replace(/[&<>"']/g, (char) => map[char] || char);
 }
 
 /**
