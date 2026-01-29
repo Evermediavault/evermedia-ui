@@ -86,10 +86,40 @@ export default {
   // 布局与导航
   nav: {
     home: '首页',
+    files: '文件列表',
     upload: '上传文件',
+    users: '用户管理',
     appTitle: 'Evermedia Vault',
     adminSubtitle: '后台管理',
     welcomeDesc: '欢迎使用后台管理面板',
+  },
+
+  // 文件列表
+  fileList: {
+    title: '文件列表',
+    noData: '暂无文件',
+    columns: {
+      name: '文件名称',
+      fileType: '文件类型',
+      permission: '权限',
+      cost: '花费',
+      projectName: '项目方',
+    synapseIndexId: 'Synapse 索引',
+    uploadedAt: '上传时间',
+  },
+  },
+
+  // 用户列表
+  userList: {
+    title: '用户管理',
+    noData: '暂无用户',
+    columns: {
+      username: '用户名',
+      email: '邮箱',
+      role: '角色',
+      lastLoginAt: '最后登录',
+      createdAt: '创建时间',
+    },
   },
 
   // 上传

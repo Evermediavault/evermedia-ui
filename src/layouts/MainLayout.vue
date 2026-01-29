@@ -59,7 +59,9 @@ const userInitial = computed(() => {
 
 const navItems = computed(() => [
   { path: '/', title: t('nav.home'), icon: 'home' },
+  { path: '/files', title: t('nav.files'), icon: 'folder' },
   { path: '/upload', title: t('nav.upload'), icon: 'cloud_upload' },
+  { path: '/users', title: t('nav.users'), icon: 'people' },
 ]);
 
 function isActive(path: string) {

@@ -12,9 +12,6 @@
             <h1 class="page-base__title">
               <slot name="title">{{ title }}</slot>
             </h1>
-            <p v-if="hasSubtitle" class="page-base__subtitle">
-              <slot name="subtitle">{{ subtitle }}</slot>
-            </p>
           </div>
         </div>
         <div v-if="$slots.actions" class="page-base__actions">
@@ -40,8 +37,6 @@ const props = withDefaults(
   defineProps<{
     /** 页面标题（也可用 #title 插槽） */
     title?: string;
-    /** 副标题（也可用 #subtitle 插槽） */
-    subtitle?: string;
     /** 标题左侧图标（Quasar 图标名，也可用 #icon 插槽） */
     icon?: string;
     /** 内容区布局：默认 | 居中 | 填满 */
@@ -49,7 +44,6 @@ const props = withDefaults(
   }>(),
   {
     title: '',
-    subtitle: '',
     icon: '',
     contentClass: 'default',
   }
@@ -60,14 +54,8 @@ const inst = getCurrentInstance();
 const hasHeader = computed(
   () =>
     !!props.title ||
-    !!props.subtitle ||
     !!inst?.slots?.title ||
-    !!inst?.slots?.subtitle ||
     !!inst?.slots?.actions
-);
-
-const hasSubtitle = computed(
-  () => props.subtitle !== '' || !!inst?.slots?.subtitle
 );
 
 const hasIcon = computed(
@@ -166,13 +154,6 @@ onUnmounted(() => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
-}
-
-.page-base__subtitle {
-  margin: var(--ev-space-2) 0 0;
-  font-size: var(--ev-font-size-sm);
-  line-height: var(--ev-line-height-relaxed);
-  color: var(--ev-color-foreground-subtle);
 }
 
 .page-base__actions {

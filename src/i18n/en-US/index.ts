@@ -86,10 +86,40 @@ export default {
   // Layout & nav
   nav: {
     home: 'Home',
+    files: 'File List',
     upload: 'Upload',
+    users: 'User Management',
     appTitle: 'Evermedia Vault',
     adminSubtitle: 'Admin',
     welcomeDesc: 'Welcome to the admin panel',
+  },
+
+  // File list
+  fileList: {
+    title: 'File List',
+    noData: 'No files yet',
+    columns: {
+      name: 'Name',
+      fileType: 'Type',
+      permission: 'Permission',
+      cost: 'Cost',
+      projectName: 'Project',
+    synapseIndexId: 'Synapse ID',
+    uploadedAt: 'Uploaded',
+  },
+  },
+
+  // User list
+  userList: {
+    title: 'User Management',
+    noData: 'No users yet',
+    columns: {
+      username: 'Username',
+      email: 'Email',
+      role: 'Role',
+      lastLoginAt: 'Last Login',
+      createdAt: 'Created',
+    },
   },
 
   // Upload
