@@ -1,7 +1,290 @@
-// app global css in SCSS form
+// 设计 Token 单一数据源（SCSS → CSS 变量 + Tailwind @theme）
+@use 'theme-tokens' as t;
 
-// Tailwind CSS directives
-// 注意：Tailwind指令放在最后，确保在Quasar样式之后加载
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+// -----------------------------------------------------------------------------
+// 全局 CSS 变量（与 frontend-main 风格一致，供非 Tailwind 与 Quasar 共用）
+// -----------------------------------------------------------------------------
+:root {
+  // 主色
+  --ev-color-primary: #{t.$primary};
+  --ev-color-primary-light: #{t.$primary-light};
+  --ev-color-primary-tint-bg: #{t.$primary-tint-bg};
+  --ev-color-primary-tint-border: #{t.$primary-tint-border};
+  --ev-color-primary-tint-border-strong: #{t.$primary-tint-border-strong};
+  --ev-color-primary-tint-hover: #{t.$primary-tint-hover};
+  --ev-color-primary-header-glow: #{t.$primary-header-glow};
+  --ev-color-accent: #{t.$accent};
+  --ev-color-accent-tint: #{t.$accent-tint};
+  --ev-color-secondary: #{t.$secondary};
+  // 语义
+  --ev-color-positive: #{t.$positive};
+  --ev-color-negative: #{t.$negative};
+  --ev-color-info: #{t.$info};
+  --ev-color-warning: #{t.$warning};
+  // 背景与表面
+  --ev-color-background: #{t.$background};
+  --ev-color-background-elevated: #{t.$background-elevated};
+  --ev-color-surface: #{t.$surface};
+  --ev-color-surface-hover: #{t.$surface-hover};
+  --ev-color-border: #{t.$border};
+  --ev-color-border-strong: #{t.$border-strong};
+  // 文字
+  --ev-color-foreground: #{t.$foreground};
+  --ev-color-foreground-muted: #{t.$foreground-muted};
+  --ev-color-foreground-subtle: #{t.$foreground-subtle};
+  // 玻璃/高亮
+  --ev-glass-bg: #{t.$glass-bg};
+  --ev-glass-border: #{t.$glass-border};
+  --ev-glass-grid: #{t.$glass-grid};
+  --ev-glow-cyan: #{t.$glow-cyan};
+  // 字体
+  --ev-font-sans: #{t.$font-sans};
+  --ev-font-mono: #{t.$font-mono};
+  --ev-font-size-xs: #{t.$font-size-xs};
+  --ev-font-size-sm: #{t.$font-size-sm};
+  --ev-font-size-base: #{t.$font-size-base};
+  --ev-font-size-lg: #{t.$font-size-lg};
+  --ev-font-size-xl: #{t.$font-size-xl};
+  --ev-font-size-2xl: #{t.$font-size-2xl};
+  --ev-font-weight-normal: #{t.$font-weight-normal};
+  --ev-font-weight-medium: #{t.$font-weight-medium};
+  --ev-font-weight-semibold: #{t.$font-weight-semibold};
+  --ev-font-weight-bold: #{t.$font-weight-bold};
+  --ev-line-height-tight: #{t.$line-height-tight};
+  --ev-line-height-normal: #{t.$line-height-normal};
+  --ev-line-height-relaxed: #{t.$line-height-relaxed};
+  // 间距
+  --ev-space-1: #{t.$space-1};
+  --ev-space-2: #{t.$space-2};
+  --ev-space-3: #{t.$space-3};
+  --ev-space-4: #{t.$space-4};
+  --ev-space-5: #{t.$space-5};
+  --ev-space-6: #{t.$space-6};
+  --ev-space-8: #{t.$space-8};
+  --ev-space-10: #{t.$space-10};
+  --ev-space-12: #{t.$space-12};
+  // 圆角
+  --ev-radius-sm: #{t.$radius-sm};
+  --ev-radius-md: #{t.$radius-md};
+  --ev-radius-lg: #{t.$radius-lg};
+  --ev-radius-xl: #{t.$radius-xl};
+  // 阴影
+  --ev-shadow-sm: #{t.$shadow-sm};
+  --ev-shadow-md: #{t.$shadow-md};
+  --ev-shadow-lg: #{t.$shadow-lg};
+  --ev-shadow-glow: #{t.$shadow-glow};
+  --ev-shadow-primary: #{t.$shadow-primary};
+  --ev-shadow-primary-hover: #{t.$shadow-primary-hover};
+  // 布局与组件
+  --ev-header-height: #{t.$header-height};
+  --ev-drawer-width: #{t.$drawer-width};
+  --ev-nav-item-height: #{t.$nav-item-height};
+  --ev-button-height: #{t.$button-height};
+  --ev-login-card-max-width: #{t.$login-card-max-width};
+  --ev-glow-size-lg: #{t.$glow-size-lg};
+  --ev-glow-size-md: #{t.$glow-size-md};
+  --ev-glow-size-sm: #{t.$glow-size-sm};
+  --ev-blur-glow: #{t.$blur-glow};
+  --ev-glow-opacity: #{t.$glow-opacity};
+  --ev-glow-opacity-subtle: #{t.$glow-opacity-subtle};
+  --ev-title-display-size: #{t.$title-display-size};
+  // 视觉细节
+  --ev-focus-ring: #{t.$focus-ring};
+  --ev-nav-active-glow: #{t.$nav-active-glow};
+  --ev-nav-active-accent: #{t.$nav-active-accent};
+  --ev-card-border-gradient: #{t.$card-border-gradient};
+  // 动效
+  --ev-transition-fast: #{t.$transition-fast};
+  --ev-transition-base: #{t.$transition-base};
+}
+
+// -----------------------------------------------------------------------------
+// Tailwind v4 @theme：与设计 Token 对齐，生成 tw-* 工具类
+// -----------------------------------------------------------------------------
+@theme {
+  --color-primary: var(--ev-color-primary);
+  --color-primary-light: var(--ev-color-primary-light);
+  --color-accent: var(--ev-color-accent);
+  --color-background: var(--ev-color-background);
+  --color-background-elevated: var(--ev-color-background-elevated);
+  --color-surface: var(--ev-color-surface);
+  --color-foreground: var(--ev-color-foreground);
+  --color-foreground-muted: var(--ev-color-foreground-muted);
+  --color-foreground-subtle: var(--ev-color-foreground-subtle);
+  --color-border: var(--ev-color-border);
+  --color-positive: var(--ev-color-positive);
+  --color-negative: var(--ev-color-negative);
+  --color-info: var(--ev-color-info);
+  --color-warning: var(--ev-color-warning);
+  --font-sans: var(--ev-font-sans);
+  --font-mono: var(--ev-font-mono);
+  --font-size-xs: var(--ev-font-size-xs);
+  --font-size-sm: var(--ev-font-size-sm);
+  --font-size-base: var(--ev-font-size-base);
+  --font-size-lg: var(--ev-font-size-lg);
+  --font-size-xl: var(--ev-font-size-xl);
+  --font-size-2xl: var(--ev-font-size-2xl);
+  --radius-sm: var(--ev-radius-sm);
+  --radius-md: var(--ev-radius-md);
+  --radius-lg: var(--ev-radius-lg);
+  --radius-xl: var(--ev-radius-xl);
+  --shadow-sm: var(--ev-shadow-sm);
+  --shadow-md: var(--ev-shadow-md);
+  --shadow-lg: var(--ev-shadow-lg);
+  --shadow-glow: var(--ev-shadow-glow);
+}
+
+// -----------------------------------------------------------------------------
+// 基础层：后台管理面板全局样式
+// -----------------------------------------------------------------------------
+@layer base {
+  body {
+    background-color: var(--ev-color-background);
+    color: var(--ev-color-foreground);
+    font-family: var(--ev-font-sans);
+    font-size: var(--ev-font-size-base);
+    line-height: var(--ev-line-height-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 主布局侧栏：强制深色，覆盖 Quasar 默认白底
+// -----------------------------------------------------------------------------
+.main-layout__drawer,
+.main-layout__drawer.q-drawer,
+.main-layout__drawer .q-drawer__content,
+.main-layout__drawer .q-scrollarea,
+.main-layout__drawer .q-scrollarea__thumb,
+.main-layout__drawer .q-list {
+  background: var(--ev-color-background-elevated) !important;
+}
+.main-layout__drawer .q-item {
+  background: transparent !important;
+}
+.main-layout__drawer .q-item:hover,
+.main-layout__drawer .q-item.q-router-link--active {
+  background: var(--ev-color-surface-hover) !important;
+}
+
+// -----------------------------------------------------------------------------
+// 工具类：与 frontend-main 一致的滚动条、玻璃卡、动效
+// -----------------------------------------------------------------------------
+@layer utilities {
+  .ev-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .ev-scrollbar::-webkit-scrollbar-track {
+    background: var(--ev-color-surface-hover);
+  }
+  .ev-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--ev-color-accent);
+    opacity: 0.5;
+    border-radius: var(--ev-radius-sm);
+  }
+  .ev-scrollbar::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+  }
+
+  .ev-glass-card {
+    background: var(--ev-glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--ev-glass-border);
+    transition: var(--ev-transition-base);
+    position: relative;
+  }
+  .ev-glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--ev-card-border-gradient);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--ev-transition-base);
+  }
+  .ev-glass-card:hover {
+    background: var(--ev-color-surface-hover);
+    box-shadow: var(--ev-shadow-lg);
+  }
+  .ev-glass-card:hover::before {
+    opacity: 1;
+  }
+
+  .ev-btn-primary {
+    height: var(--ev-button-height);
+    font-size: var(--ev-font-size-base);
+    font-weight: var(--ev-font-weight-medium);
+    letter-spacing: 0.04em;
+    color: var(--ev-color-foreground);
+    background: linear-gradient(135deg, var(--ev-color-primary) 0%, var(--ev-color-primary-light) 100%);
+    border-radius: var(--ev-radius-lg);
+    box-shadow: var(--ev-shadow-primary);
+    transition: var(--ev-transition-base);
+    border: none;
+    &:hover {
+      box-shadow: var(--ev-shadow-primary-hover);
+      transform: translateY(-2px);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--ev-shadow-primary), var(--ev-focus-ring);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 通知条样式（与设计 token 一致，Quasar Notify 使用 .ev-notify 类）
+// -----------------------------------------------------------------------------
+.ev-notify {
+  font-family: var(--ev-font-sans);
+  font-size: var(--ev-font-size-sm);
+  font-weight: var(--ev-font-weight-medium);
+  border-radius: var(--ev-radius-lg);
+  border: 1px solid transparent;
+  box-shadow: var(--ev-shadow-md);
+  backdrop-filter: blur(12px);
+}
+.ev-notify--success {
+  background: var(--ev-color-surface);
+  border-color: var(--ev-color-positive);
+  color: var(--ev-color-foreground);
+  .q-notify__progress {
+    background: var(--ev-color-positive);
+  }
+}
+.ev-notify--error {
+  background: var(--ev-color-surface);
+  border-color: var(--ev-color-negative);
+  color: var(--ev-color-foreground);
+  .q-notify__progress {
+    background: var(--ev-color-negative);
+  }
+}
+.ev-notify--warning {
+  background: var(--ev-color-surface);
+  border-color: var(--ev-color-warning);
+  color: var(--ev-color-foreground);
+  .q-notify__progress {
+    background: var(--ev-color-warning);
+  }
+}
+.ev-notify--info {
+  background: var(--ev-color-surface);
+  border-color: var(--ev-color-info);
+  color: var(--ev-color-foreground);
+  .q-notify__progress {
+    background: var(--ev-color-info);
+  }
+}

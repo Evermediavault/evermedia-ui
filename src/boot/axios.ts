@@ -1,5 +1,9 @@
 import { defineBoot } from '#q-app/wrappers';
-import axios, { type AxiosInstance } from 'axios';
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
+import { getStorage, removeStorage } from 'src/utils/storage';
+import { STORAGE_KEY_TOKEN, STORAGE_KEY_USER } from 'src/constants/storage';
+import { apiConfig } from 'src/config/api';
+import type { BackendErrorResponse } from 'src/types/api';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -8,24 +12,53 @@ declare module 'vue' {
   }
 }
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' });
+const api = axios.create({
+  baseURL: apiConfig.baseURL,
+  timeout: apiConfig.timeout,
+  headers: { ...apiConfig.headers },
+});
+
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (typeof window === 'undefined') return config;
+  const token = getStorage<string>(STORAGE_KEY_TOKEN);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const res = error?.response;
+    const data = res?.data as BackendErrorResponse | undefined;
+
+    if (data?.success === false && typeof data.message === 'string') {
+      error.message = data.message;
+      error.response = error.response || {
+        status: data.status_code,
+        data,
+        statusText: '',
+        headers: {},
+        config: error.config,
+      };
+    }
+
+    if (typeof window !== 'undefined' && res?.status === 401) {
+      removeStorage(STORAGE_KEY_TOKEN);
+      removeStorage(STORAGE_KEY_USER);
+      window.location.hash = '#/login';
+    }
+
+    // 保留原始 error（含 response），便于 handleAxiosError 使用
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- axios error 需保留 response
+    return Promise.reject(error);
+  }
+);
 
 export default defineBoot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
-
   app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
   app.config.globalProperties.$api = api;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
 });
 
 export { api };

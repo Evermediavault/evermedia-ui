@@ -1,4 +1,5 @@
 // https://github.com/michael-ciniawsky/postcss-load-config
+// Tailwind v4 使用 @tailwindcss/postcss，v4 内置 import 与 prefix，可不配 autoprefixer
 
 import autoprefixer from 'autoprefixer';
 import tailwindcss from '@tailwindcss/postcss';
@@ -6,9 +7,7 @@ import tailwindcss from '@tailwindcss/postcss';
 
 export default {
   plugins: [
-    // Tailwind CSS - 必须在autoprefixer之前
     tailwindcss(),
-    // https://github.com/postcss/autoprefixer
     autoprefixer({
       overrideBrowserslist: [
         'last 4 Chrome versions',

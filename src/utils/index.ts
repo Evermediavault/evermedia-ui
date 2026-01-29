@@ -8,3 +8,4 @@ export * from './format';
 export * from './storage';
 export * from './url';
 export * from './string';
+export * from './notify';

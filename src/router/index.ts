@@ -5,7 +5,9 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
-import routes from './routes';
+import { getStorage } from 'src/utils/storage';
+import { STORAGE_KEY_TOKEN } from 'src/constants/storage';
+import routes, { ROUTE_META_PUBLIC } from './routes';
 
 /*
  * If not building with SSR mode, you can
@@ -31,6 +33,29 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, _from, next) => {
+    if (process.env.SERVER || typeof window === 'undefined') {
+      next();
+      return;
+    }
+    const isPublic = to.matched.some((r) => r.meta?.[ROUTE_META_PUBLIC]);
+    const token = getStorage<string>(STORAGE_KEY_TOKEN);
+    if (isPublic) {
+      if (to.path === '/login' && token) {
+        const redirect = (to.query.redirect as string) || '/';
+        next({ path: redirect, query: {} });
+        return;
+      }
+      next();
+      return;
+    }
+    if (!token) {
+      next({ path: '/login', query: { redirect: to.fullPath } });
+      return;
+    }
+    next();
   });
 
   return Router;

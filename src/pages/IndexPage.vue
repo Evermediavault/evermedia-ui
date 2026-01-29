@@ -1,43 +1,75 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
-  </q-page>
+  <PageBase content-class="centered">
+    <div class="index-page__welcome ev-glass-card">
+      <span class="index-page__badge">{{ t('nav.adminSubtitle') }}</span>
+      <h1 class="index-page__title">{{ t('nav.appTitle') }}</h1>
+      <p class="index-page__subtitle">{{ t('nav.home') }}</p>
+      <div class="index-page__divider" />
+      <p class="index-page__desc">{{ t('nav.welcomeDesc') }}</p>
+    </div>
+  </PageBase>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
+import { useI18n } from 'vue-i18n';
+import PageBase from 'src/components/PageBase.vue';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    content: 'ct1',
-  },
-  {
-    id: 2,
-    content: 'ct2',
-  },
-  {
-    id: 3,
-    content: 'ct3',
-  },
-  {
-    id: 4,
-    content: 'ct4',
-  },
-  {
-    id: 5,
-    content: 'ct5',
-  },
-]);
-
-const meta = ref<Meta>({
-  totalCount: 1200,
-});
+const { t } = useI18n();
 </script>
+
+<style lang="scss" scoped>
+.index-page__welcome {
+  padding: var(--ev-space-10);
+  border-radius: var(--ev-radius-xl);
+  text-align: center;
+  box-shadow: var(--ev-shadow-lg);
+  max-width: var(--ev-login-card-max-width);
+  transition: box-shadow var(--ev-transition-base), transform var(--ev-transition-base);
+}
+.index-page__welcome:hover {
+  box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
+}
+
+.index-page__badge {
+  display: inline-block;
+  padding: var(--ev-space-1) var(--ev-space-3);
+  font-size: var(--ev-font-size-xs);
+  font-weight: var(--ev-font-weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ev-color-primary-light);
+  background: var(--ev-color-primary-tint-bg);
+  border: 1px solid var(--ev-color-primary-tint-border);
+  border-radius: var(--ev-radius-md);
+  margin-bottom: var(--ev-space-4);
+}
+
+.index-page__title {
+  margin: 0 0 var(--ev-space-2);
+  font-size: var(--ev-font-size-2xl);
+  font-weight: var(--ev-font-weight-semibold);
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--ev-color-primary) 0%, var(--ev-color-primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.index-page__subtitle {
+  margin: 0;
+  font-size: var(--ev-font-size-base);
+  color: var(--ev-color-foreground-muted);
+}
+
+.index-page__divider {
+  margin: var(--ev-space-6) 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ev-color-border), transparent);
+}
+
+.index-page__desc {
+  margin: 0;
+  font-size: var(--ev-font-size-sm);
+  color: var(--ev-color-foreground-subtle);
+}
+</style>

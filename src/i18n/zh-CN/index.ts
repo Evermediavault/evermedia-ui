@@ -4,6 +4,7 @@
 export default {
   // 通用
   common: {
+    required: '必填',
     confirm: '确认',
     cancel: '取消',
     save: '保存',
@@ -50,6 +51,9 @@ export default {
     unauthorized: '未授权，请先登录',
     forbidden: '没有权限访问',
     unknown: '未知错误',
+    badRequest: '请求参数错误',
+    conflict: '资源冲突',
+    tooManyRequests: '请求过于频繁，请稍后重试',
   },
 
   // 成功提示
@@ -58,5 +62,45 @@ export default {
     deleted: '删除成功',
     updated: '更新成功',
     created: '创建成功',
+    login: '登录成功',
+    logout: '登出成功',
+  },
+
+  // 认证相关
+  auth: {
+    username: '用户名',
+    password: '密码',
+    login: '登录',
+    logout: '退出',
+    invalidCredentials: '用户名或密码错误',
+    tokenExpired: '令牌已过期',
+    tokenInvalid: '令牌无效',
+    tokenMissing: '缺少认证令牌',
+    passwordIncorrect: '密码错误',
+    userNotFound: '用户不存在',
+    userExists: '用户已存在',
+    loginRequired: '请先登录',
+    permissionDenied: '权限不足',
+  },
+
+  // 布局与导航
+  nav: {
+    home: '首页',
+    appTitle: 'Evermedia Vault',
+    adminSubtitle: '后台管理',
+    welcomeDesc: '欢迎使用后台管理面板',
+  },
+
+  // 用户相关
+  user: {
+    notFound: '用户不存在',
+    exists: '用户已存在',
+    created: '用户创建成功',
+    updated: '用户更新成功',
+    deleted: '用户删除成功',
+    usernameRequired: '用户名不能为空',
+    emailRequired: '邮箱不能为空',
+    passwordRequired: '密码不能为空',
+    emailInvalid: '邮箱格式不正确',
   },
 };

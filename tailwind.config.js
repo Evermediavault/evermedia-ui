@@ -1,19 +1,18 @@
+/**
+ * Tailwind v4 以 CSS 配置为主（@import "tailwindcss"、@theme），
+ * 此文件在 v4 中可能不被 @tailwindcss/postcss 读取。
+ * 若需 prefix 或关闭 preflight，请在 src/css/app.scss 中用 v4 写法：
+ * - prefix: @import "tailwindcss" prefix(tw); 类名变为 tw:flex
+ * - 关闭 preflight: 使用分层 import，不引入 preflight.css
+ */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     './index.html',
     './src/**/*.{vue,js,ts,jsx,tsx}',
   ],
-  // 使用prefix避免与Quasar样式冲突
   prefix: 'tw-',
-  theme: {
-    extend: {
-      // 可以在这里扩展主题，与Quasar变量集成
-    },
-  },
+  theme: { extend: {} },
   plugins: [],
-  // 重要：确保Tailwind不会覆盖Quasar的样式
-  corePlugins: {
-    preflight: false, // 禁用Tailwind的基础样式重置，避免与Quasar冲突
-  },
+  corePlugins: { preflight: false },
 };

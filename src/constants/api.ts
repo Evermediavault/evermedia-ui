@@ -1,6 +1,9 @@
 /**
- * API相关常量
+ * API相关常量（与后端 api 设计对齐）
  */
+
+/** 后端 API v1 前缀，与 api 侧 API_V1_PREFIX 一致 */
+export const API_V1_PATH = '/api/v1';
 
 /**
  * API请求超时时间（毫秒）

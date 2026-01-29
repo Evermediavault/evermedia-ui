@@ -4,6 +4,7 @@
 export default {
   // Common
   common: {
+    required: 'Required',
     confirm: 'Confirm',
     cancel: 'Cancel',
     save: 'Save',
@@ -50,6 +51,9 @@ export default {
     unauthorized: 'Unauthorized, please login first',
     forbidden: 'Access forbidden',
     unknown: 'Unknown error',
+    badRequest: 'Bad request parameters',
+    conflict: 'Resource conflict',
+    tooManyRequests: 'Too many requests, please try again later',
   },
 
   // Success messages
@@ -58,5 +62,45 @@ export default {
     deleted: 'Deleted successfully',
     updated: 'Updated successfully',
     created: 'Created successfully',
+    login: 'Login successful',
+    logout: 'Logout successful',
+  },
+
+  // Authentication related
+  auth: {
+    username: 'Username',
+    password: 'Password',
+    login: 'Login',
+    logout: 'Logout',
+    invalidCredentials: 'Invalid username or password',
+    tokenExpired: 'Token expired',
+    tokenInvalid: 'Invalid token',
+    tokenMissing: 'Missing authentication token',
+    passwordIncorrect: 'Incorrect password',
+    userNotFound: 'User not found',
+    userExists: 'User already exists',
+    loginRequired: 'Please login first',
+    permissionDenied: 'Permission denied',
+  },
+
+  // Layout & nav
+  nav: {
+    home: 'Home',
+    appTitle: 'Evermedia Vault',
+    adminSubtitle: 'Admin',
+    welcomeDesc: 'Welcome to the admin panel',
+  },
+
+  // User related
+  user: {
+    notFound: 'User not found',
+    exists: 'User already exists',
+    created: 'User created successfully',
+    updated: 'User updated successfully',
+    deleted: 'User deleted successfully',
+    usernameRequired: 'Username is required',
+    emailRequired: 'Email is required',
+    passwordRequired: 'Password is required',
+    emailInvalid: 'Invalid email format',
   },
 };
