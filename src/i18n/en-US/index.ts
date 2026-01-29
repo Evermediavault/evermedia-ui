@@ -86,9 +86,17 @@ export default {
   // Layout & nav
   nav: {
     home: 'Home',
+    upload: 'Upload',
     appTitle: 'Evermedia Vault',
     adminSubtitle: 'Admin',
     welcomeDesc: 'Welcome to the admin panel',
+  },
+
+  // Upload
+  upload: {
+    title: 'Upload Files',
+    subtitle: 'Drop files in the area below or click to browse; multiple files supported',
+    hint: 'Multiple files allowed, up to 4 concurrent uploads',
   },
 
   // User related

@@ -86,9 +86,17 @@ export default {
   // 布局与导航
   nav: {
     home: '首页',
+    upload: '上传文件',
     appTitle: 'Evermedia Vault',
     adminSubtitle: '后台管理',
     welcomeDesc: '欢迎使用后台管理面板',
+  },
+
+  // 上传
+  upload: {
+    title: '上传文件',
+    subtitle: '将文件拖入下方区域或点击选择，支持多选',
+    hint: '支持多文件，单次最多 4 个并发上传',
   },
 
   // 用户相关

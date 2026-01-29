@@ -1,42 +1,41 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="main-layout" dark>
-    <q-header class="main-layout__header" elevated>
-      <q-toolbar class="main-layout__toolbar">
-        <q-btn flat dense round icon="menu" aria-label="Menu" class="main-layout__menu-btn"
-          @click="leftDrawerOpen = !leftDrawerOpen" />
-        <q-toolbar-title class="main-layout__title">
-          {{ t('nav.appTitle') }}
-        </q-toolbar-title>
-        <q-space />
-        <div class="main-layout__user">
+  <q-layout view="hhh LpR fFf" class="main-layout" dark>
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="240">
+      <div class="main-layout__drawer-inner">
+        <nav class="main-layout__nav-wrap" aria-label="Main">
+          <p class="main-layout__nav-label">{{ t('nav.home') }}</p>
+          <q-list class="main-layout__nav ev-scrollbar" dense>
+            <q-item v-for="item in navItems" :key="item.path" clickable :active="isActive(item.path)"
+              active-class="main-layout__nav-item--active" :to="item.path" class="main-layout__nav-item">
+              <q-item-section avatar class="main-layout__nav-icon-wrap">
+                <span class="main-layout__nav-icon">
+                  <q-icon :name="item.icon" size="20px" />
+                </span>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="main-layout__nav-text">{{ item.title }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </nav>
+        <div class="main-layout__user-block">
           <span class="main-layout__user-pill">{{ userInitial }}</span>
           <span class="main-layout__user-name">{{ authStore.displayName }}</span>
           <q-btn flat dense no-caps :label="t('auth.logout')" class="main-layout__logout" @click="onLogout" />
         </div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="260">
-      <nav class="main-layout__nav-wrap" aria-label="Main">
-        <p class="main-layout__nav-label">{{ t('nav.home') }}</p>
-        <q-list class="main-layout__nav ev-scrollbar" dense>
-          <q-item v-for="item in navItems" :key="item.path" clickable :active="isActive(item.path)"
-            active-class="main-layout__nav-item--active" :to="item.path" class="main-layout__nav-item">
-            <q-item-section avatar class="main-layout__nav-icon-wrap">
-              <span class="main-layout__nav-icon">
-                <q-icon :name="item.icon" size="20px" />
-              </span>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="main-layout__nav-text">{{ item.title }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </nav>
+      </div>
     </q-drawer>
 
     <q-page-container class="main-layout__page">
-      <router-view />
+      <div class="main-layout__page-inner">
+        <div class="main-layout__bg" aria-hidden="true">
+          <div class="main-layout__nodes" />
+          <div class="main-layout__glow main-layout__glow--1" />
+          <div class="main-layout__glow main-layout__glow--2" />
+          <div class="main-layout__glow main-layout__glow--3" />
+        </div>
+        <router-view />
+      </div>
     </q-page-container>
   </q-layout>
 </template>
@@ -61,6 +60,7 @@ const userInitial = computed(() => {
 
 const navItems = computed(() => [
   { path: '/', title: t('nav.home'), icon: 'home' },
+  { path: '/upload', title: t('nav.upload'), icon: 'cloud_upload' },
 ]);
 
 function isActive(path: string) {
@@ -77,48 +77,51 @@ function onLogout() {
 <style lang="scss" scoped>
 .main-layout {
   background: var(--ev-color-background);
+  height: 100vh;
+  min-height: 100vh;
 }
 
-.main-layout__header {
-  background: var(--ev-color-background-elevated);
-  border-bottom: 1px solid var(--ev-color-border);
-  box-shadow: 0 1px 0 0 var(--ev-color-primary-header-glow);
-}
+.main-layout__drawer {
+  background: var(--ev-color-background-elevated) !important;
+  border-right: 1px solid var(--ev-color-border);
 
-.main-layout__toolbar {
-  min-height: var(--ev-header-height);
-  padding: 0 var(--ev-space-4);
-}
-
-.main-layout__menu-btn {
-  color: var(--ev-color-foreground-muted);
-  transition: color var(--ev-transition-fast), background var(--ev-transition-fast);
-
-  &:hover {
-    color: var(--ev-color-primary-light);
-    background: var(--ev-color-surface-hover);
+  :deep(.q-drawer__content) {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: var(--ev-color-background-elevated) !important;
   }
 }
 
-.main-layout__title {
-  font-size: var(--ev-font-size-lg);
-  font-weight: var(--ev-font-weight-semibold);
-  letter-spacing: 0.04em;
-  background: linear-gradient(135deg, var(--ev-color-primary) 0%, var(--ev-color-primary-light) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.main-layout__drawer-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 0;
 }
 
-.main-layout__user {
+.main-layout__nav-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ev-space-4);
+  padding: var(--ev-space-4) 0;
+}
+
+.main-layout__user-block {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--ev-space-3);
+  padding: var(--ev-space-4);
+  border-top: 1px solid var(--ev-color-border);
 }
 
 .main-layout__user-pill {
-  width: 32px;
-  height: 32px;
+  width: var(--ev-avatar-size);
+  height: var(--ev-avatar-size);
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,42 +134,35 @@ function onLogout() {
 }
 
 .main-layout__user-name {
+  flex: 1;
+  min-width: 0;
   font-size: var(--ev-font-size-sm);
   color: var(--ev-color-foreground-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .main-layout__logout {
+  flex-shrink: 0;
   font-size: var(--ev-font-size-sm);
   color: var(--ev-color-foreground-muted);
   padding: var(--ev-space-1) var(--ev-space-3);
   border-radius: var(--ev-radius-md);
   border: 1px solid transparent;
-  transition: color var(--ev-transition-fast), border-color var(--ev-transition-fast), background var(--ev-transition-fast);
+  transition: color var(--ev-transition-fast), border-color var(--ev-transition-fast), background var(--ev-transition-fast), box-shadow var(--ev-transition-fast);
 
   &:hover {
     color: var(--ev-color-primary-light);
     border-color: var(--ev-color-primary-tint-border-strong);
     background: var(--ev-color-primary-tint-hover);
   }
-}
 
-.main-layout__drawer {
-  background: var(--ev-color-background-elevated) !important;
-  border-right: 1px solid var(--ev-color-border);
-
-  :deep(.q-drawer__content) {
-    display: flex;
-    flex-direction: column;
-    padding: var(--ev-space-4) 0;
-    background: var(--ev-color-background-elevated) !important;
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ev-color-primary-tint-border-strong);
+    box-shadow: var(--ev-focus-ring);
   }
-}
-
-.main-layout__nav-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ev-space-4);
-  min-width: 0;
 }
 
 .main-layout__nav-label {
@@ -215,15 +211,21 @@ function onLogout() {
   &.main-layout__nav-item--active {
     color: var(--ev-color-primary-light);
     background: var(--ev-color-primary-tint-bg);
+    box-shadow: var(--ev-nav-active-glow);
 
     &::before {
       height: 1.25rem;
     }
   }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--ev-nav-active-glow), 0 0 0 2px var(--ev-color-primary-tint-border);
+  }
 }
 
 :deep(.main-layout__nav-icon-wrap) {
-  min-width: 36px;
+  min-width: var(--ev-nav-icon-size);
   margin-right: 0;
 }
 
@@ -231,8 +233,8 @@ function onLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: var(--ev-nav-icon-size);
+  height: var(--ev-nav-icon-size);
   border-radius: var(--ev-radius-md);
   background: transparent;
   transition: background var(--ev-transition-fast);
@@ -241,6 +243,7 @@ function onLogout() {
 :deep(.main-layout__nav-item:hover .main-layout__nav-icon) {
   background: var(--ev-color-surface-hover);
 }
+
 :deep(.main-layout__nav-item--active .main-layout__nav-icon),
 :deep(.main-layout__nav-item.q-router-link--active .main-layout__nav-icon) {
   background: var(--ev-color-primary-tint-border);
@@ -252,8 +255,79 @@ function onLogout() {
 }
 
 .main-layout__page {
+  position: relative;
   background: var(--ev-color-background);
-  padding: var(--ev-space-6);
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-layout__page-inner {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-layout__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 去中心化节点：散布点阵，弱化常规网格感，贴合存储/节点意象 */
+.main-layout__nodes {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at center, var(--ev-node-dot) 1px, transparent 1px),
+    radial-gradient(circle at center, var(--ev-node-dot) 1px, transparent 1px);
+  background-size: var(--ev-space-10) var(--ev-space-10);
+  background-position: 0 0, var(--ev-space-5) var(--ev-space-5);
+  mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 15%, transparent 60%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 15%, transparent 60%);
+}
+
+.main-layout__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(var(--ev-blur-glow));
+  opacity: var(--ev-glow-opacity-subtle);
+  transition: opacity var(--ev-transition-base);
+}
+.main-layout__glow--1 {
+  width: var(--ev-glow-size-md);
+  height: var(--ev-glow-size-md);
+  background: var(--ev-color-primary);
+  top: calc(-1 * var(--ev-space-8));
+  right: calc(-1 * var(--ev-space-6));
+}
+.main-layout__glow--2 {
+  width: var(--ev-glow-size-sm);
+  height: var(--ev-glow-size-sm);
+  background: var(--ev-color-accent);
+  bottom: 15%;
+  right: 10%;
+}
+.main-layout__glow--3 {
+  width: var(--ev-glow-size-sm);
+  height: var(--ev-glow-size-sm);
+  background: var(--ev-color-primary-light);
+  bottom: calc(-1 * var(--ev-space-4));
+  left: 20%;
+  opacity: 0.12;
+}
+
+.main-layout__page-inner > :not(.main-layout__bg) {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-height: 0;
 }
 </style>

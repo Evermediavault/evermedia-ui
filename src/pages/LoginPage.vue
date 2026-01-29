@@ -154,8 +154,10 @@ async function onSubmit() {
   :deep(.q-field--focused .q-field__label) {
     color: var(--ev-color-primary-light);
   }
+  :deep(.q-field__control:focus-within) {
+    transition: box-shadow var(--ev-transition-fast);
+  }
 }
-
 .login-page__submit {
   margin-top: var(--ev-space-4);
 }

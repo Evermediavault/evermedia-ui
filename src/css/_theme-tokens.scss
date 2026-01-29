@@ -22,6 +22,7 @@ $accent-tint: rgba(139, 92, 246, 0.15);
 // ---------- 语义色 ----------
 $positive: #21ba45;
 $negative: #c10015;
+$negative-tint: rgba(193, 0, 21, 0.12);
 $info: #31ccec;
 $warning: #f2c037;
 
@@ -42,8 +43,11 @@ $foreground-subtle: #9ca3af;     // gray-400
 $glass-bg: rgba(255, 255, 255, 0.05);
 $glass-border: rgba(255, 255, 255, 0.1);
 $glass-grid: rgba(255, 255, 255, 0.02);
+$node-dot: rgba(255, 255, 255, 0.04);   // 去中心化节点装饰
 $glow-cyan: rgba(124, 201, 255, 0.4);
 $glow-cyan-strong: rgba(124, 201, 255, 0.15);
+$scrollbar-thumb: rgba(139, 92, 246, 0.55);
+$scrollbar-thumb-hover: rgba(139, 92, 246, 0.75);
 
 // ---------- 字体 ----------
 $font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -95,7 +99,9 @@ $shadow-primary-hover: 0 6px 24px rgba(10, 77, 211, 0.45);
 $header-height: 3.5rem;      // 56px
 $drawer-width: 15rem;       // 240px
 $nav-item-height: 2.75rem;  // 44px
+$nav-icon-size: 2.25rem;    // 36px，导航图标容器
 $button-height: 2.75rem;    // 44px
+$avatar-size: 2rem;         // 32px，用户头像/徽章
 $login-card-max-width: 26.25rem;  // 420px
 $glow-size-lg: 25rem;       // 400px
 $glow-size-md: 20rem;       // 320px
@@ -103,6 +109,8 @@ $glow-size-sm: 16rem;       // 256px
 $blur-glow: 5rem;           // 80px
 $glow-opacity: 0.28;
 $glow-opacity-subtle: 0.15;
+$glow-3-bottom: 20%;
+$glow-3-right: 10%;
 $title-display-size: 1.75rem;    // 主标题字号
 
 // ---------- 动效 ----------

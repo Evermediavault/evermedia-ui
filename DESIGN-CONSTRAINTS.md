@@ -30,10 +30,13 @@
 | 边框 | `$border` | `rgba(255,255,255,0.1)` | 默认边框 |
 | 玻璃背景 | `$glass-bg` | `rgba(255,255,255,0.05)` | 玻璃态 |
 | 玻璃边框 | `$glass-border` | `rgba(255,255,255,0.1)` | 玻璃态边框 |
+| 节点装饰 | `$node-dot` | `rgba(255,255,255,0.04)` | 去中心化节点背景点阵 |
 | 成功/正 | `$positive` | `#21ba45` | 成功状态 |
 | 错误/负 | `$negative` | `#c10015` | 错误、危险 |
+| 错误浅底 | `$negative-tint` | `rgba(193,0,21,0.12)` | 错误提示背景 |
 | 信息 | `$info` | `#31ccec` | 提示 |
 | 警告 | `$warning` | `#f2c037` | 警告 |
+| 滚动条拇指 | `$scrollbar-thumb` / `$scrollbar-thumb-hover` | accent 系半透明 | `.ev-scrollbar` 拇指色 |
 
 ### 2.2 字体
 
@@ -64,9 +67,10 @@
 ### 2.6 布局与组件尺寸
 
 - `$header-height`：顶栏高度（3.5rem）。
-- `$drawer-width`：侧栏宽度（15rem）。
-- `$nav-item-height` / `$button-height`：导航项与主按钮高度（2.75rem）。
-- `$login-card-max-width`、`$glow-size-lg/md`、`$blur-glow`、`$title-display-size`：登录卡与光晕等。
+- `$drawer-width`：侧栏宽度（15rem，约 240px）。
+- `$nav-item-height` / `$nav-icon-size` / `$avatar-size`：导航项高度（2.75rem）、导航图标容器（2.25rem）、用户头像（2rem）。
+- `$button-height`：主按钮高度（2.75rem）。
+- `$login-card-max-width`、`$glow-size-lg/md/sm`、`$blur-glow`、`$glow-3-bottom`/`$glow-3-right`、`$title-display-size`：登录卡与光晕等。
 
 ---
 

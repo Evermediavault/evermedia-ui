@@ -21,8 +21,11 @@
   // 语义
   --ev-color-positive: #{t.$positive};
   --ev-color-negative: #{t.$negative};
+  --ev-color-negative-tint: #{t.$negative-tint};
   --ev-color-info: #{t.$info};
   --ev-color-warning: #{t.$warning};
+  --ev-scrollbar-thumb: #{t.$scrollbar-thumb};
+  --ev-scrollbar-thumb-hover: #{t.$scrollbar-thumb-hover};
   // 背景与表面
   --ev-color-background: #{t.$background};
   --ev-color-background-elevated: #{t.$background-elevated};
@@ -38,6 +41,7 @@
   --ev-glass-bg: #{t.$glass-bg};
   --ev-glass-border: #{t.$glass-border};
   --ev-glass-grid: #{t.$glass-grid};
+  --ev-node-dot: #{t.$node-dot};
   --ev-glow-cyan: #{t.$glow-cyan};
   // 字体
   --ev-font-sans: #{t.$font-sans};
@@ -81,8 +85,12 @@
   --ev-header-height: #{t.$header-height};
   --ev-drawer-width: #{t.$drawer-width};
   --ev-nav-item-height: #{t.$nav-item-height};
+  --ev-nav-icon-size: #{t.$nav-icon-size};
+  --ev-avatar-size: #{t.$avatar-size};
   --ev-button-height: #{t.$button-height};
   --ev-login-card-max-width: #{t.$login-card-max-width};
+  --ev-glow-3-bottom: #{t.$glow-3-bottom};
+  --ev-glow-3-right: #{t.$glow-3-right};
   --ev-glow-size-lg: #{t.$glow-size-lg};
   --ev-glow-size-md: #{t.$glow-size-md};
   --ev-glow-size-sm: #{t.$glow-size-sm};
@@ -181,12 +189,12 @@
     background: var(--ev-color-surface-hover);
   }
   .ev-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--ev-color-accent);
-    opacity: 0.5;
+    background: var(--ev-scrollbar-thumb);
     border-radius: var(--ev-radius-sm);
+    transition: background var(--ev-transition-fast);
   }
   .ev-scrollbar::-webkit-scrollbar-thumb:hover {
-    opacity: 0.7;
+    background: var(--ev-scrollbar-thumb-hover);
   }
 
   .ev-glass-card {

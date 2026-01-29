@@ -1,0 +1,480 @@
+// =============================================================================
+// Uppy Dashboard 深度主题适配：与 Evermedia Vault 设计 token 统一
+// 使用方式：在 .upload-page__dashboard { @include ev-uppy-theme; }
+// =============================================================================
+
+@use 'theme-tokens' as t;
+
+@mixin ev-uppy-theme {
+  // ---------- Dashboard 根与内层 ----------
+  :deep(.uppy-Dashboard) {
+    --uppy-dashboard-bg: transparent;
+    --uppy-dashboard-border-color: transparent;
+    --uppy-dashboard-box-shadow: none;
+  }
+
+  :deep(.uppy-Dashboard-inner) {
+    border: none;
+    border-radius: var(--ev-radius-lg);
+    background: transparent;
+  }
+
+  :deep(.uppy-Dashboard-innerWrap) {
+    border-radius: var(--ev-radius-lg);
+  }
+
+  :deep(.uppy-Dashboard-AddFiles) {
+    border: 2px dashed var(--ev-color-border);
+    border-radius: var(--ev-radius-lg);
+    background: var(--ev-color-surface);
+    color: var(--ev-color-foreground-muted);
+    transition:
+      border-color #{t.$transition-fast},
+      color #{t.$transition-fast},
+      background #{t.$transition-fast},
+      box-shadow #{t.$transition-fast};
+
+    &:hover {
+      border-color: var(--ev-color-primary);
+      color: var(--ev-color-primary-light);
+      background: var(--ev-color-primary-tint-hover);
+      box-shadow: 0 0 0 1px var(--ev-color-primary-tint-border);
+    }
+  }
+
+  :deep(.uppy-Dashboard-AddFiles-info) {
+    font-size: var(--ev-font-size-base);
+    font-weight: var(--ev-font-weight-medium);
+    color: inherit;
+  }
+
+  :deep(.uppy-Dashboard-browse) {
+    color: var(--ev-color-primary-light);
+    font-weight: var(--ev-font-weight-semibold);
+  }
+
+  :deep(.uppy-Dashboard-AddFiles-title) {
+    color: var(--ev-color-foreground);
+  }
+
+  :deep(.uppy-Dashboard-note) {
+    color: var(--ev-color-foreground-subtle);
+  }
+
+  :deep(.uppy-Dashboard-dropFilesHereHint) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-u-reset.uppy-Dashboard-upload) {
+    background: linear-gradient(
+      135deg,
+      var(--ev-color-primary) 0%,
+      var(--ev-color-primary-light) 100%
+    ) !important;
+    color: var(--ev-color-foreground) !important;
+    border-radius: var(--ev-radius-md);
+    font-weight: var(--ev-font-weight-medium);
+    box-shadow: var(--ev-shadow-primary);
+    transition:
+      box-shadow #{t.$transition-fast},
+      transform #{t.$transition-fast};
+
+    &:hover {
+      box-shadow: var(--ev-shadow-primary-hover);
+      transform: translateY(-1px);
+    }
+  }
+
+  :deep(.uppy-Dashboard-uploadCount) {
+    background-color: var(--ev-color-positive);
+  }
+
+  :deep(.uppy-Dashboard-Item) {
+    background: var(--ev-color-surface);
+    border: 1px solid var(--ev-color-border);
+    border-radius: var(--ev-radius-md);
+    transition:
+      border-color #{t.$transition-fast},
+      box-shadow #{t.$transition-fast};
+
+    &:hover {
+      border-color: var(--ev-color-border-strong);
+      box-shadow: var(--ev-shadow-sm);
+    }
+  }
+
+  :deep([data-uppy-theme='dark'] .uppy-Dashboard-Item) {
+    border-bottom-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-Dashboard-Item-preview) {
+    border-radius: var(--ev-radius-md);
+    overflow: hidden;
+  }
+
+  :deep(.uppy-Dashboard-Item-previewInnerWrap) {
+    border-radius: var(--ev-radius-md);
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  :deep(.uppy-Dashboard-Item-name) {
+    color: var(--ev-color-foreground);
+    font-size: var(--ev-font-size-sm);
+    font-weight: var(--ev-font-weight-medium);
+  }
+
+  :deep(.uppy-Dashboard-Item-status) {
+    color: var(--ev-color-foreground-muted);
+    font-size: var(--ev-font-size-xs);
+  }
+
+  :deep(.uppy-Dashboard-Item-action) {
+    color: var(--ev-color-foreground-muted);
+    transition: color #{t.$transition-fast};
+
+    &:hover {
+      color: var(--ev-color-negative);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px var(--ev-color-primary-tint-border);
+    }
+  }
+
+  :deep(.uppy-Dashboard-Item-action--remove:hover) {
+    color: var(--ev-color-negative);
+  }
+
+  :deep(.uppy-Dashboard-Item-errorMessage) {
+    color: var(--ev-color-negative);
+    background-color: var(--ev-color-negative-tint);
+    border-color: var(--ev-color-negative);
+  }
+
+  :deep(.uppy-Dashboard-Item-errorMessageBtn) {
+    color: var(--ev-color-negative);
+  }
+
+  :deep(.uppy-Dashboard-Item-reSelect) {
+    color: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-Dashboard-Item-progressIcon--bg) {
+    stroke: rgba(255, 255, 255, 0.4);
+  }
+
+  :deep(.uppy-Dashboard-Item-progressIcon--progress) {
+    stroke: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-Dashboard-Item-progressIcon--retry) {
+    fill: var(--ev-color-primary-light);
+  }
+
+  :deep(button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progressIcon--bg),
+  :deep(
+    button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progressIcon--retry
+  ) {
+    fill: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-StatusBar) {
+    background-color: var(--ev-color-surface);
+    color: var(--ev-color-foreground);
+    border-top: 1px solid var(--ev-color-border);
+  }
+
+  :deep(.uppy-StatusBar::before) {
+    background-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-StatusBar:not([aria-hidden='true']).is-waiting) {
+    background-color: var(--ev-color-surface);
+    border-top-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-StatusBar-progress) {
+    background: linear-gradient(
+      90deg,
+      var(--ev-color-primary) 0%,
+      var(--ev-color-primary-light) 100%
+    );
+  }
+
+  :deep(.uppy-StatusBar.is-complete .uppy-StatusBar-progress) {
+    background-color: var(--ev-color-positive);
+  }
+
+  :deep(.uppy-StatusBar.is-error .uppy-StatusBar-progress) {
+    background-color: var(--ev-color-negative);
+  }
+
+  :deep(.uppy-StatusBar.is-complete .uppy-StatusBar-statusIndicator) {
+    color: var(--ev-color-positive);
+  }
+
+  :deep(.uppy-StatusBar.is-error .uppy-StatusBar-statusIndicator) {
+    color: var(--ev-color-negative);
+  }
+
+  :deep(.uppy-StatusBar-content) {
+    color: var(--ev-color-foreground);
+  }
+
+  :deep(.uppy-StatusBar-statusPrimary) {
+    color: var(--ev-color-foreground);
+  }
+
+  :deep(.uppy-StatusBar-statusSecondary) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-StatusBar-statusIndicator) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-StatusBar.is-waiting .uppy-StatusBar-actions) {
+    background-color: var(--ev-color-surface-hover);
+  }
+
+  :deep(.uppy-StatusBar-actionBtn) {
+    color: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-StatusBar-actionBtn--retry) {
+    color: var(--ev-color-primary-light);
+
+    &:hover {
+      color: var(--ev-color-primary);
+    }
+  }
+
+  :deep(.uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload) {
+    background: linear-gradient(
+      135deg,
+      var(--ev-color-primary) 0%,
+      var(--ev-color-primary-light) 100%
+    );
+    color: var(--ev-color-foreground);
+  }
+
+  :deep(.uppy-StatusBar-actionBtn--done) {
+    color: var(--ev-color-foreground-muted);
+
+    &:hover {
+      color: var(--ev-color-foreground);
+    }
+  }
+
+  :deep(.uppy-StatusBar-actionCircleBtn) {
+    color: var(--ev-color-foreground-muted);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--ev-focus-ring);
+    }
+
+    &:hover {
+      color: var(--ev-color-foreground);
+    }
+  }
+
+  :deep(.uppy-StatusBar-serviceMsg) {
+    background-color: var(--ev-color-surface);
+    border-color: var(--ev-color-border);
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-StatusBar-details) {
+    color: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-DashboardContent-bar) {
+    background-color: var(--ev-color-surface);
+    border-bottom: 1px solid var(--ev-color-border);
+  }
+
+  :deep(.uppy-DashboardContent-title) {
+    color: var(--ev-color-foreground);
+    font-weight: var(--ev-font-weight-semibold);
+  }
+
+  :deep(.uppy-DashboardContent-back),
+  :deep(.uppy-DashboardContent-save) {
+    color: var(--ev-color-primary-light);
+
+    &:hover {
+      color: var(--ev-color-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      background-color: var(--ev-color-surface-hover);
+      box-shadow: var(--ev-focus-ring);
+    }
+  }
+
+  :deep(.uppy-DashboardContent-addMore) {
+    color: var(--ev-color-primary-light);
+
+    &:hover {
+      color: var(--ev-color-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      background-color: var(--ev-color-surface-hover);
+      box-shadow: var(--ev-focus-ring);
+    }
+  }
+
+  :deep(.uppy-DashboardContent-panel) {
+    background-color: var(--ev-color-surface);
+    border-radius: var(--ev-radius-lg);
+  }
+
+  :deep(.uppy-Dashboard-AddFilesPanel) {
+    background: var(--ev-color-surface);
+    background-image: none;
+    border-radius: var(--ev-radius-lg);
+    box-shadow: var(--ev-shadow-md);
+  }
+
+  :deep(.uppy-DashboardTab) {
+    border-bottom-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-DashboardTab-btn) {
+    color: var(--ev-color-foreground-muted);
+
+    &:hover {
+      background-color: var(--ev-color-surface-hover);
+    }
+
+    &:active,
+    &:focus {
+      background-color: var(--ev-color-primary-tint-hover);
+      color: var(--ev-color-primary-light);
+    }
+  }
+
+  :deep(.uppy-DashboardTab-inner) {
+    background-color: var(--ev-color-surface);
+    border: 1px solid var(--ev-color-border);
+    box-shadow: var(--ev-shadow-sm);
+  }
+
+  :deep(.uppy-DashboardTab-name) {
+    color: inherit;
+  }
+
+  :deep(.uppy-DashboardTab-iconMyDevice) {
+    color: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-ProgressBar-inner) {
+    background: var(--ev-color-surface);
+    border-radius: var(--ev-radius-sm);
+  }
+
+  :deep(.uppy-ProgressBar-bar) {
+    background: linear-gradient(
+      90deg,
+      var(--ev-color-primary) 0%,
+      var(--ev-color-primary-light) 100%
+    );
+    border-radius: var(--ev-radius-sm);
+  }
+
+  :deep(.uppy-Dashboard-FileCard-preview) {
+    background-color: var(--ev-color-surface);
+    border-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-Dashboard-FileCard-info) {
+    background-color: var(--ev-color-surface);
+  }
+
+  :deep(.uppy-Dashboard-FileCard-actions) {
+    background-color: var(--ev-color-surface);
+    border-top-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-Dashboard-FileCard-label) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-Dashboard-FileCard-edit) {
+    color: var(--ev-color-foreground-muted);
+
+    &:hover {
+      background-color: var(--ev-color-surface-hover);
+      color: var(--ev-color-foreground);
+    }
+  }
+
+  :deep(.uppy-Informer p) {
+    background-color: var(--ev-color-surface);
+    border: 1px solid var(--ev-color-border);
+    color: var(--ev-color-foreground);
+    box-shadow: var(--ev-shadow-md);
+  }
+
+  :deep(.uppy-Dashboard-serviceMsg) {
+    background-color: var(--ev-color-surface);
+    border-color: var(--ev-color-border);
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-Dashboard-serviceMsg-actionBtn) {
+    color: var(--ev-color-primary-light);
+  }
+
+  :deep(.uppy-DashboardContent-panelBody) {
+    background-color: var(--ev-color-surface);
+  }
+
+  :deep(.uppy-Provider-authTitle),
+  :deep(.uppy-Provider-empty) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-Provider-breadcrumbs) {
+    color: var(--ev-color-foreground-muted);
+  }
+
+  :deep(.uppy-Provider-breadcrumbs button) {
+    color: var(--ev-color-foreground-muted);
+
+    &:hover {
+      color: var(--ev-color-primary-light);
+    }
+  }
+
+  :deep(.uppy-ProviderBrowser) {
+    background-color: var(--ev-color-surface);
+  }
+
+  :deep(.uppy-ProviderBrowser-header) {
+    background-color: var(--ev-color-surface);
+    border-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-ProviderBrowser-viewType--list) {
+    background-color: var(--ev-color-surface);
+  }
+
+  :deep(.uppy-SearchProvider) {
+    background-color: var(--ev-color-surface);
+  }
+
+  :deep(.uppy-ProviderBrowserItem-checkbox) {
+    background-color: var(--ev-color-surface);
+    border-color: var(--ev-color-border);
+  }
+
+  :deep(.uppy-ProviderBrowserItem--is-checked .uppy-ProviderBrowserItem-checkbox) {
+    background-color: var(--ev-color-primary);
+    border-color: var(--ev-color-primary);
+  }
+}

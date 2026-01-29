@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
-    <div class="error-page__content">
-      <div class="error-page__code">404</div>
+    <div class="error-page__content ev-glass-card">
+      <div class="error-page__code" aria-hidden="true">404</div>
       <p class="error-page__text">{{ t('error.notFound') }}</p>
       <q-btn
         unelevated
@@ -32,10 +32,13 @@ const { t } = useI18n();
 
 .error-page__content {
   text-align: center;
+  padding: var(--ev-space-10);
+  border-radius: var(--ev-radius-xl);
+  max-width: 28rem;
 }
 
 .error-page__code {
-  font-size: clamp(5rem, 18vh, 10rem);
+  font-size: clamp(4rem, 14vh, 8rem);
   font-weight: var(--ev-font-weight-bold);
   line-height: 1;
   letter-spacing: -0.02em;
@@ -43,16 +46,21 @@ const { t } = useI18n();
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  opacity: 0.35;
+  opacity: 0.4;
 }
 
 .error-page__text {
   margin: var(--ev-space-4) 0 var(--ev-space-8);
   font-size: var(--ev-font-size-lg);
   color: var(--ev-color-foreground-muted);
+  line-height: var(--ev-line-height-relaxed);
 }
 
 .error-page__btn {
   margin-top: var(--ev-space-4);
+}
+.error-page__btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ev-shadow-primary), var(--ev-focus-ring);
 }
 </style>

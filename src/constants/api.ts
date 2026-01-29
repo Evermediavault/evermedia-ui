@@ -35,3 +35,9 @@ export const HTTP_STATUS = {
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
 } as const;
+
+/**
+ * 文件上传接口路径（与后端对齐后替换）
+ * TODO: 对接后端上传 API 后填写实际 path，例如 '/media/upload'
+ */
+export const UPLOAD_PATH = '/media/upload';

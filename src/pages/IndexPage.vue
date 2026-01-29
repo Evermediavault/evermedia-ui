@@ -28,6 +28,7 @@ const { t } = useI18n();
 }
 .index-page__welcome:hover {
   box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
+  transform: translateY(-2px);
 }
 
 .index-page__badge {
@@ -46,13 +47,15 @@ const { t } = useI18n();
 
 .index-page__title {
   margin: 0 0 var(--ev-space-2);
-  font-size: var(--ev-font-size-2xl);
+  font-size: var(--ev-title-display-size);
   font-weight: var(--ev-font-weight-semibold);
   letter-spacing: 0.04em;
+  line-height: var(--ev-line-height-tight);
   background: linear-gradient(135deg, var(--ev-color-primary) 0%, var(--ev-color-primary-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
 }
 
 .index-page__subtitle {
@@ -64,7 +67,14 @@ const { t } = useI18n();
 .index-page__divider {
   margin: var(--ev-space-6) 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ev-color-border), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ev-color-border) 30%,
+    var(--ev-color-primary-tint-border) 50%,
+    var(--ev-color-border) 70%,
+    transparent 100%
+  );
 }
 
 .index-page__desc {

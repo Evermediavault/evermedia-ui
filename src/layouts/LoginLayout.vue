@@ -36,8 +36,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(var(--ev-color-glass-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ev-color-glass-grid) 1px, transparent 1px);
+    linear-gradient(var(--ev-glass-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ev-glass-grid) 1px, transparent 1px);
   background-size: var(--ev-space-8) var(--ev-space-8);
   mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 70%);
@@ -68,8 +68,8 @@
   width: var(--ev-glow-size-sm);
   height: var(--ev-glow-size-sm);
   background: var(--ev-color-primary-light);
-  bottom: 20%;
-  right: 10%;
+  bottom: var(--ev-glow-3-bottom);
+  right: var(--ev-glow-3-right);
   opacity: var(--ev-glow-opacity-subtle);
 }
 
@@ -88,5 +88,9 @@
   padding: var(--ev-space-10);
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
+  transition: box-shadow var(--ev-transition-base);
+}
+.login-layout__card:hover {
+  box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
 }
 </style>
