@@ -3,7 +3,6 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="240">
       <div class="main-layout__drawer-inner">
         <nav class="main-layout__nav-wrap" aria-label="Main">
-          <p class="main-layout__nav-label">{{ t('nav.home') }}</p>
           <q-list class="main-layout__nav ev-scrollbar" dense>
             <q-item v-for="item in navItems" :key="item.path" clickable :active="isActive(item.path)"
               active-class="main-layout__nav-item--active" :to="item.path" class="main-layout__nav-item">
@@ -106,7 +105,7 @@ function onLogout() {
   display: flex;
   flex-direction: column;
   gap: var(--ev-space-4);
-  padding: var(--ev-space-4) 0;
+  padding: var(--ev-space-5) 0 var(--ev-space-4);
 }
 
 .main-layout__user-block {
@@ -114,7 +113,7 @@ function onLogout() {
   display: flex;
   align-items: center;
   gap: var(--ev-space-3);
-  padding: var(--ev-space-4);
+  padding: var(--ev-space-4) var(--ev-space-4) var(--ev-space-5);
   border-top: 1px solid var(--ev-color-border);
 }
 
@@ -165,19 +164,9 @@ function onLogout() {
   }
 }
 
-.main-layout__nav-label {
-  margin: 0;
-  padding: 0 var(--ev-space-4);
-  font-size: var(--ev-font-size-xs);
-  font-weight: var(--ev-font-weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ev-color-foreground-subtle);
-  opacity: 0.85;
-}
-
 .main-layout__nav {
-  padding: 0 var(--ev-space-3);
+  padding: var(--ev-space-4) var(--ev-space-3) 0;
+  margin: 0 var(--ev-space-1) 0 0;
 }
 
 :deep(.main-layout__nav-item) {

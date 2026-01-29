@@ -19,7 +19,7 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .index-page__welcome {
-  padding: var(--ev-space-10);
+  padding: var(--ev-space-10) var(--ev-space-10) var(--ev-space-12);
   border-radius: var(--ev-radius-xl);
   text-align: center;
   box-shadow: var(--ev-shadow-lg);
@@ -33,7 +33,7 @@ const { t } = useI18n();
 
 .index-page__badge {
   display: inline-block;
-  padding: var(--ev-space-1) var(--ev-space-3);
+  padding: var(--ev-space-2) var(--ev-space-4);
   font-size: var(--ev-font-size-xs);
   font-weight: var(--ev-font-weight-medium);
   letter-spacing: 0.06em;
@@ -42,11 +42,11 @@ const { t } = useI18n();
   background: var(--ev-color-primary-tint-bg);
   border: 1px solid var(--ev-color-primary-tint-border);
   border-radius: var(--ev-radius-md);
-  margin-bottom: var(--ev-space-4);
+  margin-bottom: var(--ev-space-5);
 }
 
 .index-page__title {
-  margin: 0 0 var(--ev-space-2);
+  margin: 0 0 var(--ev-space-3);
   font-size: var(--ev-title-display-size);
   font-weight: var(--ev-font-weight-semibold);
   letter-spacing: 0.04em;
@@ -65,7 +65,7 @@ const { t } = useI18n();
 }
 
 .index-page__divider {
-  margin: var(--ev-space-6) 0;
+  margin: var(--ev-space-6) 0 var(--ev-space-6);
   height: 1px;
   background: linear-gradient(
     90deg,
@@ -79,7 +79,9 @@ const { t } = useI18n();
 
 .index-page__desc {
   margin: 0;
+  padding: 0 var(--ev-space-2);
   font-size: var(--ev-font-size-sm);
+  line-height: var(--ev-line-height-relaxed);
   color: var(--ev-color-foreground-subtle);
 }
 </style>

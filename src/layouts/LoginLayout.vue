@@ -79,13 +79,13 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: var(--ev-space-4);
+  padding: var(--ev-space-6);
 }
 
 .login-layout__card {
   width: 100%;
   max-width: var(--ev-login-card-max-width);
-  padding: var(--ev-space-10);
+  padding: var(--ev-space-10) var(--ev-space-8) var(--ev-space-12);
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
   transition: box-shadow var(--ev-transition-base);

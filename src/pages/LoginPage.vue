@@ -87,10 +87,12 @@ async function onSubmit() {
 <style lang="scss" scoped>
 .login-page {
   text-align: center;
+  padding: var(--ev-space-2) 0 0;
 }
 
 .login-page__header {
-  margin-bottom: var(--ev-space-6);
+  margin-bottom: var(--ev-space-8);
+  padding: 0 var(--ev-space-4);
 }
 
 .login-page__title {
@@ -122,7 +124,8 @@ async function onSubmit() {
   display: flex;
   flex-direction: column;
   gap: var(--ev-space-5);
-  margin-top: var(--ev-space-6);
+  margin-top: 0;
+  padding: 0 var(--ev-space-2);
 }
 
 .login-page__field {
@@ -159,6 +162,7 @@ async function onSubmit() {
   }
 }
 .login-page__submit {
-  margin-top: var(--ev-space-4);
+  margin-top: var(--ev-space-2);
+  padding: 0 var(--ev-space-4);
 }
 </style>

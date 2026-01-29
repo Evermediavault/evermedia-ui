@@ -178,30 +178,48 @@
 }
 
 // -----------------------------------------------------------------------------
-// 工具类：与 frontend-main 一致的滚动条、玻璃卡、动效
+// 滚动条统一：原生滚动 + Quasar QScrollArea 使用同一套 token
+// -----------------------------------------------------------------------------
+.ev-scrollbar::-webkit-scrollbar,
+.q-scrollarea__content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.ev-scrollbar::-webkit-scrollbar-track,
+.q-scrollarea__content::-webkit-scrollbar-track {
+  background: var(--ev-color-surface-hover);
+  border-radius: var(--ev-radius-sm);
+}
+.ev-scrollbar::-webkit-scrollbar-thumb,
+.q-scrollarea__content::-webkit-scrollbar-thumb {
+  background: var(--ev-scrollbar-thumb);
+  border-radius: var(--ev-radius-sm);
+  transition: background var(--ev-transition-fast);
+}
+.ev-scrollbar::-webkit-scrollbar-thumb:hover,
+.q-scrollarea__content::-webkit-scrollbar-thumb:hover {
+  background: var(--ev-scrollbar-thumb-hover);
+}
+/* Quasar 自定义滚动条拇指（部分场景） */
+.q-scrollarea__thumb {
+  background: var(--ev-scrollbar-thumb) !important;
+  border-radius: var(--ev-radius-sm);
+  transition: background var(--ev-transition-fast);
+}
+.q-scrollarea__thumb:hover {
+  background: var(--ev-scrollbar-thumb-hover) !important;
+}
+
+// -----------------------------------------------------------------------------
+// 工具类：玻璃卡、主按钮、动效
 // -----------------------------------------------------------------------------
 @layer utilities {
-  .ev-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  .ev-scrollbar::-webkit-scrollbar-track {
-    background: var(--ev-color-surface-hover);
-  }
-  .ev-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--ev-scrollbar-thumb);
-    border-radius: var(--ev-radius-sm);
-    transition: background var(--ev-transition-fast);
-  }
-  .ev-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--ev-scrollbar-thumb-hover);
-  }
-
   .ev-glass-card {
     background: var(--ev-glass-bg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--ev-glass-border);
-    transition: var(--ev-transition-base);
+    transition: background var(--ev-transition-base), box-shadow var(--ev-transition-base), border-color var(--ev-transition-base);
     position: relative;
   }
   .ev-glass-card::before {
@@ -221,7 +239,8 @@
   }
   .ev-glass-card:hover {
     background: var(--ev-color-surface-hover);
-    box-shadow: var(--ev-shadow-lg);
+    border-color: var(--ev-color-primary-tint-border);
+    box-shadow: var(--ev-shadow-lg), 0 0 0 1px var(--ev-color-primary-tint-border);
   }
   .ev-glass-card:hover::before {
     opacity: 1;

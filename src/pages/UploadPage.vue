@@ -45,7 +45,8 @@ const dashboardProps = computed(() => ({
 }
 
 .upload-page__hint {
-  margin: 0;
+  margin: 0 0 var(--ev-space-2);
+  padding: 0 var(--ev-space-1);
   font-size: var(--ev-font-size-sm);
   color: var(--ev-color-foreground-subtle);
   letter-spacing: 0.02em;
@@ -54,7 +55,7 @@ const dashboardProps = computed(() => ({
 }
 
 .upload-page__card {
-  padding: var(--ev-space-6);
+  padding: var(--ev-space-6) var(--ev-space-6) var(--ev-space-8);
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
   transition: box-shadow var(--ev-transition-base), background var(--ev-transition-base);
@@ -76,6 +77,7 @@ const dashboardProps = computed(() => ({
   min-height: 480px;
   border-radius: var(--ev-radius-lg);
   overflow: hidden;
+  margin: 0 var(--ev-space-1);
 
   @include uppy.ev-uppy-theme;
 }
