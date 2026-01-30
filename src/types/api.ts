@@ -53,4 +53,51 @@ export interface ApiErrorResponse {
   details?: unknown;
 }
 
+/** 用户列表项（后端 snake_case 转 camelCase 后） */
+export interface UserListItem {
+  id: number;
+  uid: string;
+  username: string;
+  email: string;
+  role: string;
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+/** 用户列表分页元数据（与后端 meta 对齐） */
+export interface UserListMeta {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+/** 用户列表接口返回 data 结构 */
+export interface UserListResponse {
+  data: UserListItem[];
+  meta: UserListMeta;
+}
+
+/** 用户列表可排序字段（与后端 sort_by 一致） */
+export const USER_LIST_SORT_KEYS = ['created_at', 'username', 'last_login_at'] as const;
+export type UserListSortBy = (typeof USER_LIST_SORT_KEYS)[number];
+
+/** 前端表格 sortBy 与后端 sort_by 的映射（camelCase -> snake_case） */
+export const USER_LIST_SORT_BY_MAP = {
+  createdAt: 'created_at',
+  username: 'username',
+  lastLoginAt: 'last_login_at',
+} as const satisfies Record<string, UserListSortBy>;
+
+/** 用户列表表格可排序列名 */
+export type UserListTableSortBy = keyof typeof USER_LIST_SORT_BY_MAP;
+
+/** 用户列表查询参数（与后端 GET /users query 对齐） */
+export interface UserListParams {
+  page?: number;
+  page_size?: number;
+  sort_by?: UserListSortBy;
+  order?: 'asc' | 'desc';
+}
+
 export type { ApiResponse, PaginationParams, PaginationResponse };

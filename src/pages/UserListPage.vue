@@ -2,18 +2,23 @@
   <PageBase :title="t('userList.title')" icon="people" content-class="full">
     <div class="user-list-page">
       <div class="user-list-page__card ev-glass-card">
+        <q-inner-loading :showing="loading" color="primary" />
+        <q-banner v-if="error" class="user-list-page__error bg-negative text-white" rounded>
+          {{ error.message }}
+        </q-banner>
         <q-table
           separator="none"
           v-model:pagination="pagination"
-          :rows="rows"
+          :rows="list"
           :columns="columns"
           row-key="id"
           flat
           dark
-          :rows-per-page-options="[10, 20, 50]"
+          :rows-per-page-options="rowsPerPageOptions"
           :no-data-label="t('userList.noData')"
           class="user-list-page__table"
-          @request="onRequest"
+          :loading="loading"
+          @request="onTableRequest"
         >
           <template #header="props">
             <q-tr :props="props" class="user-list-page__header-row">
@@ -63,7 +68,7 @@
                 boundary-links
                 color="primary"
                 class="user-list-page__pagination"
-                @update:model-value="onPageChange"
+                @update:model-value="refetch"
               />
             </div>
           </template>
@@ -79,28 +84,21 @@ import { useI18n } from 'vue-i18n';
 import type { QTableProps } from 'quasar';
 import PageBase from 'src/components/PageBase.vue';
 import { formatDate, DATE_FORMATS } from 'src/utils/date/formatter';
+import { useUserList } from 'src/composables/useUserList';
+import {
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZE_OPTIONS,
+} from 'src/constants/common';
+import {
+  type UserListParams,
+  type UserListTableSortBy,
+  USER_LIST_SORT_BY_MAP,
+} from 'src/types/api';
 
 const { t } = useI18n();
+const { list, meta, loading, error, load } = useUserList();
 
-// 占位数据，后续接接口
-const mockRows = ref([
-  {
-    id: 1,
-    username: 'admin',
-    email: 'admin@evermediavault.com',
-    role: 'admin',
-    lastLoginAt: '2026-01-29T10:00:00.000Z',
-    createdAt: '2026-01-01T00:00:00.000Z',
-  },
-  {
-    id: 2,
-    username: 'demo',
-    email: 'demo@example.com',
-    role: 'user',
-    lastLoginAt: null as string | null,
-    createdAt: '2026-01-15T08:30:00.000Z',
-  },
-]);
+const rowsPerPageOptions = [...PAGE_SIZE_OPTIONS];
 
 const columns = computed<QTableProps['columns']>(() => [
   { name: 'username', label: t('userList.columns.username'), field: 'username', align: 'left', sortable: true },
@@ -112,55 +110,46 @@ const columns = computed<QTableProps['columns']>(() => [
 
 const pagination = ref({
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: DEFAULT_PAGE_SIZE,
   rowsNumber: 0,
-  sortBy: 'createdAt' as string,
+  sortBy: 'createdAt' as UserListTableSortBy,
   descending: true,
 });
 
-const rowsNumber = computed(() => mockRows.value.length);
-const maxPages = computed(() =>
-  Math.max(1, Math.ceil(rowsNumber.value / pagination.value.rowsPerPage))
-);
+const maxPages = computed(() => Math.max(1, meta.value?.total_pages ?? 1));
 
-const rows = computed(() => {
-  const { page, rowsPerPage, sortBy, descending } = pagination.value;
-  const start = (page - 1) * rowsPerPage;
-  let list = [...mockRows.value];
-  if (sortBy) {
-    const toSortKey = (x: unknown): string => {
-      if (x === null || x === undefined) return '';
-      if (typeof x === 'object') return JSON.stringify(x);
-      return typeof x === 'string' ? x : `${Number(x)}`;
-    };
-    list = list.sort((a, b) => {
-      const aVal = (a as Record<string, unknown>)[sortBy];
-      const bVal = (b as Record<string, unknown>)[sortBy];
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return descending ? 1 : -1;
-      if (bVal == null) return descending ? -1 : 1;
-      const cmp = toSortKey(aVal).localeCompare(toSortKey(bVal), undefined, { numeric: true });
-      return descending ? -cmp : cmp;
-    });
-  }
-  return list.slice(start, start + rowsPerPage);
-});
-
-function onRequest(requestProp: Parameters<NonNullable<QTableProps['onRequest']>>[0]) {
-  const { pagination: p } = requestProp;
-  pagination.value.rowsNumber = rowsNumber.value;
-  pagination.value.page = p.page;
-  pagination.value.rowsPerPage = p.rowsPerPage;
-  pagination.value.sortBy = p.sortBy ?? pagination.value.sortBy;
-  pagination.value.descending = p.descending ?? pagination.value.descending;
+function buildListParams(): UserListParams {
+  const sortBy = USER_LIST_SORT_BY_MAP[pagination.value.sortBy] ?? 'created_at';
+  return {
+    page: pagination.value.page,
+    page_size: pagination.value.rowsPerPage,
+    sort_by: sortBy,
+    order: pagination.value.descending ? 'desc' : 'asc',
+  };
 }
 
-function onPageChange() {
-  // 当前为前端分页，仅更新 page 即可；接接口时在此请求新页数据
+async function fetchList() {
+  await load(buildListParams());
+  if (meta.value) {
+    pagination.value.rowsNumber = meta.value.total;
+  }
+}
+
+function onTableRequest(requestProp: Parameters<NonNullable<QTableProps['onRequest']>>[0]) {
+  const { pagination: p } = requestProp;
+  pagination.value.page = p.page;
+  pagination.value.rowsPerPage = p.rowsPerPage;
+  pagination.value.sortBy = (p.sortBy ?? pagination.value.sortBy) as UserListTableSortBy;
+  pagination.value.descending = p.descending ?? pagination.value.descending;
+  void fetchList();
+}
+
+function refetch() {
+  void fetchList();
 }
 
 onMounted(() => {
-  pagination.value.rowsNumber = mockRows.value.length;
+  void fetchList();
 });
 </script>
 
@@ -173,6 +162,7 @@ onMounted(() => {
 }
 
 .user-list-page__card {
+  position: relative;
   padding: 0;
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
@@ -184,6 +174,11 @@ onMounted(() => {
     box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
     border-color: var(--ev-color-primary-tint-border);
   }
+}
+
+.user-list-page__error {
+  margin: var(--ev-space-4);
+  border-radius: var(--ev-radius-md);
 }
 
 .user-list-page__table {
