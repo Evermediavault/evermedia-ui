@@ -47,7 +47,14 @@ api.interceptors.response.use(
     if (typeof window !== 'undefined' && res?.status === 401) {
       removeStorage(STORAGE_KEY_TOKEN);
       removeStorage(STORAGE_KEY_USER);
-      window.location.hash = '#/login';
+      const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+      const loginPath = `${base}/login`;
+      const current = window.location.pathname + window.location.search;
+      const redirect =
+        current !== loginPath && current !== base && current !== `${base}/`
+          ? `?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`
+          : '';
+      window.location.href = `${window.location.origin}${loginPath}${redirect}`;
     }
 
     // 保留原始 error（含 response），便于 handleAxiosError 使用

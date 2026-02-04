@@ -4,83 +4,51 @@
       <div class="upload-page__row">
         <div class="upload-page__main">
           <div class="upload-page__card ev-glass-card ev-scrollbar upload-page__card--active">
+            <div v-if="isUploading" class="upload-page__overlay">
+              <q-spinner-dots color="var(--ev-color-primary-light)" :size="overlaySpinnerSize" />
+              <span class="upload-page__overlay-text">{{ t('upload.uploading') }}</span>
+            </div>
             <div v-if="uppy" class="upload-page__dashboard">
               <Dashboard :uppy="uppy" :props="dashboardProps" />
             </div>
           </div>
-          <p class="upload-page__hint">{{ t('upload.hint') }}</p>
+          <p class="upload-page__hint">
+            {{ t('upload.hint') }}
+            <span class="upload-page__hint-extra"> · {{ t('upload.hintSize') }}</span>
+          </p>
         </div>
         <aside class="upload-page__sidebar">
           <div class="upload-page__sidebar-card ev-glass-card ev-scrollbar">
             <h2 class="upload-page__sidebar-title" id="upload-meta-title">{{ t('upload.metaTitle') }}</h2>
-            <q-btn
-              outline
-              no-caps
-              dense
-              class="upload-page__add-btn"
-              :aria-label="t('upload.addGroup')"
-              @click="addMetaEntry"
-            >
+            <q-btn outline no-caps dense class="upload-page__add-btn" :aria-label="t('upload.addGroup')"
+              @click="addMetaEntry">
               <q-icon name="add" size="1.25rem" class="q-mr-1" />
               {{ t('upload.addGroup') }}
             </q-btn>
             <div class="upload-page__meta-groups" aria-labelledby="upload-meta-title">
-              <q-expansion-item
-                v-for="(entry, index) in metaEntries"
-                :key="entry.id"
-                :label="entry.name || `${t('upload.metaGroupDefault')} ${index + 1}`"
-                icon="folder"
-                class="upload-page__expansion"
-                dense
-                default-opened
-              >
+              <q-expansion-item v-for="(entry, index) in metaEntries" :key="entry.id"
+                :label="entry.name || `${t('upload.metaGroupDefault')} ${index + 1}`" icon="folder"
+                class="upload-page__expansion" dense default-opened>
                 <div class="upload-page__group-body">
-                  <q-input
-                    v-model="entry.name"
-                    outlined
-                    dense
-                    dark
-                    :label="t('upload.metaName')"
-                    :rules="nameRules"
-                    class="upload-page__meta-field"
-                    hide-bottom-space
-                  />
-                  <q-select
-                    v-model="entry.type"
-                    :options="metaTypeOptions"
-                    outlined
-                    dense
-                    dark
-                    :label="t('upload.metaType')"
-                    emit-value
-                    map-options
-                    options-dense
-                    class="upload-page__meta-field"
-                    hide-bottom-space
-                  />
-                  <q-input
-                    v-model="entry.value"
-                    outlined
-                    dense
-                    dark
-                    :type="getValueInputType(entry.type)"
-                    :rows="entry.type === 'text' ? 2 : undefined"
-                    :label="t('upload.metaValue')"
-                    :rules="getValueRules(entry.type)"
-                    class="upload-page__meta-field"
-                    hide-bottom-space
-                  />
-                  <q-btn
-                    icon="delete_outline"
-                    flat
-                    dense
-                    round
-                    :aria-label="t('upload.removeGroup')"
-                    class="upload-page__group-remove"
-                    @click="removeMetaEntry(entry.id)"
-                  />
+                  <q-input v-model="entry.name" outlined dense dark :label="t('upload.metaName')" :rules="nameRules"
+                    class="upload-page__meta-field" hide-bottom-space />
+                  <q-select v-model="entry.type" :options="metaTypeOptions" outlined dense dark
+                    :label="t('upload.metaType')" emit-value map-options options-dense class="upload-page__meta-field"
+                    hide-bottom-space />
+                  <q-input v-model="entry.value" outlined dense dark :type="getValueInputType(entry.type)"
+                    :rows="entry.type === 'text' ? 2 : undefined" :label="t('upload.metaValue')"
+                    :rules="getValueRules(entry.type)" class="upload-page__meta-field" hide-bottom-space />
+                  <q-btn icon="delete_outline" flat dense round :aria-label="t('upload.removeGroup')"
+                    class="upload-page__group-remove" @click="removeMetaEntry(entry.id)" />
                 </div>
               </q-expansion-item>
+            </div>
+            <div class="upload-page__sidebar-footer">
+              <q-btn color="primary" icon="cloud_upload" unelevated no-caps
+                class="upload-page__upload-btn ev-btn-primary" :loading="isUploading"
+                :disable="!uppy || isUploading || hasInvalidMetaEntries || hasNoFiles" :aria-label="t('upload.startButton')"
+                :label="t('upload.startButton')" @click="startUpload">
+              </q-btn>
             </div>
           </div>
         </aside>
@@ -92,9 +60,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import Dashboard from '@uppy/vue/dashboard';
 import PageBase from 'src/components/PageBase.vue';
 import { useUppy } from 'src/composables/uppy';
+import { useAuthStore } from 'src/stores/auth-store';
+import { useNotify } from 'src/utils/notify';
 import {
   validateMetaValue,
   META_NAME_MAX_LENGTH,
@@ -114,7 +85,42 @@ export interface MetaEntry {
 }
 
 const { t } = useI18n();
-const { uppy } = useUppy({ limit: 4 });
+const router = useRouter();
+const authStore = useAuthStore();
+const notify = useNotify();
+
+const isUploading = ref(false);
+const overlaySpinnerSize = '2.5rem';
+
+const { uppy, fileCount } = useUppy({
+  limit: 4,
+  callbacks: {
+    onUploadStart() {
+      isUploading.value = true;
+    },
+    onUploadSuccess(file, response) {
+      const name = file.name ?? 'file';
+      const msg = response?.body?.message;
+      notify.success(t('upload.successFile', { name }), msg ?? undefined);
+    },
+    onUploadError(file, _error, response) {
+      if (response?.status === 401) {
+        authStore.clearAuth();
+        void router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } });
+        return;
+      }
+      const name = file.name ?? 'file';
+      const reason =
+        response?.body?.detail?.reason ??
+        response?.body?.message ??
+        t('upload.error');
+      notify.error(t('upload.errorFile', { name, reason }), t('upload.retryHint'));
+    },
+    onComplete() {
+      isUploading.value = false;
+    },
+  },
+});
 
 const metaEntries = ref<MetaEntry[]>([]);
 
@@ -165,6 +171,7 @@ const dashboardProps = computed(() => ({
   theme: 'dark' as const,
   showProgressDetails: true,
   proudlyDisplayPoweredByUppy: false,
+  hideUploadButton: true,
 }));
 
 function addMetaEntry() {
@@ -178,6 +185,43 @@ function addMetaEntry() {
 
 function removeMetaEntry(id: string) {
   metaEntries.value = metaEntries.value.filter((e) => e.id !== id);
+}
+
+/** 存在任一条目名称为空或值为空时禁止提交 */
+const hasInvalidMetaEntries = computed(() =>
+  metaEntries.value.some(
+    (e) => !(e.name ?? '').trim() || !(e.value ?? '').trim()
+  )
+);
+
+const hasNoFiles = computed(() => fileCount.value === 0);
+
+/** 将右侧元数据组转为后端可用的 JSON 对象（groups 数组），仅包含名称与值均非空的条目 */
+function buildMetadataPayload(): string {
+  const groups = metaEntries.value
+    .filter((e) => (e.name ?? '').trim() && (e.value ?? '').trim())
+    .map((e) => ({ name: (e.name ?? '').trim(), type: e.type, value: (e.value ?? '').trim() }));
+  return JSON.stringify({ groups });
+}
+
+function startUpload() {
+  if (hasInvalidMetaEntries.value) {
+    notify.warning(t('upload.metaNameValueRequired'));
+    return;
+  }
+  const instance = uppy.value;
+  if (!instance) return;
+  if (instance.getFiles().length === 0) {
+    notify.warning(t('upload.noFilesSelected'));
+    return;
+  }
+  const metadataJson = buildMetadataPayload();
+  instance.getFiles().forEach((file) => {
+    instance.setFileState(file.id, {
+      meta: { ...file.meta, metadata: metadataJson },
+    });
+  });
+  void instance.upload();
 }
 </script>
 
@@ -254,6 +298,20 @@ function removeMetaEntry(id: string) {
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+}
+
+.upload-page__sidebar-footer {
+  flex-shrink: 0;
+  margin-top: var(--ev-space-4);
+  padding-top: var(--ev-space-4);
+  border-top: 1px solid var(--ev-color-border);
+}
+
+.upload-page__upload-btn {
+  width: 100%;
+  height: var(--ev-button-height);
+  font-size: var(--ev-font-size-sm);
+  font-weight: var(--ev-font-weight-medium);
 }
 
 .upload-page__expansion {
@@ -339,6 +397,7 @@ function removeMetaEntry(id: string) {
     &::before {
       border-color: var(--ev-color-border);
     }
+
     &:hover::before {
       border-color: var(--ev-color-border-strong);
     }
@@ -387,17 +446,8 @@ function removeMetaEntry(id: string) {
   }
 }
 
-.upload-page__hint {
-  margin: 0 0 var(--ev-space-2);
-  padding: 0 var(--ev-space-1);
-  font-size: var(--ev-font-size-sm);
-  color: var(--ev-color-foreground-subtle);
-  letter-spacing: 0.02em;
-  line-height: var(--ev-line-height-relaxed);
-  transition: color var(--ev-transition-fast);
-}
-
 .upload-page__card {
+  position: relative;
   padding: var(--ev-space-6) var(--ev-space-6) var(--ev-space-8);
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
@@ -417,11 +467,45 @@ function removeMetaEntry(id: string) {
 }
 
 .upload-page__dashboard {
-  min-height: 480px;
+  min-height: calc(20 * var(--ev-space-6));
   border-radius: var(--ev-radius-lg);
   overflow: hidden;
   margin: 0 var(--ev-space-1);
 
   @include uppy.ev-uppy-theme;
+}
+
+.upload-page__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--ev-z-sticky);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ev-space-3);
+  border-radius: inherit;
+  background: var(--ev-overlay-bg);
+  transition: opacity var(--ev-transition-base);
+}
+
+.upload-page__overlay-text {
+  font-size: var(--ev-font-size-sm);
+  font-weight: var(--ev-font-weight-medium);
+  color: var(--ev-color-foreground);
+}
+
+.upload-page__hint {
+  margin: 0 0 var(--ev-space-2);
+  padding: 0 var(--ev-space-1);
+  font-size: var(--ev-font-size-sm);
+  color: var(--ev-color-foreground-subtle);
+  letter-spacing: 0.02em;
+  line-height: var(--ev-line-height-relaxed);
+  transition: color var(--ev-transition-fast);
+}
+
+.upload-page__hint-extra {
+  color: var(--ev-color-foreground-muted);
 }
 </style>

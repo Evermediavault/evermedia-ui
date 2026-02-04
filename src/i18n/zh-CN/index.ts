@@ -104,9 +104,9 @@ export default {
       permission: '权限',
       cost: '花费',
       projectName: '项目方',
-    synapseIndexId: 'Synapse 索引',
-    uploadedAt: '上传时间',
-  },
+      synapseIndexId: 'Synapse 索引',
+      uploadedAt: '上传时间',
+    },
   },
 
   // 用户列表
@@ -127,6 +127,14 @@ export default {
     title: '上传文件',
     subtitle: '将文件拖入下方区域或点击选择，支持多选',
     hint: '支持多文件，单次最多 4 个并发上传',
+    hintSize: '单文件最大 10MB',
+    adminOnly: '仅管理员可上传，请使用管理员账号登录',
+    uploading: '上传中…',
+    success: '上传成功',
+    successFile: '已上传：{name}',
+    error: '上传失败',
+    errorFile: '{name}：{reason}',
+    retryHint: '请检查网络或稍后重试',
     metaTitle: '元数据',
     addMeta: '添加',
     metaName: '名称',
@@ -144,6 +152,9 @@ export default {
     addGroup: '添加组',
     metaGroupDefault: '组',
     removeGroup: '删除组',
+    startButton: '开始上传',
+    metaNameValueRequired: '请填写元数据名称与值，或删除空行后再提交',
+    noFilesSelected: '请先选择要上传的文件',
   },
 
   // 用户相关

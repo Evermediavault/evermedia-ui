@@ -36,8 +36,8 @@ export const HTTP_STATUS = {
   SERVICE_UNAVAILABLE: 503,
 } as const;
 
-/**
- * 文件上传接口路径（与后端对齐后替换）
- * TODO: 对接后端上传 API 后填写实际 path，例如 '/media/upload'
- */
+/** 文件上传接口路径（仅管理员） */
 export const UPLOAD_PATH = '/media/upload';
+
+/** 文件列表接口路径（不鉴权） */
+export const MEDIA_LIST_PATH = '/media/list';

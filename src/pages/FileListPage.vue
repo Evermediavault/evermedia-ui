@@ -2,9 +2,13 @@
   <PageBase :title="t('fileList.title')" icon="folder" content-class="full">
     <div class="file-list-page">
       <div class="file-list-page__card ev-glass-card">
-        <q-table separator="none" v-model:pagination="pagination" :rows="rows" :columns="columns" row-key="id" flat dark
-          :rows-per-page-options="[10, 20, 50]" :no-data-label="t('fileList.noData')" class="file-list-page__table"
-          @request="onRequest">
+        <q-inner-loading :showing="loading" color="primary" />
+        <q-banner v-if="error" class="file-list-page__error bg-negative text-white" rounded>
+          {{ error.message }}
+        </q-banner>
+        <q-table separator="none" v-model:pagination="pagination" :rows="list" :columns="columns" row-key="id" flat dark
+          :rows-per-page-options="rowsPerPageOptions" :no-data-label="t('fileList.noData')"
+          class="file-list-page__table" :loading="loading" @request="onTableRequest">
           <template #header="props">
             <q-tr :props="props" class="file-list-page__header-row">
               <q-th v-for="col in props.cols" :key="col.name" :props="props" :align="col.align"
@@ -17,18 +21,6 @@
           <template #body-cell-name="props">
             <q-td :props="props" class="file-list-page__cell-name">
               <span class="file-list-page__name">{{ props.row.name }}</span>
-            </q-td>
-          </template>
-
-          <template #body-cell-permission="props">
-            <q-td :props="props" class="file-list-page__cell-permission">
-              <span class="file-list-page__permission-pill">{{ props.row.permission }}</span>
-            </q-td>
-          </template>
-
-          <template #body-cell-cost="props">
-            <q-td :props="props" class="file-list-page__cell-cost">
-              <span class="file-list-page__cost">{{ props.row.cost }}</span>
             </q-td>
           </template>
 
@@ -48,7 +40,7 @@
           <template #bottom>
             <div class="file-list-page__bottom">
               <q-pagination v-model="pagination.page" :max="maxPages" :max-pages="7" direction-links boundary-links
-                color="primary" class="file-list-page__pagination" @update:model-value="onPageChange" />
+                color="primary" class="file-list-page__pagination" @update:model-value="refetch" />
             </div>
           </template>
         </q-table>
@@ -63,94 +55,58 @@ import { useI18n } from 'vue-i18n';
 import type { QTableProps } from 'quasar';
 import PageBase from 'src/components/PageBase.vue';
 import { formatDate, DATE_FORMATS } from 'src/utils/date/formatter';
+import { useFileList } from 'src/composables/useFileList';
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from 'src/constants/common';
 
 const { t } = useI18n();
+const { list, meta, loading, error, load } = useFileList();
 
-// 占位数据，后续接接口
-const mockRows = ref([
-  {
-    id: 1,
-    name: 'sample.pdf',
-    fileType: 'application/pdf',
-    permission: 'public',
-    cost: '0.001',
-    projectName: null as string | null,
-    synapseIndexId: 'bafkzcib...',
-    uploadedAt: '2026-01-29T10:00:00.000Z',
-  },
-  {
-    id: 2,
-    name: 'report.docx',
-    fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    permission: 'public',
-    cost: '0.002',
-    projectName: 'Demo Project',
-    synapseIndexId: 'bafkzcic...',
-    uploadedAt: '2026-01-28T14:30:00.000Z',
-  },
-]);
+const rowsPerPageOptions = [...PAGE_SIZE_OPTIONS];
 
 const columns = computed<QTableProps['columns']>(() => [
-  { name: 'name', label: t('fileList.columns.name'), field: 'name', align: 'left', sortable: true },
+  { name: 'name', label: t('fileList.columns.name'), field: 'name', align: 'left' },
   { name: 'fileType', label: t('fileList.columns.fileType'), field: 'fileType', align: 'left' },
-  { name: 'permission', label: t('fileList.columns.permission'), field: 'permission', align: 'center' },
-  { name: 'cost', label: t('fileList.columns.cost'), field: 'cost', align: 'right' },
-  { name: 'projectName', label: t('fileList.columns.projectName'), field: 'projectName', align: 'left' },
   { name: 'synapseIndexId', label: t('fileList.columns.synapseIndexId'), field: 'synapseIndexId', align: 'left' },
   { name: 'uploadedAt', label: t('fileList.columns.uploadedAt'), field: 'uploadedAt', align: 'right' },
 ]);
 
 const pagination = ref({
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: DEFAULT_PAGE_SIZE,
   rowsNumber: 0,
   sortBy: 'uploadedAt' as string,
   descending: true,
 });
 
-const rowsNumber = computed(() => mockRows.value.length);
-const maxPages = computed(() =>
-  Math.max(1, Math.ceil(rowsNumber.value / pagination.value.rowsPerPage))
-);
+const maxPages = computed(() => Math.max(1, meta.value?.total_pages ?? 1));
 
-const rows = computed(() => {
-  const { page, rowsPerPage, sortBy, descending } = pagination.value;
-  const start = (page - 1) * rowsPerPage;
-  let list = [...mockRows.value];
-  if (sortBy) {
-    const toSortKey = (x: unknown): string => {
-      if (x === null || x === undefined) return '';
-      if (typeof x === 'object') return JSON.stringify(x);
-      return typeof x === 'string' ? x : `${Number(x)}`;
-    };
-    list = list.sort((a, b) => {
-      const aVal = (a as Record<string, unknown>)[sortBy];
-      const bVal = (b as Record<string, unknown>)[sortBy];
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return descending ? 1 : -1;
-      if (bVal == null) return descending ? -1 : 1;
-      const cmp = toSortKey(aVal).localeCompare(toSortKey(bVal), undefined, { numeric: true });
-      return descending ? -cmp : cmp;
-    });
-  }
-  return list.slice(start, start + rowsPerPage);
-});
-
-function onRequest(requestProp: Parameters<NonNullable<QTableProps['onRequest']>>[0]) {
-  const { pagination: p } = requestProp;
-  pagination.value.rowsNumber = rowsNumber.value;
-  pagination.value.page = p.page;
-  pagination.value.rowsPerPage = p.rowsPerPage;
-  pagination.value.sortBy = p.sortBy ?? pagination.value.sortBy;
-  pagination.value.descending = p.descending ?? pagination.value.descending;
+function buildListParams() {
+  return {
+    page: pagination.value.page,
+    page_size: pagination.value.rowsPerPage,
+  };
 }
 
-function onPageChange() {
-  // 当前为前端分页，仅更新 page 即可；接接口时在此请求新页数据
+async function fetchList() {
+  await load(buildListParams());
+  if (meta.value) {
+    pagination.value.rowsNumber = meta.value.total;
+  }
+}
+
+function onTableRequest(requestProp: Parameters<NonNullable<QTableProps['onRequest']>>[0]) {
+  const { pagination: p } = requestProp;
+  pagination.value.page = p.page;
+  pagination.value.rowsPerPage = p.rowsPerPage;
+  void fetchList();
+}
+
+function refetch() {
+  void fetchList();
 }
 
 onMounted(() => {
-  pagination.value.rowsNumber = mockRows.value.length;
+  void fetchList();
 });
 </script>
 
@@ -163,6 +119,7 @@ onMounted(() => {
 }
 
 .file-list-page__card {
+  position: relative;
   padding: 0;
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
@@ -174,6 +131,10 @@ onMounted(() => {
     box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
     border-color: var(--ev-color-primary-tint-border);
   }
+}
+
+.file-list-page__error {
+  margin: var(--ev-space-4);
 }
 
 .file-list-page__table {
@@ -232,8 +193,6 @@ onMounted(() => {
 }
 
 .file-list-page__cell-name,
-.file-list-page__cell-permission,
-.file-list-page__cell-cost,
 .file-list-page__cell-synapse,
 .file-list-page__cell-date {
   vertical-align: middle;
@@ -243,23 +202,6 @@ onMounted(() => {
   font-weight: var(--ev-font-weight-semibold);
   color: var(--ev-color-primary-light);
   letter-spacing: 0.02em;
-}
-
-.file-list-page__permission-pill {
-  display: inline-block;
-  padding: var(--ev-space-1) var(--ev-space-3);
-  font-size: var(--ev-font-size-xs);
-  font-weight: var(--ev-font-weight-medium);
-  color: var(--ev-color-primary-light);
-  background: var(--ev-color-primary-tint-bg);
-  border: 1px solid var(--ev-color-primary-tint-border);
-  border-radius: var(--ev-radius-md);
-}
-
-.file-list-page__cost {
-  font-family: var(--ev-font-mono);
-  font-size: var(--ev-font-size-sm);
-  color: var(--ev-color-foreground-muted);
 }
 
 .file-list-page__synapse-id {

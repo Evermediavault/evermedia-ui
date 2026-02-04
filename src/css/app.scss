@@ -37,10 +37,11 @@
   --ev-color-foreground: #{t.$foreground};
   --ev-color-foreground-muted: #{t.$foreground-muted};
   --ev-color-foreground-subtle: #{t.$foreground-subtle};
-  // 玻璃/高亮
+  // 玻璃/遮罩/高亮
   --ev-glass-bg: #{t.$glass-bg};
   --ev-glass-border: #{t.$glass-border};
   --ev-glass-grid: #{t.$glass-grid};
+  --ev-overlay-bg: #{t.$overlay-bg};
   --ev-node-dot: #{t.$node-dot};
   --ev-glow-cyan: #{t.$glow-cyan};
   // 字体
@@ -106,6 +107,11 @@
   // 动效
   --ev-transition-fast: #{t.$transition-fast};
   --ev-transition-base: #{t.$transition-base};
+  // Z-index
+  --ev-z-dropdown: #{t.$z-dropdown};
+  --ev-z-sticky: #{t.$z-sticky};
+  --ev-z-modal: #{t.$z-modal};
+  --ev-z-toast: #{t.$z-toast};
 }
 
 // -----------------------------------------------------------------------------

@@ -100,4 +100,27 @@ export interface UserListParams {
   order?: 'asc' | 'desc';
 }
 
+/** 文件列表项（与后端 GET /media/list 返回的 data 项对齐，snake_case 转 camelCase） */
+export interface FileListItem {
+  id: number;
+  name: string;
+  fileType: string;
+  synapseIndexId: string;
+  uploadedAt: string;
+}
+
+/** 文件列表分页元数据（与后端 meta 对齐） */
+export interface FileListMeta {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+/** 文件列表查询参数（与后端 GET /media/list query 对齐） */
+export interface FileListParams {
+  page?: number;
+  page_size?: number;
+}
+
 export type { ApiResponse, PaginationParams, PaginationResponse };

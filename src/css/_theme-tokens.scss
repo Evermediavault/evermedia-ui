@@ -39,9 +39,10 @@ $foreground: #ffffff;
 $foreground-muted: #d1d5db;     // gray-300
 $foreground-subtle: #9ca3af;     // gray-400
 
-// ---------- 玻璃态 / 高亮（与 frontend-main glass-card、发光一致） ----------
+// ---------- 玻璃态 / 遮罩 / 高亮（与 frontend-main glass-card、发光一致） ----------
 $glass-bg: rgba(255, 255, 255, 0.05);
 $glass-border: rgba(255, 255, 255, 0.1);
+$overlay-bg: rgba(0, 0, 0, 0.6);
 $glass-grid: rgba(255, 255, 255, 0.02);
 $node-dot: rgba(255, 255, 255, 0.04);   // 去中心化节点装饰
 $glow-cyan: rgba(124, 201, 255, 0.4);
