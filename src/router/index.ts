@@ -6,8 +6,8 @@ import {
   createWebHistory,
 } from 'vue-router';
 import { getStorage } from 'src/utils/storage';
-import { STORAGE_KEY_TOKEN } from 'src/constants/storage';
-import routes, { ROUTE_META_PUBLIC } from './routes';
+import { STORAGE_KEY_TOKEN, STORAGE_KEY_USER } from 'src/constants/storage';
+import routes, { ROUTE_META_PUBLIC, ROUTE_META_REQUIRES_ADMIN } from './routes';
 
 /*
  * If not building with SSR mode, you can
@@ -54,6 +54,15 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     if (!token) {
       next({ path: '/login', query: { redirect: to.fullPath } });
       return;
+    }
+    const requiresAdmin = to.matched.some((r) => r.meta?.[ROUTE_META_REQUIRES_ADMIN]);
+    if (requiresAdmin) {
+      const user = getStorage<{ role?: string | null }>(STORAGE_KEY_USER);
+      const role = (user?.role ?? '').toLowerCase();
+      if (role !== 'admin') {
+        next({ path: '/' });
+        return;
+      }
     }
     next();
   });

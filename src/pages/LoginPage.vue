@@ -7,9 +7,9 @@
     </header>
 
     <q-form class="login-page__form" @submit.prevent="onSubmit">
-      <q-input v-model="username" outlined dense :label="t('auth.username')" class="login-page__field"
+      <q-input v-model="username" outlined :label="t('auth.usernameOrEmail')" class="login-page__field"
         :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space dark :disabled="loading" />
-      <q-input v-model="password" outlined dense type="password" :label="t('auth.password')" class="login-page__field"
+      <q-input v-model="password" outlined type="password" :label="t('auth.password')" class="login-page__field"
         :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space dark :disabled="loading" />
       <q-btn type="submit" color="primary" unelevated no-caps class="ev-btn-primary login-page__submit"
         :label="t('auth.login')" :loading="loading" :disable="loading" />

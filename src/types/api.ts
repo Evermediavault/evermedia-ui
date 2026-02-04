@@ -60,6 +60,7 @@ export interface UserListItem {
   username: string;
   email: string;
   role: string;
+  disabled: boolean;
   lastLoginAt: string | null;
   createdAt: string;
 }
@@ -98,6 +99,25 @@ export interface UserListParams {
   page_size?: number;
   sort_by?: UserListSortBy;
   order?: 'asc' | 'desc';
+}
+
+/** 添加用户请求体（与后端 POST /users 对齐，无 user_id 为新增） */
+export type UserRole = 'uploader' | 'admin';
+
+export interface CreateUserPayload {
+  username: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
+/** 编辑用户请求体（与后端 POST /users 对齐，传 user_id 为编辑） */
+export interface UpdateUserPayload {
+  user_id: string;
+  username: string;
+  email: string;
+  password?: string;
+  role: UserRole;
 }
 
 /** 文件列表项（与后端 GET /media/list 返回的 data 项对齐，snake_case 转 camelCase） */

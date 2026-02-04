@@ -3,6 +3,9 @@ import type { RouteRecordRaw } from 'vue-router';
 /** 公开路由：无需登录即可访问（登录页、404 等） */
 export const ROUTE_META_PUBLIC = 'public';
 
+/** 仅管理员可访问（uploader 不可见、不可访问） */
+export const ROUTE_META_REQUIRES_ADMIN = 'requiresAdmin';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -11,7 +14,11 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'files', component: () => import('pages/FileListPage.vue') },
       { path: 'upload', component: () => import('pages/UploadPage.vue') },
-      { path: 'users', component: () => import('pages/UserListPage.vue') },
+      {
+        path: 'users',
+        component: () => import('pages/UserListPage.vue'),
+        meta: { [ROUTE_META_REQUIRES_ADMIN]: true },
+      },
     ],
   },
   {

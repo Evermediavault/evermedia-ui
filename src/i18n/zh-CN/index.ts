@@ -69,6 +69,7 @@ export default {
   // 认证相关
   auth: {
     username: '用户名',
+    usernameOrEmail: '用户名 / 邮箱',
     password: '密码',
     login: '登录',
     logout: '退出',
@@ -117,9 +118,25 @@ export default {
       username: '用户名',
       email: '邮箱',
       role: '角色',
+      status: '账号状态',
       lastLoginAt: '最后登录',
       createdAt: '创建时间',
+      actions: '操作',
     },
+    statusNormal: '正常',
+    statusDisabled: '已禁用',
+    edit: '编辑',
+    disable: '禁用',
+    enable: '启用',
+    addUser: '添加用户',
+    addUserModalTitle: '添加用户',
+    roleUploader: '上传者',
+    roleAdmin: '管理员',
+    createSuccess: '用户创建成功',
+    updateSuccess: '用户已更新',
+    passwordPlaceholder: '不修改请留空',
+    usernameExists: '用户名已存在',
+    emailExists: '邮箱已被使用',
   },
 
   // 上传

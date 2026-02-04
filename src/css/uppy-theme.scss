@@ -316,6 +316,10 @@
 
   :deep(.uppy-DashboardContent-addMore) {
     color: var(--ev-color-primary-light);
+    @apply flex items-center;
+    svg {
+      fill: var(--ev-color-primary-light);
+    }
 
     &:hover {
       color: var(--ev-color-primary);

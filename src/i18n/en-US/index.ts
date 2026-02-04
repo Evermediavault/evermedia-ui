@@ -69,6 +69,7 @@ export default {
   // Authentication related
   auth: {
     username: 'Username',
+    usernameOrEmail: 'Username / Email',
     password: 'Password',
     login: 'Login',
     logout: 'Logout',
@@ -104,9 +105,9 @@ export default {
       permission: 'Permission',
       cost: 'Cost',
       projectName: 'Project',
-    synapseIndexId: 'Synapse ID',
-    uploadedAt: 'Uploaded',
-  },
+      synapseIndexId: 'Synapse ID',
+      uploadedAt: 'Uploaded',
+    },
   },
 
   // User list
@@ -117,9 +118,25 @@ export default {
       username: 'Username',
       email: 'Email',
       role: 'Role',
+      status: 'Status',
       lastLoginAt: 'Last Login',
       createdAt: 'Created',
+      actions: 'Actions',
     },
+    statusNormal: 'Active',
+    statusDisabled: 'Disabled',
+    edit: 'Edit',
+    disable: 'Disable',
+    enable: 'Enable',
+    addUser: 'Add User',
+    addUserModalTitle: 'Add user',
+    roleUploader: 'Uploader',
+    roleAdmin: 'Admin',
+    createSuccess: 'User created successfully',
+    updateSuccess: 'User updated',
+    passwordPlaceholder: 'Leave blank to keep',
+    usernameExists: 'Username already exists',
+    emailExists: 'Email already in use',
   },
 
   // Upload

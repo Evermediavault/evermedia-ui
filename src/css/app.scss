@@ -354,7 +354,11 @@
     border-top: none !important;
   }
   .ev-table-theme thead tr {
-    background: linear-gradient(180deg, var(--ev-color-primary-tint-bg-subtle) 0%, transparent 100%);
+    background: linear-gradient(
+      180deg,
+      var(--ev-color-primary-tint-bg-subtle) 0%,
+      transparent 100%
+    );
     border-bottom: 1px solid var(--ev-color-border);
   }
   .ev-table-theme thead tr th {
@@ -403,7 +407,7 @@
     width: 100%;
     padding: var(--ev-space-4) var(--ev-space-5);
     background: transparent;
-    border-top: 1px solid var(--ev-color-border);
+    border-top: none;
   }
 
   .ev-table-pagination {

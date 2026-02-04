@@ -63,12 +63,19 @@ const userInitial = computed(() => {
   return name ? name.charAt(0).toUpperCase() : '?';
 });
 
-const navItems = computed(() => [
-  { path: '/', title: t('nav.home'), icon: 'home' },
-  { path: '/files', title: t('nav.files'), icon: 'folder' },
-  { path: '/upload', title: t('nav.upload'), icon: 'cloud_upload' },
-  { path: '/users', title: t('nav.users'), icon: 'people' },
-]);
+const isAdmin = computed(() => (authStore.currentUser?.role ?? '').toLowerCase() === 'admin');
+
+const navItems = computed(() => {
+  const items = [
+    { path: '/', title: t('nav.home'), icon: 'home' },
+    { path: '/files', title: t('nav.files'), icon: 'folder' },
+    { path: '/upload', title: t('nav.upload'), icon: 'cloud_upload' },
+  ];
+  if (isAdmin.value) {
+    items.push({ path: '/users', title: t('nav.users'), icon: 'people' });
+  }
+  return items;
+});
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/';
