@@ -97,7 +97,7 @@ function onLogout() {
 
 .main-layout__drawer {
   background: var(--ev-color-background-elevated) !important;
-  border-right: 1px solid var(--ev-color-border);
+  border-right: 1px solid var(--ev-color-border-strong);
 
   :deep(.q-drawer__content) {
     display: flex;
@@ -129,7 +129,7 @@ function onLogout() {
   align-items: center;
   gap: var(--ev-space-3);
   padding: var(--ev-space-4) var(--ev-space-4) var(--ev-space-5);
-  border-top: 1px solid var(--ev-color-border);
+  border-top: 1px solid var(--ev-color-border-strong);
 }
 
 .main-layout__user-pill {

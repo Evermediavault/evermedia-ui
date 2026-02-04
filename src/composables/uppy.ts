@@ -13,6 +13,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { apiConfig } from 'src/config/api';
 import { UPLOAD_PATH } from 'src/constants/api';
 import { API_TIMEOUT } from 'src/constants/api';
+import type { StorageProviderSnapshot } from 'src/types/api';
 
 const UPPY_LOCALE_MAP: Record<string, Locale> = {
   'zh-CN': zhCN as Locale,
@@ -25,6 +26,8 @@ export interface UploadSuccessData {
   name?: string;
   file_type?: string;
   synapse_index_id?: string;
+  storage_id?: number;
+  storage_info?: StorageProviderSnapshot;
   uploaded_at?: string;
 }
 
@@ -74,13 +77,13 @@ export function useUppy(options: UseUppyOptions = {}): { uppy: Ref<Uppy | null>;
   });
 
   // Dashboard 由 @uppy/vue 的 <Dashboard> 在挂载时注册，此处只注册 XHR
-  // allowedMetaFields: ['metadata'] 使 file.meta.metadata 作为 form 字段一并提交，后端接收 JSON 字符串
+  // allowedMetaFields: ['metadata', 'name'] 使 file.meta 作为 form 字段提交；name 为可选显示名，未填时后端解析文件名
   instance.use(XHRUpload, {
     endpoint: endpoint || '',
     method: 'POST',
     formData: true,
     fieldName: 'file',
-    allowedMetaFields: ['metadata'],
+    allowedMetaFields: ['metadata', 'name', 'providerId'],
     headers:
       authStore.token != null
         ? { Authorization: `Bearer ${authStore.token}` }

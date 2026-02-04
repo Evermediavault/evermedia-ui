@@ -41,3 +41,6 @@ export const UPLOAD_PATH = '/media/upload';
 
 /** 文件列表接口路径（不鉴权） */
 export const MEDIA_LIST_PATH = '/media/list';
+
+/** 存储服务提供商列表（不鉴权，供上传前选择 providerId） */
+export const STORAGE_INFO_PATH = '/media/storage-info';

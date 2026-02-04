@@ -8,6 +8,7 @@
 
 - **一致性**：与 frontend-main 主站共享主色、深色背景、玻璃态与高亮效果。
 - **单一数据源**：所有主题变量定义在 `src/css/_theme-tokens.scss`，Quasar 与 Tailwind 均由此派生。
+- **对比度**：正文与次要文字在深色背景上需保证可读性（`$foreground-muted`、`$foreground-subtle` 满足约 7:1 以上对比）；边框、玻璃描边、焦点环需清晰可辨。
 - **安全与可维护**：不散落魔数，新增主题项只改 token 与本文档。
 
 ---
@@ -24,12 +25,14 @@
 | 背景 | `$background` | `#000000` | 页面底 |
 | 背景抬升 | `$background-elevated` | `#0b0711` | 侧栏、抽屉等 |
 | 表面 | `$surface` | `#121212` | 卡片、区块 |
+| 表面 hover | `$surface-hover` | `rgba(255,255,255,0.08)` | 行/卡片 hover |
 | 主文字 | `$foreground` | `#ffffff` | 正文 |
-| 次要文字 | `$foreground-muted` | `#d1d5db` | 说明、副标题 |
-| 弱化文字 | `$foreground-subtle` | `#9ca3af` | 占位、禁用 |
-| 边框 | `$border` | `rgba(255,255,255,0.1)` | 默认边框 |
-| 玻璃背景 | `$glass-bg` | `rgba(255,255,255,0.05)` | 玻璃态 |
-| 玻璃边框 | `$glass-border` / `$glass-border-subtle` | 0.1 / 0.06 | 玻璃态边框；subtle 用于默认态 |
+| 次要文字 | `$foreground-muted` | `#e2e8f0` | 说明、副标题（对比度增强） |
+| 弱化文字 | `$foreground-subtle` | `#94a3b8` | 占位、禁用（对比度增强） |
+| 边框 | `$border` | `rgba(255,255,255,0.12)` | 默认边框 |
+| 边框强调 | `$border-strong` | `rgba(255,255,255,0.2)` | 表头、分隔线等 |
+| 玻璃背景 | `$glass-bg` | `rgba(255,255,255,0.06)` | 玻璃态 |
+| 玻璃边框 | `$glass-border` / `$glass-border-subtle` | 0.12 / 0.08 | 玻璃态边框；subtle 用于默认态 |
 | 主色浅底（弱） | `$primary-tint-bg-subtle` | `rgba(6,186,217,0.06)` | 表头等弱渐变 |
 | 节点装饰 | `$node-dot` | `rgba(255,255,255,0.04)` | 去中心化节点背景点阵 |
 | 成功/正 | `$positive` | `#21ba45` | 成功状态 |
@@ -66,7 +69,7 @@
 
 ### 2.5 阴影与动效
 
-- 阴影（高级感：更柔和、克制）：`$shadow-sm` / `$shadow-md`；`$shadow-lg`（中性底 + 弱青蓝）；`$shadow-glow`（32px、0.12）；`$shadow-primary` / `$shadow-primary-hover`（主按钮，略减透明度）；`$shadow-uppy-item`（Uppy 项）。
+- 阴影（层次清晰、主操作突出）：`$shadow-sm` / `$shadow-md`；`$shadow-lg`（中性底 + 弱青蓝）；`$shadow-glow`（40px、0.15）；`$shadow-primary` / `$shadow-primary-hover`（主按钮）；`$shadow-uppy-item`（Uppy 项）。
 - 渐变：`$card-border-gradient`（玻璃卡 hover 描边）；`$card-border-gradient-subtle`（玻璃卡默认描边）；`$gradient-primary-subtle`（标题等弱对比装饰）。
 - 动效：`$transition-fast`(150ms)、`$transition-base`(300ms)，缓动 `cubic-bezier(0.4, 0, 0.2, 1)`；`$button-lift`(2px) 主按钮/卡片 hover 上浮位移。
 - 玻璃模糊：`$glass-blur`(20px)、`$glass-blur-sm`(12px)，禁止在页面/组件中写死 blur 数值。
@@ -146,4 +149,4 @@
 
 ---
 
-*最后更新：与 frontend-main 风格对齐的后台主题与设计约束；阴影/光晕/玻璃边框等已做高级感微调。*
+*最后更新：对比度增强（文字、边框、玻璃描边）；阴影与焦点环更清晰；设计原则补充「对比度」一条。*

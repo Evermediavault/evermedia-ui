@@ -4,7 +4,7 @@
 import { ref, type Ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { MEDIA_LIST_PATH } from 'src/constants/api';
-import type { FileListItem, FileListMeta, FileListParams } from 'src/types/api';
+import type { FileListItem, FileListMeta, FileListParams, StorageProviderSnapshot } from 'src/types/api';
 
 /** 后端返回单条（snake_case，与 api UploadFileItem 一致） */
 interface RawFileListItem {
@@ -12,6 +12,8 @@ interface RawFileListItem {
   name: string;
   file_type: string;
   synapse_index_id: string;
+  storage_id?: number;
+  storage_info?: StorageProviderSnapshot;
   uploaded_at: string;
 }
 
@@ -24,13 +26,20 @@ interface FileListBackendResponse {
 }
 
 function mapToFileListItem(row: RawFileListItem): FileListItem {
-  return {
+  const item: FileListItem = {
     id: row.id,
     name: row.name,
     fileType: row.file_type,
     synapseIndexId: row.synapse_index_id,
     uploadedAt: row.uploaded_at,
   };
+  if (row.storage_id !== undefined && row.storage_id !== null) {
+    item.storageId = row.storage_id;
+  }
+  if (row.storage_info !== undefined && row.storage_info !== null) {
+    item.storageInfo = row.storage_info;
+  }
+  return item;
 }
 
 /**

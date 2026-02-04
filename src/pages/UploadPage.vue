@@ -1,12 +1,24 @@
 <template>
   <PageBase :title="t('upload.title')" icon="cloud_upload" content-class="full">
     <div class="upload-page">
+      <div class="upload-page__file-name-row">
+        <q-input v-model="customFileName" outlined dark :label="t('upload.fileName')"
+          :placeholder="t('upload.fileNamePlaceholder')" class="upload-page__file-name" hide-bottom-space
+          :maxlength="255" />
+      </div>
+      <div class="upload-page__file-name-row">
+        <q-select v-model="selectedProviderId" :options="storageProviderOptions" outlined dark
+          :label="t('upload.storageProvider')" :placeholder="t('upload.storageProviderPlaceholder')"
+          emit-value map-options options-dense class="upload-page__file-name" hide-bottom-space
+          :loading="storageProvidersLoading" :disable="storageProvidersLoading"
+          :rules="[(v: number | null) => v != null || t('upload.storageProviderRequired')]"
+          :options-cover="false" />
+      </div>
       <div class="upload-page__row">
         <div class="upload-page__main">
           <div class="upload-page__card ev-glass-card ev-scrollbar upload-page__card--active">
             <div v-if="isUploading" class="upload-page__overlay">
               <q-spinner-dots color="var(--ev-color-primary-light)" size="var(--ev-spinner-size-lg)" />
-              <span class="upload-page__overlay-text">{{ t('upload.uploading') }}</span>
             </div>
             <div v-if="uppy" class="upload-page__dashboard">
               <Dashboard :uppy="uppy" :props="dashboardProps" />
@@ -20,7 +32,7 @@
         <aside class="upload-page__sidebar">
           <div class="upload-page__sidebar-card ev-glass-card ev-scrollbar">
             <h2 class="upload-page__sidebar-title" id="upload-meta-title">{{ t('upload.metaTitle') }}</h2>
-            <q-btn outline no-caps dense class="upload-page__add-btn" :aria-label="t('upload.addGroup')"
+            <q-btn outline no-caps class="upload-page__add-btn" :aria-label="t('upload.addGroup')"
               @click="addMetaEntry">
               <q-icon name="add" size="var(--ev-nav-icon-inner)" class="q-mr-1" />
               {{ t('upload.addGroup') }}
@@ -30,15 +42,14 @@
                 :label="entry.name || `${t('upload.metaGroupDefault')} ${index + 1}`" icon="folder"
                 class="upload-page__expansion" dense default-opened>
                 <div class="upload-page__group-body">
-                  <q-input v-model="entry.name" outlined dense dark :label="t('upload.metaName')" :rules="nameRules"
+                  <q-input v-model="entry.name" outlined dark :label="t('upload.metaName')" :rules="nameRules"
                     class="upload-page__meta-field" hide-bottom-space />
-                  <q-select v-model="entry.type" :options="metaTypeOptions" outlined dense dark
-                    :label="t('upload.metaType')" emit-value map-options options-dense class="upload-page__meta-field"
-                    hide-bottom-space />
-                  <q-input v-model="entry.value" outlined dense dark :type="getValueInputType(entry.type)"
+                  <q-select v-model="entry.type" :options="metaTypeOptions" outlined dark :label="t('upload.metaType')"
+                    emit-value map-options class="upload-page__meta-field" hide-bottom-space />
+                  <q-input v-model="entry.value" outlined dark :type="getValueInputType(entry.type)"
                     :rows="entry.type === 'text' ? 2 : undefined" :label="t('upload.metaValue')"
                     :rules="getValueRules(entry.type)" class="upload-page__meta-field" hide-bottom-space />
-                  <q-btn icon="delete_outline" flat dense round :aria-label="t('upload.removeGroup')"
+                  <q-btn icon="delete_outline" flat round :aria-label="t('upload.removeGroup')"
                     class="upload-page__group-remove" @click="removeMetaEntry(entry.id)" />
                 </div>
               </q-expansion-item>
@@ -46,8 +57,8 @@
             <div class="upload-page__sidebar-footer">
               <q-btn color="primary" icon="cloud_upload" unelevated no-caps
                 class="upload-page__upload-btn ev-btn-primary" :loading="isUploading"
-                :disable="!uppy || isUploading || hasInvalidMetaEntries || hasNoFiles" :aria-label="t('upload.startButton')"
-                :label="t('upload.startButton')" @click="startUpload">
+                :disable="!uppy || isUploading || hasInvalidMetaEntries || hasNoFiles || selectedProviderId == null"
+                :aria-label="t('upload.startButton')" :label="t('upload.startButton')" @click="startUpload">
               </q-btn>
             </div>
           </div>
@@ -64,6 +75,7 @@ import { useRouter } from 'vue-router';
 import Dashboard from '@uppy/vue/dashboard';
 import PageBase from 'src/components/PageBase.vue';
 import { useUppy } from 'src/composables/uppy';
+import { useStorageProviders } from 'src/composables/useStorageProviders';
 import { useAuthStore } from 'src/stores/auth-store';
 import { useNotify } from 'src/utils/notify';
 import {
@@ -90,6 +102,15 @@ const authStore = useAuthStore();
 const notify = useNotify();
 
 const isUploading = ref(false);
+
+const { providers: storageProviders, loading: storageProvidersLoading, load: loadStorageProviders } =
+  useStorageProviders();
+void loadStorageProviders();
+
+const selectedProviderId = ref<number | null>(null);
+const storageProviderOptions = computed(() =>
+  storageProviders.value.map((p) => ({ value: p.id, label: p.name }))
+);
 
 const { uppy, fileCount } = useUppy({
   limit: 4,
@@ -121,6 +142,7 @@ const { uppy, fileCount } = useUppy({
   },
 });
 
+const customFileName = ref('');
 const metaEntries = ref<MetaEntry[]>([]);
 
 const metaTypeOptions = computed(() => [
@@ -216,10 +238,21 @@ function startUpload() {
     notify.warning(t('upload.noFilesSelected'));
     return;
   }
+  const providerId = selectedProviderId.value;
+  if (providerId == null) {
+    notify.warning(t('upload.storageProviderRequired'));
+    return;
+  }
   const metadataJson = buildMetadataPayload();
+  const displayName = customFileName.value.trim() || undefined;
   instance.getFiles().forEach((file) => {
     instance.setFileState(file.id, {
-      meta: { ...file.meta, metadata: metadataJson },
+      meta: {
+        ...file.meta,
+        metadata: metadataJson,
+        ...(displayName != null ? { name: displayName } : {}),
+        providerId: String(providerId),
+      },
     });
   });
   void instance.upload();
@@ -269,6 +302,11 @@ function startUpload() {
     box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
   }
 }
+
+.upload-page__file-name-row {
+  flex-shrink: 0;
+}
+
 
 .upload-page__sidebar-title {
   margin: 0 0 var(--ev-space-4);
@@ -488,12 +526,6 @@ function startUpload() {
   border-radius: inherit;
   background: var(--ev-overlay-bg);
   transition: opacity var(--ev-transition-base);
-}
-
-.upload-page__overlay-text {
-  font-size: var(--ev-font-size-sm);
-  font-weight: var(--ev-font-weight-medium);
-  color: var(--ev-color-foreground);
 }
 
 .upload-page__hint {

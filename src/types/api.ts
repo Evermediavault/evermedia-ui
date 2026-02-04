@@ -120,12 +120,24 @@ export interface UpdateUserPayload {
   role: UserRole;
 }
 
+/** 存储 Provider 快照（与 GET /media/storage-info 及文件 storage_info 一致） */
+export interface StorageProviderSnapshot {
+  id: number;
+  name: string;
+  description: string;
+  isActive: boolean;
+  serviceProvider: string;
+  pdp: { serviceURL: string };
+}
+
 /** 文件列表项（与后端 GET /media/list 返回的 data 项对齐，snake_case 转 camelCase） */
 export interface FileListItem {
   id: number;
   name: string;
   fileType: string;
   synapseIndexId: string;
+  storageId?: number;
+  storageInfo?: StorageProviderSnapshot;
   uploadedAt: string;
 }
 

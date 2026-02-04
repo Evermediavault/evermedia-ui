@@ -75,9 +75,9 @@ const { t } = useI18n();
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--ev-color-border) 30%,
+    var(--ev-color-border-strong) 25%,
     var(--ev-color-primary-tint-border) 50%,
-    var(--ev-color-border) 70%,
+    var(--ev-color-border-strong) 75%,
     transparent 100%
   );
 }

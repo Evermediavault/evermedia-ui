@@ -46,7 +46,8 @@ const { t } = useI18n();
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  opacity: 0.5;
+  opacity: 0.75;
+  filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
 }
 
 .error-page__text {
@@ -55,6 +56,7 @@ const { t } = useI18n();
   font-size: var(--ev-font-size-lg);
   color: var(--ev-color-foreground-muted);
   line-height: var(--ev-line-height-relaxed);
+  font-weight: var(--ev-font-weight-medium);
 }
 
 .error-page__btn {

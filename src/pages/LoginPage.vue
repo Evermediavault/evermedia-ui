@@ -83,7 +83,7 @@ async function onSubmit() {
 .login-page__divider {
   margin-top: var(--ev-space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ev-color-border), transparent);
+  background: linear-gradient(90deg, transparent, var(--ev-color-border-strong), transparent);
 }
 
 .login-page__form {
