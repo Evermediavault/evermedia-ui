@@ -51,7 +51,6 @@
   --ev-scrollbar-size: #{t.$scrollbar-size};
   --ev-glass-blur: #{t.$glass-blur};
   --ev-glass-blur-sm: #{t.$glass-blur-sm};
-  --ev-shadow-uppy-item: #{t.$shadow-uppy-item};
   // 字体
   --ev-font-sans: #{t.$font-sans};
   --ev-font-mono: #{t.$font-mono};
@@ -116,6 +115,26 @@
   --ev-nav-indicator-height: #{t.$nav-indicator-height};
   --ev-nav-icon-inner: #{t.$nav-icon-inner};
   --ev-button-lift: #{t.$button-lift};
+  --ev-drawer-width-px: #{t.$drawer-width-px};
+  --ev-content-max-width-form: #{t.$content-max-width-form};
+  --ev-expansion-item-min-height: #{t.$expansion-item-min-height};
+  --ev-page-centered-min-height: #{t.$page-centered-min-height};
+  --ev-picker-column-width: #{t.$picker-column-width};
+  --ev-dropzone-min-height: #{t.$dropzone-min-height};
+  --ev-preview-thumb-min-height: #{t.$preview-thumb-min-height};
+  --ev-preview-media-max-height: #{t.$preview-media-max-height};
+  --ev-preview-pdf-max-height: #{t.$preview-pdf-max-height};
+  --ev-preview-audio-max-width: #{t.$preview-audio-max-width};
+  --ev-preview-audio-height: #{t.$preview-audio-height};
+  --ev-cell-truncate-max-width: #{t.$cell-truncate-max-width};
+  --ev-grid-size: #{t.$grid-size};
+  --ev-glow-3-left: #{t.$glow-3-left};
+  --ev-radius-indicator: #{t.$radius-indicator};
+  --ev-decorative-text-opacity: #{t.$decorative-text-opacity};
+  --ev-breakpoint-sm: #{t.$breakpoint-sm};
+  --ev-logo-size: #{t.$logo-size};
+  --ev-modal-backdrop: #{t.$modal-backdrop};
+  --ev-shadow-modal-card: #{t.$shadow-modal-card};
   // 视觉细节
   --ev-focus-ring: #{t.$focus-ring};
   --ev-nav-active-glow: #{t.$nav-active-glow};
@@ -190,6 +209,47 @@
       transition-delay: 0s !important;
       animation-duration: 0.01ms !important;
     }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 表单主题：Quasar q-field / q-input / q-select 统一样式，页面加 class="ev-field-theme"
+// -----------------------------------------------------------------------------
+.ev-field-theme {
+  .q-field {
+    --q-color-primary: var(--ev-color-primary-light);
+    --q-color-negative: var(--ev-color-negative);
+  }
+  .q-field__control::before {
+    border-color: var(--ev-color-border);
+  }
+  .q-field__control:hover::before {
+    border-color: var(--ev-color-border-strong);
+  }
+  .q-field--outlined .q-field__control::before {
+    border-width: 1px;
+  }
+  .q-field__label {
+    color: var(--ev-color-foreground-muted);
+    font-size: var(--ev-font-size-xs);
+  }
+  .q-field__native,
+  .q-field__input {
+    color: var(--ev-color-foreground);
+    font-size: var(--ev-font-size-sm);
+  }
+  .q-field--focused .q-field__control::after {
+    border-color: var(--ev-color-primary-tint-border-strong);
+    border-width: 1px;
+  }
+  .q-field--focused .q-field__label {
+    color: var(--ev-color-primary-light);
+  }
+  .q-field__control:focus-within {
+    transition: box-shadow var(--ev-transition-fast);
+  }
+  .q-field .q-field__control:focus-within {
+    box-shadow: var(--ev-focus-ring);
   }
 }
 

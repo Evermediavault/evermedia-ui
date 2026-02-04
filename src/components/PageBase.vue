@@ -196,10 +196,16 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  min-height: var(--ev-page-centered-min-height);
 }
 
 .page-base.full .page-base__inner {
-  min-height: 60vh;
+  min-height: var(--ev-page-centered-min-height);
+}
+
+.page-base.full .page-base__content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 </style>

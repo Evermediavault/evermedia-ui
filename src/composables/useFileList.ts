@@ -12,6 +12,7 @@ interface RawFileListItem {
   name: string;
   file_type: string;
   synapse_index_id: string;
+  synapse_data_set_id?: number;
   storage_id?: number;
   storage_info?: StorageProviderSnapshot;
   uploaded_at: string;
@@ -33,6 +34,9 @@ function mapToFileListItem(row: RawFileListItem): FileListItem {
     synapseIndexId: row.synapse_index_id,
     uploadedAt: row.uploaded_at,
   };
+  if (row.synapse_data_set_id !== undefined && row.synapse_data_set_id !== null) {
+    item.synapseDataSetId = row.synapse_data_set_id;
+  }
   if (row.storage_id !== undefined && row.storage_id !== null) {
     item.storageId = row.storage_id;
   }

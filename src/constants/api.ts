@@ -11,6 +11,11 @@ export const API_V1_PATH = '/api/v1';
 export const API_TIMEOUT = 30000;
 
 /**
+ * 上传请求超时（毫秒）。Synapse 上传含存储与链上确认，耗时常超过 30s，需单独放宽。
+ */
+export const UPLOAD_TIMEOUT_MS = 5 * 60 * 1000; // 5 分钟
+
+/**
  * API重试次数
  */
 export const API_RETRY_COUNT = 3;

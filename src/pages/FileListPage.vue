@@ -30,6 +30,18 @@
             </q-td>
           </template>
 
+          <template #body-cell-synapseDataSetId="props">
+            <q-td :props="props" class="file-list-page__cell-mono">
+              {{ props.row.synapseDataSetId ?? '—' }}
+            </q-td>
+          </template>
+
+          <template #body-cell-storageId="props">
+            <q-td :props="props" class="file-list-page__cell-mono">
+              {{ props.row.storageId ?? '—' }}
+            </q-td>
+          </template>
+
           <template #body-cell-uploadedAt="props">
             <q-td :props="props" class="file-list-page__cell-date">
               {{ formatDate(props.row.uploadedAt, DATE_FORMATS.DATETIME_SHORT) }}
@@ -73,6 +85,8 @@ const columns = computed<QTableProps['columns']>(() => [
   { name: 'name', label: t('fileList.columns.name'), field: 'name', align: 'left' },
   { name: 'fileType', label: t('fileList.columns.fileType'), field: 'fileType', align: 'left' },
   { name: 'synapseIndexId', label: t('fileList.columns.synapseIndexId'), field: 'synapseIndexId', align: 'left' },
+  { name: 'synapseDataSetId', label: t('fileList.columns.dataSetId'), field: 'synapseDataSetId', align: 'left' },
+  { name: 'storageId', label: t('fileList.columns.storageProviderId'), field: 'storageId', align: 'left' },
   { name: 'uploadedAt', label: t('fileList.columns.uploadedAt'), field: 'uploadedAt', align: 'right' },
 ]);
 
@@ -130,8 +144,15 @@ onMounted(() => {
 
 .file-list-page__cell-name,
 .file-list-page__cell-synapse,
+.file-list-page__cell-mono,
 .file-list-page__cell-date {
   vertical-align: middle;
+}
+
+.file-list-page__cell-mono {
+  font-family: var(--ev-font-mono);
+  font-size: var(--ev-font-size-xs);
+  color: var(--ev-color-foreground-subtle);
 }
 
 .file-list-page__name {
@@ -144,7 +165,7 @@ onMounted(() => {
   font-family: var(--ev-font-mono);
   font-size: var(--ev-font-size-xs);
   color: var(--ev-color-foreground-subtle);
-  max-width: 8rem;
+  max-width: var(--ev-cell-truncate-max-width);
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;

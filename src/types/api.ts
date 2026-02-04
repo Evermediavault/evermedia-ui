@@ -136,6 +136,7 @@ export interface FileListItem {
   name: string;
   fileType: string;
   synapseIndexId: string;
+  synapseDataSetId?: number;
   storageId?: number;
   storageInfo?: StorageProviderSnapshot;
   uploadedAt: string;

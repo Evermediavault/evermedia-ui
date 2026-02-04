@@ -46,7 +46,7 @@ const { t } = useI18n();
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  opacity: 0.75;
+  opacity: var(--ev-decorative-text-opacity);
   filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
 }
 

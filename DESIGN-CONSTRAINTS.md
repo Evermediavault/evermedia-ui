@@ -66,10 +66,11 @@
 - `$radius-md`: 6px  
 - `$radius-lg`: 8px  
 - `$radius-xl`: 12px  
+- `$radius-indicator`: 2px（细条装饰，如 EvModal 标题条）  
 
 ### 2.5 阴影与动效
 
-- 阴影（层次清晰、主操作突出）：`$shadow-sm` / `$shadow-md`；`$shadow-lg`（中性底 + 弱青蓝）；`$shadow-glow`（40px、0.15）；`$shadow-primary` / `$shadow-primary-hover`（主按钮）；`$shadow-uppy-item`（Uppy 项）。
+- 阴影（层次清晰、主操作突出）：`$shadow-sm` / `$shadow-md`；`$shadow-lg`（中性底 + 弱青蓝）；`$shadow-glow`（40px、0.15）；`$shadow-primary` / `$shadow-primary-hover`（主按钮）；`$shadow-uppy-item`（Uppy 项）；`$shadow-modal-card`（模态卡片专用）。
 - 渐变：`$card-border-gradient`（玻璃卡 hover 描边）；`$card-border-gradient-subtle`（玻璃卡默认描边）；`$gradient-primary-subtle`（标题等弱对比装饰）。
 - 动效：`$transition-fast`(150ms)、`$transition-base`(300ms)，缓动 `cubic-bezier(0.4, 0, 0.2, 1)`；`$button-lift`(2px) 主按钮/卡片 hover 上浮位移。
 - 玻璃模糊：`$glass-blur`(20px)、`$glass-blur-sm`(12px)，禁止在页面/组件中写死 blur 数值。
@@ -77,16 +78,28 @@
 ### 2.6 布局与组件尺寸
 
 - `$header-height`：顶栏高度（3.5rem）。
-- `$drawer-width`：侧栏宽度（15rem，约 240px）。
+- `$drawer-width`：侧栏宽度（15rem）。Quasar `q-drawer` 的 `:width` 需数字 px，使用 `$drawer-width-px`（240）与之对应，禁止在布局中写死 240。
+- `$drawer-width-px`：240，与 `$drawer-width` 15rem 一致，供 MainLayout 等使用。
 - `$nav-item-height` / `$nav-icon-size` / `$nav-icon-inner` / `$avatar-size`：导航项高度（2.75rem）、导航图标容器（2.25rem）、导航图标内尺寸（1.25rem）、用户头像（2rem）。
 - `$nav-indicator-width` / `$nav-indicator-height`：侧栏激活指示条宽（3px）、高（1.25rem）。
 - `$button-height`：主按钮高度（2.75rem）。
 - `$scrollbar-size`：滚动条宽高（8px）。
 - `$content-max-width-sm`：小内容区最大宽度（28rem），错误页/小卡片用。
-- `$dashboard-height` / `$dashboard-max-height`：上传 Dashboard 高度（30rem）、最大高度基准（40rem）。
+- `$content-max-width-form`：表单/选择区最大宽度（20rem），提供商、上传按钮等。
+- `$expansion-item-min-height`：展开项最小高度（2.5rem），UploadPage q-item。
+- `$page-centered-min-height`：页面居中/填满内容区最小高度（60vh）。
+- `$picker-column-width` / `$dropzone-min-height` / `$preview-thumb-min-height` / `$preview-media-max-height` / `$preview-pdf-max-height` / `$preview-audio-max-width` / `$preview-audio-height`：FileSelection 选择区与预览尺寸。
+- `$cell-truncate-max-width`：表格单元格截断最大宽（8rem）。
+- `$grid-size`：装饰网格格子尺寸（20px），EvModal body 等。
+- `$glow-3-left`：主布局光晕 3 左侧定位（20%）。
+- `$dashboard-height` / `$dashboard-max-height`：上传 Dashboard 高度（30rem）、最大高度基准（40rem），模态内容最大高亦用后者。
 - `$spinner-size-lg`：大号加载 spinner（2.5rem）。
-- `$login-card-max-width`、`$glow-size-lg/md/sm`、`$blur-glow`、`$glow-3-bottom`/`$glow-3-right`、`$title-display-size`：登录卡与光晕等。
+- `$login-card-max-width`、`$glow-size-lg/md/sm`、`$blur-glow`、`$glow-3-bottom`/`$glow-3-right`/`$glow-3-left`、`$title-display-size`：登录卡与光晕等。
 - `$glow-opacity` / `$glow-opacity-subtle`：背景光晕不透明度（0.2 / 0.1），高级感下更克制。
+- `$decorative-text-opacity`：装饰性文字透明度（0.75），如 404 码。
+- `$breakpoint-sm`：响应式小屏断点（640px）。
+- `$logo-size`：Logo 尺寸（80px），与主站一致。
+- `$modal-backdrop`：模态遮罩渐变；`$shadow-modal-card`：模态卡片阴影。
 
 ---
 
@@ -113,6 +126,7 @@
 - **滚动条**：`.ev-scrollbar`（与 frontend-main 风格一致，尺寸用 `$scrollbar-size`）。
 - **玻璃卡片**：`.ev-glass-card`（背景、边框、hover 阴影；模糊用 `$glass-blur`）。
 - **主按钮**：`.ev-btn-primary`（主色渐变、高度与阴影由 token 控制）。
+- **表单**：`.ev-field-theme`（q-field/q-input/q-select 统一样式，边框、label、focus 由 token 控制），表单容器加此类即可，禁止在页面中重复写 `:deep(.q-field)` 魔数。
 - **列表页**：`.ev-list-card`（列表根卡片）、`.ev-table-theme`（表格统一样式）、`.ev-table-pagination`（分页）、`.ev-banner-error`（错误条）、`.ev-table-empty-state`（无数据插槽样式），禁止在列表页中重复写卡片/表/分页魔数。
 
 ### 4.3 焦点与动效偏好

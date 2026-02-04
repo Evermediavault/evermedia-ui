@@ -6,7 +6,7 @@
       <div class="login-page__divider" />
     </header>
 
-    <q-form class="login-page__form" @submit.prevent="onSubmit">
+    <q-form class="login-page__form ev-field-theme" @submit.prevent="onSubmit">
       <q-input v-model="username" outlined :label="t('auth.usernameOrEmail')" class="login-page__field"
         :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space dark :disabled="loading" />
       <q-input v-model="password" outlined type="password" :label="t('auth.password')" class="login-page__field"
@@ -92,48 +92,6 @@ async function onSubmit() {
   gap: var(--ev-space-5);
   margin-top: 0;
   padding: 0 var(--ev-space-2);
-}
-
-.login-page__field {
-  :deep(.q-field) {
-    --q-color-primary: var(--ev-color-primary-light);
-  }
-
-  :deep(.q-field__control) {
-    &::before {
-      border-color: var(--ev-color-border);
-    }
-
-    &:hover::before {
-      border-color: var(--ev-color-border-strong);
-    }
-  }
-
-  :deep(.q-field--outlined .q-field__control::before) {
-    border-width: 1px;
-  }
-
-  :deep(.q-field__label) {
-    color: var(--ev-color-foreground-muted);
-  }
-
-  :deep(.q-field__native),
-  :deep(.q-field__input) {
-    color: var(--ev-color-foreground);
-  }
-
-  :deep(.q-field--focused .q-field__control::after) {
-    border-color: var(--ev-color-primary-tint-border-strong);
-    border-width: 1px;
-  }
-
-  :deep(.q-field--focused .q-field__label) {
-    color: var(--ev-color-primary-light);
-  }
-
-  :deep(.q-field__control:focus-within) {
-    transition: box-shadow var(--ev-transition-fast);
-  }
 }
 
 .login-page__submit {

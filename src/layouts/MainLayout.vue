@@ -54,9 +54,10 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const leftDrawerOpen = ref(false);
-// 与 _theme-tokens $drawer-width (15rem) 一致，q-drawer 需要数字 px
+// q-drawer 需要数字 px，与 token $drawer-width-px 一致
 const drawerWidthPx = 240;
-const navIconSize = '1.25rem'; // 与 --ev-nav-icon-inner 一致
+// 与 token $nav-icon-inner (1.25rem) 一致，q-icon :size 需字面量
+const navIconSize = '1.25rem';
 
 const userInitial = computed(() => {
   const name = authStore.displayName;
@@ -318,8 +319,8 @@ function onLogout() {
   width: var(--ev-glow-size-sm);
   height: var(--ev-glow-size-sm);
   background: var(--ev-color-accent);
-  bottom: 15%;
-  right: 10%;
+  bottom: var(--ev-glow-3-bottom);
+  right: var(--ev-glow-3-right);
 }
 
 .main-layout__glow--3 {
@@ -327,7 +328,7 @@ function onLogout() {
   height: var(--ev-glow-size-sm);
   background: var(--ev-color-primary-light);
   bottom: calc(-1 * var(--ev-space-4));
-  left: 20%;
+  left: var(--ev-glow-3-left);
   opacity: var(--ev-glow-opacity-subtle);
 }
 

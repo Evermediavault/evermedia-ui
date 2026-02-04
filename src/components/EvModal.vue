@@ -66,12 +66,7 @@ const contentStyle = computed(() =>
 <style lang="scss" scoped>
 .ev-modal {
   :deep(.q-dialog__backdrop) {
-    background: linear-gradient(
-      160deg,
-      rgba(0, 0, 0, 0.75) 0%,
-      rgba(10, 77, 211, 0.08) 50%,
-      rgba(139, 92, 246, 0.06) 100%
-    );
+    background: var(--ev-modal-backdrop);
     backdrop-filter: blur(var(--ev-glass-blur));
     -webkit-backdrop-filter: blur(var(--ev-glass-blur));
     z-index: calc(var(--ev-z-modal) - 1);
@@ -94,7 +89,7 @@ const contentStyle = computed(() =>
 .ev-modal__card {
   position: relative;
   width: 100%;
-  max-height: min(90vh, 40rem);
+  max-height: min(90vh, var(--ev-dashboard-max-height));
   display: flex;
   flex-direction: column;
   border-radius: var(--ev-radius-xl);
@@ -106,7 +101,7 @@ const contentStyle = computed(() =>
   box-shadow:
     var(--ev-shadow-lg),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 24px 48px -12px rgba(0, 0, 0, 0.45);
+    var(--ev-shadow-modal-card);
   transition: box-shadow var(--ev-transition-base);
   animation: ev-modal-card-in var(--ev-transition-base) cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
 }
@@ -175,8 +170,8 @@ const contentStyle = computed(() =>
   left: 0;
   top: var(--ev-space-4);
   bottom: var(--ev-space-4);
-  width: 3px;
-  border-radius: 2px;
+  width: var(--ev-nav-indicator-width);
+  border-radius: var(--ev-radius-indicator);
   background: linear-gradient(
     180deg,
     var(--ev-color-primary) 0%,
@@ -221,7 +216,7 @@ const contentStyle = computed(() =>
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-size: var(--ev-grid-size) var(--ev-grid-size);
   opacity: 0.8;
 }
 
