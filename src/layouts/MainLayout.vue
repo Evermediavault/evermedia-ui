@@ -1,14 +1,17 @@
 <template>
   <q-layout view="hhh LpR fFf" class="main-layout" dark>
-    <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="240">
+    <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="drawerWidthPx">
       <div class="main-layout__drawer-inner">
+        <div class="flex items-center justify-center py-4">
+          <q-img src="/logo.png" height="80px" width="80px" />
+        </div>
         <nav class="main-layout__nav-wrap" aria-label="Main">
           <q-list class="main-layout__nav ev-scrollbar" dense>
             <q-item v-for="item in navItems" :key="item.path" clickable :active="isActive(item.path)"
               active-class="main-layout__nav-item--active" :to="item.path" class="main-layout__nav-item">
               <q-item-section avatar class="main-layout__nav-icon-wrap">
                 <span class="main-layout__nav-icon">
-                  <q-icon :name="item.icon" size="20px" />
+                  <q-icon :name="item.icon" :size="navIconSize" />
                 </span>
               </q-item-section>
               <q-item-section>
@@ -51,6 +54,9 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const leftDrawerOpen = ref(false);
+// 与 _theme-tokens $drawer-width (15rem) 一致，q-drawer 需要数字 px
+const drawerWidthPx = 240;
+const navIconSize = '1.25rem'; // 与 --ev-nav-icon-inner 一致
 
 const userInitial = computed(() => {
   const name = authStore.displayName;
@@ -186,7 +192,7 @@ function onLogout() {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 3px;
+    width: var(--ev-nav-indicator-width);
     height: 0;
     border-radius: 0 var(--ev-radius-sm) var(--ev-radius-sm) 0;
     background: var(--ev-color-primary-light);
@@ -205,7 +211,7 @@ function onLogout() {
     box-shadow: var(--ev-nav-active-glow);
 
     &::before {
-      height: 1.25rem;
+      height: var(--ev-nav-indicator-height);
     }
   }
 
@@ -279,10 +285,10 @@ function onLogout() {
   background-image:
     radial-gradient(circle at center, var(--ev-node-dot) 1px, transparent 1px),
     radial-gradient(circle at center, var(--ev-node-dot) 1px, transparent 1px);
-  background-size: var(--ev-space-10) var(--ev-space-10);
-  background-position: 0 0, var(--ev-space-5) var(--ev-space-5);
-  mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 15%, transparent 60%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 15%, transparent 60%);
+  background-size: var(--ev-space-12) var(--ev-space-12);
+  background-position: 0 0, var(--ev-space-6) var(--ev-space-6);
+  mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 10%, transparent 65%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 85% 50%, black 10%, transparent 65%);
 }
 
 .main-layout__glow {
@@ -292,6 +298,7 @@ function onLogout() {
   opacity: var(--ev-glow-opacity-subtle);
   transition: opacity var(--ev-transition-base);
 }
+
 .main-layout__glow--1 {
   width: var(--ev-glow-size-md);
   height: var(--ev-glow-size-md);
@@ -299,6 +306,7 @@ function onLogout() {
   top: calc(-1 * var(--ev-space-8));
   right: calc(-1 * var(--ev-space-6));
 }
+
 .main-layout__glow--2 {
   width: var(--ev-glow-size-sm);
   height: var(--ev-glow-size-sm);
@@ -306,16 +314,17 @@ function onLogout() {
   bottom: 15%;
   right: 10%;
 }
+
 .main-layout__glow--3 {
   width: var(--ev-glow-size-sm);
   height: var(--ev-glow-size-sm);
   background: var(--ev-color-primary-light);
   bottom: calc(-1 * var(--ev-space-4));
   left: 20%;
-  opacity: 0.12;
+  opacity: var(--ev-glow-opacity-subtle);
 }
 
-.main-layout__page-inner > :not(.main-layout__bg) {
+.main-layout__page-inner> :not(.main-layout__bg) {
   position: relative;
   z-index: 1;
   flex: 1 1 0;

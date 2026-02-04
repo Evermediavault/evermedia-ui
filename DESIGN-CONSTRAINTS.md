@@ -29,7 +29,8 @@
 | 弱化文字 | `$foreground-subtle` | `#9ca3af` | 占位、禁用 |
 | 边框 | `$border` | `rgba(255,255,255,0.1)` | 默认边框 |
 | 玻璃背景 | `$glass-bg` | `rgba(255,255,255,0.05)` | 玻璃态 |
-| 玻璃边框 | `$glass-border` | `rgba(255,255,255,0.1)` | 玻璃态边框 |
+| 玻璃边框 | `$glass-border` / `$glass-border-subtle` | 0.1 / 0.06 | 玻璃态边框；subtle 用于默认态 |
+| 主色浅底（弱） | `$primary-tint-bg-subtle` | `rgba(6,186,217,0.06)` | 表头等弱渐变 |
 | 节点装饰 | `$node-dot` | `rgba(255,255,255,0.04)` | 去中心化节点背景点阵 |
 | 成功/正 | `$positive` | `#21ba45` | 成功状态 |
 | 错误/负 | `$negative` | `#c10015` | 错误、危险 |
@@ -37,6 +38,9 @@
 | 信息 | `$info` | `#31ccec` | 提示 |
 | 警告 | `$warning` | `#f2c037` | 警告 |
 | 滚动条拇指 | `$scrollbar-thumb` / `$scrollbar-thumb-hover` | accent 系半透明 | `.ev-scrollbar` 拇指色 |
+| 遮罩/描边 | `$mask-light` | `#ffffff` | mask / -webkit-mask 描边 |
+| 弱化遮罩 | `$overlay-muted` | `rgba(255,255,255,0.4)` | 进度图标等描边 |
+| 错误条文字 | `$foreground` 或 `--ev-color-foreground` | 与主文字同 | 错误 banner 前景，保证对比度 |
 
 ### 2.2 字体
 
@@ -47,6 +51,7 @@
 | 字号 xs/sm/base/lg/xl/2xl | `$font-size-*` | 12px / 14px / 16px / 18px / 20px / 24px |
 | 字重 | `$font-weight-normal/medium/semibold/bold` | 400 / 500 / 600 / 700 |
 | 行高 | `$line-height-tight/normal/relaxed` | 1.25 / 1.5 / 1.625 |
+| 标题图标 | `$title-icon-size` | 1.5rem | 页面标题左侧图标 |
 
 ### 2.3 间距
 
@@ -61,16 +66,24 @@
 
 ### 2.5 阴影与动效
 
-- 阴影：`$shadow-sm` / `$shadow-md` / `$shadow-lg` / `$shadow-glow`（与主站发光一致）；`$shadow-primary` / `$shadow-primary-hover`（主色按钮）。
-- 动效：`$transition-fast`(150ms)、`$transition-base`(300ms)，缓动 `cubic-bezier(0.4, 0, 0.2, 1)`。
+- 阴影（高级感：更柔和、克制）：`$shadow-sm` / `$shadow-md`；`$shadow-lg`（中性底 + 弱青蓝）；`$shadow-glow`（32px、0.12）；`$shadow-primary` / `$shadow-primary-hover`（主按钮，略减透明度）；`$shadow-uppy-item`（Uppy 项）。
+- 渐变：`$card-border-gradient`（玻璃卡 hover 描边）；`$card-border-gradient-subtle`（玻璃卡默认描边）；`$gradient-primary-subtle`（标题等弱对比装饰）。
+- 动效：`$transition-fast`(150ms)、`$transition-base`(300ms)，缓动 `cubic-bezier(0.4, 0, 0.2, 1)`；`$button-lift`(2px) 主按钮/卡片 hover 上浮位移。
+- 玻璃模糊：`$glass-blur`(20px)、`$glass-blur-sm`(12px)，禁止在页面/组件中写死 blur 数值。
 
 ### 2.6 布局与组件尺寸
 
 - `$header-height`：顶栏高度（3.5rem）。
 - `$drawer-width`：侧栏宽度（15rem，约 240px）。
-- `$nav-item-height` / `$nav-icon-size` / `$avatar-size`：导航项高度（2.75rem）、导航图标容器（2.25rem）、用户头像（2rem）。
+- `$nav-item-height` / `$nav-icon-size` / `$nav-icon-inner` / `$avatar-size`：导航项高度（2.75rem）、导航图标容器（2.25rem）、导航图标内尺寸（1.25rem）、用户头像（2rem）。
+- `$nav-indicator-width` / `$nav-indicator-height`：侧栏激活指示条宽（3px）、高（1.25rem）。
 - `$button-height`：主按钮高度（2.75rem）。
+- `$scrollbar-size`：滚动条宽高（8px）。
+- `$content-max-width-sm`：小内容区最大宽度（28rem），错误页/小卡片用。
+- `$dashboard-height` / `$dashboard-max-height`：上传 Dashboard 高度（30rem）、最大高度基准（40rem）。
+- `$spinner-size-lg`：大号加载 spinner（2.5rem）。
 - `$login-card-max-width`、`$glow-size-lg/md/sm`、`$blur-glow`、`$glow-3-bottom`/`$glow-3-right`、`$title-display-size`：登录卡与光晕等。
+- `$glow-opacity` / `$glow-opacity-subtle`：背景光晕不透明度（0.2 / 0.1），高级感下更克制。
 
 ---
 
@@ -94,13 +107,19 @@
 
 ### 4.2 工具类
 
-- **滚动条**：`.ev-scrollbar`（与 frontend-main 风格一致）。
-- **玻璃卡片**：`.ev-glass-card`（背景、边框、hover 阴影）。
+- **滚动条**：`.ev-scrollbar`（与 frontend-main 风格一致，尺寸用 `$scrollbar-size`）。
+- **玻璃卡片**：`.ev-glass-card`（背景、边框、hover 阴影；模糊用 `$glass-blur`）。
 - **主按钮**：`.ev-btn-primary`（主色渐变、高度与阴影由 token 控制）。
+- **列表页**：`.ev-list-card`（列表根卡片）、`.ev-table-theme`（表格统一样式）、`.ev-table-pagination`（分页）、`.ev-banner-error`（错误条）、`.ev-table-empty-state`（无数据插槽样式），禁止在列表页中重复写卡片/表/分页魔数。
 
-### 4.3 禁止
+### 4.3 焦点与动效偏好
 
-- 不在组件或页面中写与 token 冲突的颜色/间距/字号魔数。
+- **焦点**：可聚焦控件 `:focus-visible` 时使用 `var(--ev-focus-ring)` 或与设计一致的 2px 外描边。
+- **prefers-reduced-motion**：在 `@media (prefers-reduced-motion: reduce)` 下对 `transform`/`transition` 做降级（如时长为 0、去掉 translateY），保留焦点环与颜色变化。
+
+### 4.4 禁止
+
+- 不在组件或页面中写与 token 冲突的颜色/间距/字号魔数；玻璃模糊、滚动条尺寸、内容区最大宽度、Dashboard/Spinner 等尺寸一律使用 token。
 - 不在 `quasar.variables.scss` 中写新的魔数，只从 `_theme-tokens` 引用。
 
 ---
@@ -123,8 +142,8 @@
 2. 若需暴露给全局：在 `app.scss` 的 `:root` 中增加对应 `--ev-*`。  
 3. 若需 Tailwind 工具类：在 `app.scss` 的 `@theme` 中增加对应条目。  
 4. 若影响 Quasar 主题：在 `quasar.variables.scss` 中从 token 引用。  
-5. 更新本文档「主题变量」与「使用约定」相关小节。
+5. **同步更新本文档**「主题变量」与「使用约定」对应小节；若为「高级感」相关（阴影、渐变、光晕透明度等），在 §2.5 / §2.6 中注明用途。
 
 ---
 
-*最后更新：与 frontend-main 风格对齐的后台主题与设计约束。*
+*最后更新：与 frontend-main 风格对齐的后台主题与设计约束；阴影/光晕/玻璃边框等已做高级感微调。*

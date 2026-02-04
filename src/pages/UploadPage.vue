@@ -5,7 +5,7 @@
         <div class="upload-page__main">
           <div class="upload-page__card ev-glass-card ev-scrollbar upload-page__card--active">
             <div v-if="isUploading" class="upload-page__overlay">
-              <q-spinner-dots color="var(--ev-color-primary-light)" :size="overlaySpinnerSize" />
+              <q-spinner-dots color="var(--ev-color-primary-light)" size="var(--ev-spinner-size-lg)" />
               <span class="upload-page__overlay-text">{{ t('upload.uploading') }}</span>
             </div>
             <div v-if="uppy" class="upload-page__dashboard">
@@ -22,7 +22,7 @@
             <h2 class="upload-page__sidebar-title" id="upload-meta-title">{{ t('upload.metaTitle') }}</h2>
             <q-btn outline no-caps dense class="upload-page__add-btn" :aria-label="t('upload.addGroup')"
               @click="addMetaEntry">
-              <q-icon name="add" size="1.25rem" class="q-mr-1" />
+              <q-icon name="add" size="var(--ev-nav-icon-inner)" class="q-mr-1" />
               {{ t('upload.addGroup') }}
             </q-btn>
             <div class="upload-page__meta-groups" aria-labelledby="upload-meta-title">
@@ -90,7 +90,6 @@ const authStore = useAuthStore();
 const notify = useNotify();
 
 const isUploading = ref(false);
-const overlaySpinnerSize = '2.5rem';
 
 const { uppy, fileCount } = useUppy({
   limit: 4,
@@ -164,10 +163,12 @@ function getValueRules(type: MetaEntryType) {
   ];
 }
 
+// 与 _theme-tokens $dashboard-height (30rem = 480px) 一致，Uppy 需要数字 px
+const DASHBOARD_HEIGHT_PX = 480;
 const dashboardProps = computed(() => ({
   inline: true,
   width: '100%',
-  height: 480,
+  height: DASHBOARD_HEIGHT_PX,
   theme: 'dark' as const,
   showProgressDetails: true,
   proudlyDisplayPoweredByUppy: false,
@@ -262,7 +263,7 @@ function startUpload() {
   border-radius: var(--ev-radius-xl);
   box-shadow: var(--ev-shadow-lg);
   transition: box-shadow var(--ev-transition-base), background var(--ev-transition-base);
-  max-height: min(80vh, 640px);
+  max-height: min(80vh, var(--ev-dashboard-max-height));
 
   &:hover {
     box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
@@ -331,7 +332,7 @@ function startUpload() {
   }
 
   :deep(.q-item) {
-    min-height: 2.75rem;
+    min-height: var(--ev-nav-item-height);
     padding: var(--ev-space-2) var(--ev-space-3);
   }
 
@@ -423,8 +424,8 @@ function startUpload() {
   }
 
   :deep(.q-field--focused .q-field__control::after) {
-    border-color: var(--ev-color-primary-light);
-    border-width: 2px;
+    border-color: var(--ev-color-primary-tint-border-strong);
+    border-width: 1px;
   }
 
   :deep(.q-field--focused .q-field__label) {

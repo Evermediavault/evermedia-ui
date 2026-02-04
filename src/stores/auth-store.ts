@@ -1,6 +1,7 @@
 /**
  * 认证状态：token、用户信息，与本地 storage 同步，供路由守卫与 axios 使用
  */
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { getStorage, setStorage, removeStorage } from 'src/utils/storage';
 import { STORAGE_KEY_TOKEN, STORAGE_KEY_USER } from 'src/constants/storage';
@@ -48,8 +49,30 @@ export const useAuthStore = defineStore('auth', {
       if (token && user) {
         this.token = token;
         this.user = user;
+        void this.fetchUser();
       } else {
         this.clearAuth();
+      }
+    },
+
+    /**
+     * 获取当前用户信息：GET /auth/me（需已登录），成功则更新 state 与 storage
+     * @returns 当前用户信息，失败或未登录抛出；401 时会 clearAuth
+     */
+    async fetchUser(): Promise<AuthUser> {
+      try {
+        const res = await api.get<BackendSuccessResponse<{ user: AuthUser }>>('/auth/me');
+        const body = res.data;
+        if (!body.success || !body.data?.user) {
+          throw new Error(body.message ?? 'Failed to fetch user');
+        }
+        const user = body.data.user;
+        this.user = user;
+        setStorage(STORAGE_KEY_USER, user);
+        return user;
+      } catch (e) {
+        if (axios.isAxiosError(e) && e.response?.status === 401) this.clearAuth();
+        throw e;
       }
     },
 

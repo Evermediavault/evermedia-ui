@@ -114,7 +114,7 @@
 
   :deep(.uppy-Dashboard-Item-previewInnerWrap) {
     border-radius: var(--ev-radius-md);
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: var(--ev-shadow-uppy-item);
   }
 
   :deep(.uppy-Dashboard-Item-name) {
@@ -160,7 +160,7 @@
   }
 
   :deep(.uppy-Dashboard-Item-progressIcon--bg) {
-    stroke: rgba(255, 255, 255, 0.4);
+    stroke: var(--ev-overlay-muted);
   }
 
   :deep(.uppy-Dashboard-Item-progressIcon--progress) {

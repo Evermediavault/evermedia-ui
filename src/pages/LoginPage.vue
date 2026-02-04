@@ -1,44 +1,18 @@
 <template>
   <div class="login-page">
     <header class="login-page__header">
+      <q-img src="/logo.png" height="80px" width="80px" />
       <h1 class="login-page__title">{{ t('nav.appTitle') }}</h1>
-      <p class="login-page__subtitle">{{ t('nav.adminSubtitle') }}</p>
       <div class="login-page__divider" />
     </header>
 
     <q-form class="login-page__form" @submit.prevent="onSubmit">
-      <q-input
-        v-model="username"
-        outlined
-        dense
-        :label="t('auth.username')"
-        class="login-page__field"
-        :rules="[(v: string) => !!v || t('common.required')]"
-        hide-bottom-space
-        dark
-        :disabled="loading"
-      />
-      <q-input
-        v-model="password"
-        outlined
-        dense
-        type="password"
-        :label="t('auth.password')"
-        class="login-page__field"
-        :rules="[(v: string) => !!v || t('common.required')]"
-        hide-bottom-space
-        dark
-        :disabled="loading"
-      />
-      <q-btn
-        type="submit"
-        unelevated
-        no-caps
-        class="ev-btn-primary login-page__submit"
-        :label="t('auth.login')"
-        :loading="loading"
-        :disable="loading"
-      />
+      <q-input v-model="username" outlined dense :label="t('auth.username')" class="login-page__field"
+        :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space dark :disabled="loading" />
+      <q-input v-model="password" outlined dense type="password" :label="t('auth.password')" class="login-page__field"
+        :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space dark :disabled="loading" />
+      <q-btn type="submit" color="primary" unelevated no-caps class="ev-btn-primary login-page__submit"
+        :label="t('auth.login')" :loading="loading" :disable="loading" />
     </q-form>
   </div>
 </template>
@@ -106,14 +80,6 @@ async function onSubmit() {
   background-clip: text;
 }
 
-.login-page__subtitle {
-  margin: 0;
-  font-size: var(--ev-font-size-sm);
-  color: var(--ev-color-foreground-muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 .login-page__divider {
   margin-top: var(--ev-space-6);
   height: 1px;
@@ -132,35 +98,44 @@ async function onSubmit() {
   :deep(.q-field) {
     --q-color-primary: var(--ev-color-primary-light);
   }
+
   :deep(.q-field__control) {
     &::before {
       border-color: var(--ev-color-border);
     }
+
     &:hover::before {
       border-color: var(--ev-color-border-strong);
     }
   }
+
   :deep(.q-field--outlined .q-field__control::before) {
     border-width: 1px;
   }
+
   :deep(.q-field__label) {
     color: var(--ev-color-foreground-muted);
   }
+
   :deep(.q-field__native),
   :deep(.q-field__input) {
     color: var(--ev-color-foreground);
   }
+
   :deep(.q-field--focused .q-field__control::after) {
-    border-color: var(--ev-color-primary-light);
-    border-width: 2px;
+    border-color: var(--ev-color-primary-tint-border-strong);
+    border-width: 1px;
   }
+
   :deep(.q-field--focused .q-field__label) {
     color: var(--ev-color-primary-light);
   }
+
   :deep(.q-field__control:focus-within) {
     transition: box-shadow var(--ev-transition-fast);
   }
 }
+
 .login-page__submit {
   margin-top: var(--ev-space-2);
   padding: 0 var(--ev-space-4);

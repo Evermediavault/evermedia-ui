@@ -28,7 +28,12 @@ const { t } = useI18n();
 }
 .index-page__welcome:hover {
   box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
-  transform: translateY(-2px);
+  transform: translateY(calc(-1 * var(--ev-button-lift)));
+}
+@media (prefers-reduced-motion: reduce) {
+  .index-page__welcome:hover {
+    transform: none;
+  }
 }
 
 .index-page__badge {
@@ -55,7 +60,7 @@ const { t } = useI18n();
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
+  filter: drop-shadow(0 0 12px var(--ev-color-primary-tint-bg));
 }
 
 .index-page__subtitle {

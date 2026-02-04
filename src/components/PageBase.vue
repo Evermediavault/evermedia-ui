@@ -5,7 +5,7 @@
         <div class="page-base__title-block">
           <div v-if="hasIcon" class="page-base__icon-wrap" aria-hidden="true">
             <slot name="icon">
-              <q-icon v-if="icon" :name="icon" class="page-base__icon" size="1.5rem" />
+              <q-icon v-if="icon" :name="icon" class="page-base__icon" size="var(--ev-title-icon-size)" />
             </slot>
           </div>
           <div class="page-base__title-text">
@@ -108,7 +108,7 @@ onUnmounted(() => {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--ev-space-6);
-  padding: var(--ev-space-5) var(--ev-space-6) var(--ev-space-4);
+  padding: var(--ev-space-6) var(--ev-space-6) var(--ev-space-4);
   flex-wrap: wrap;
   flex-shrink: 0;
 }
@@ -153,7 +153,7 @@ onUnmounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px var(--ev-color-primary-tint-bg));
+  filter: drop-shadow(0 0 12px var(--ev-color-primary-tint-bg));
 }
 
 .page-base__actions {
@@ -178,7 +178,7 @@ onUnmounted(() => {
   min-height: 0;
 
   .page-base__content {
-    padding: var(--ev-space-6) var(--ev-space-6) var(--ev-space-8);
+    padding: var(--ev-space-6) var(--ev-space-6) var(--ev-space-10);
   }
 }
 

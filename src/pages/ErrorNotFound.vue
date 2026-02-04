@@ -34,7 +34,7 @@ const { t } = useI18n();
   text-align: center;
   padding: var(--ev-space-10) var(--ev-space-10) var(--ev-space-12);
   border-radius: var(--ev-radius-xl);
-  max-width: 28rem;
+  max-width: var(--ev-content-max-width-sm);
 }
 
 .error-page__code {
@@ -46,7 +46,7 @@ const { t } = useI18n();
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 .error-page__text {

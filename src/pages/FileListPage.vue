@@ -1,18 +1,17 @@
 <template>
   <PageBase :title="t('fileList.title')" icon="folder" content-class="full">
     <div class="file-list-page">
-      <div class="file-list-page__card ev-glass-card">
+      <div class="ev-glass-card ev-list-card">
         <q-inner-loading :showing="loading" color="primary" />
-        <q-banner v-if="error" class="file-list-page__error bg-negative text-white" rounded>
+        <q-banner v-if="error" class="file-list-page__error ev-banner-error" rounded>
           {{ error.message }}
         </q-banner>
         <q-table separator="none" v-model:pagination="pagination" :rows="list" :columns="columns" row-key="id" flat dark
           :rows-per-page-options="rowsPerPageOptions" :no-data-label="t('fileList.noData')"
-          class="file-list-page__table" :loading="loading" @request="onTableRequest">
+          class="ev-table-theme file-list-page__table ev-scrollbar" :loading="loading" @request="onTableRequest">
           <template #header="props">
-            <q-tr :props="props" class="file-list-page__header-row">
-              <q-th v-for="col in props.cols" :key="col.name" :props="props" :align="col.align"
-                class="file-list-page__th">
+            <q-tr :props="props">
+              <q-th v-for="col in props.cols" :key="col.name" :props="props" :align="col.align">
                 {{ col.label }}
               </q-th>
             </q-tr>
@@ -37,10 +36,17 @@
             </q-td>
           </template>
 
+          <template #no-data>
+            <div class="ev-table-empty-state">
+              <q-icon name="folder_off" size="2.5rem" />
+              <span>{{ t('fileList.noData') }}</span>
+            </div>
+          </template>
+
           <template #bottom>
-            <div class="file-list-page__bottom">
+            <div class="ev-table-pagination-wrap">
               <q-pagination v-model="pagination.page" :max="maxPages" :max-pages="7" direction-links boundary-links
-                color="primary" class="file-list-page__pagination" @update:model-value="refetch" />
+                color="primary" class="ev-table-pagination" @update:model-value="refetch" />
             </div>
           </template>
         </q-table>
@@ -118,78 +124,8 @@ onMounted(() => {
   min-height: 0;
 }
 
-.file-list-page__card {
-  position: relative;
-  padding: 0;
-  border-radius: var(--ev-radius-xl);
-  box-shadow: var(--ev-shadow-lg);
-  overflow: hidden;
-  background: var(--ev-glass-bg);
-  border: 1px solid var(--ev-glass-border);
-
-  &:hover {
-    box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
-    border-color: var(--ev-color-primary-tint-border);
-  }
-}
-
 .file-list-page__error {
   margin: var(--ev-space-4);
-}
-
-.file-list-page__table {
-  background: transparent !important;
-
-  :deep(.q-table__top),
-  :deep(.q-table__bottom) {
-    background: transparent;
-    border-top: 0;
-  }
-
-  :deep(.q-table__container) {
-    border: none;
-    box-shadow: none;
-  }
-
-  :deep(thead tr th) {
-    border: none;
-    background: transparent;
-  }
-
-  :deep(tbody tr) {
-    transition: background var(--ev-transition-fast);
-  }
-
-  :deep(tbody tr:hover td) {
-    background: var(--ev-color-surface-hover);
-  }
-
-  :deep(.q-table tbody td) {
-    padding: var(--ev-space-4) var(--ev-space-5);
-    font-size: var(--ev-font-size-sm);
-    color: var(--ev-color-foreground-muted);
-    border-bottom: 1px solid var(--ev-color-border);
-  }
-
-  :deep(.q-table tbody tr:last-child td) {
-    border-bottom: none;
-  }
-}
-
-.file-list-page__header-row {
-  background: linear-gradient(180deg,
-      var(--ev-color-primary-tint-bg) 0%,
-      transparent 100%);
-  border-bottom: 1px solid var(--ev-color-primary-tint-border);
-}
-
-.file-list-page__th {
-  padding: var(--ev-space-4) var(--ev-space-5);
-  font-size: var(--ev-font-size-xs);
-  font-weight: var(--ev-font-weight-semibold);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ev-color-foreground-muted);
 }
 
 .file-list-page__cell-name,
@@ -218,30 +154,5 @@ onMounted(() => {
 .file-list-page__cell-date {
   color: var(--ev-color-foreground-subtle);
   font-size: var(--ev-font-size-xs);
-}
-
-.file-list-page__bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: var(--ev-space-4) var(--ev-space-5);
-  background: transparent;
-  border-top: 0;
-}
-
-.file-list-page__pagination {
-  flex-shrink: 0;
-
-  :deep(.q-btn) {
-    color: var(--ev-color-foreground-muted);
-    border-radius: var(--ev-radius-md);
-  }
-
-  :deep(.q-btn:hover),
-  :deep(.q-btn.q-btn--active) {
-    color: var(--ev-color-primary-light);
-    background: var(--ev-color-primary-tint-bg);
-  }
 }
 </style>

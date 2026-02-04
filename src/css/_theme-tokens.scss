@@ -12,6 +12,7 @@ $primary-tint-bg: rgba(6, 186, 217, 0.12);
 $primary-tint-border: rgba(6, 186, 217, 0.25);
 $primary-tint-border-strong: rgba(6, 186, 217, 0.3);
 $primary-tint-hover: rgba(6, 186, 217, 0.06);
+$primary-tint-bg-subtle: rgba(6, 186, 217, 0.06);
 $primary-header-glow: rgba(6, 186, 217, 0.06);
 
 // ---------- 辅助色 ----------
@@ -42,6 +43,7 @@ $foreground-subtle: #9ca3af;     // gray-400
 // ---------- 玻璃态 / 遮罩 / 高亮（与 frontend-main glass-card、发光一致） ----------
 $glass-bg: rgba(255, 255, 255, 0.05);
 $glass-border: rgba(255, 255, 255, 0.1);
+$glass-border-subtle: rgba(255, 255, 255, 0.06);
 $overlay-bg: rgba(0, 0, 0, 0.6);
 $glass-grid: rgba(255, 255, 255, 0.02);
 $node-dot: rgba(255, 255, 255, 0.04);   // 去中心化节点装饰
@@ -49,6 +51,12 @@ $glow-cyan: rgba(124, 201, 255, 0.4);
 $glow-cyan-strong: rgba(124, 201, 255, 0.15);
 $scrollbar-thumb: rgba(139, 92, 246, 0.55);
 $scrollbar-thumb-hover: rgba(139, 92, 246, 0.75);
+$scrollbar-size: 8px;
+$glass-blur: 20px;
+$glass-blur-sm: 12px;
+$mask-light: #ffffff;   // mask / -webkit-mask 描边用，避免写死 #fff
+$overlay-muted: rgba(255, 255, 255, 0.4);  // 进度图标等弱化描边
+$shadow-uppy-item: 0 0 2px 0 rgba(0, 0, 0, 0.2);
 
 // ---------- 字体 ----------
 $font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -88,13 +96,13 @@ $radius-md: 6px;
 $radius-lg: 8px;
 $radius-xl: 12px;
 
-// ---------- 阴影 ----------
+// ---------- 阴影（高级感：更柔和、克制） ----------
 $shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
 $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
-$shadow-lg: 0 8px 32px rgba(124, 201, 255, 0.15);
-$shadow-glow: 0 0 40px rgba(124, 201, 255, 0.2);
-$shadow-primary: 0 4px 16px rgba(10, 77, 211, 0.35);
-$shadow-primary-hover: 0 6px 24px rgba(10, 77, 211, 0.45);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(124, 201, 255, 0.06);
+$shadow-glow: 0 0 32px rgba(124, 201, 255, 0.12);
+$shadow-primary: 0 4px 14px rgba(10, 77, 211, 0.28);
+$shadow-primary-hover: 0 6px 20px rgba(10, 77, 211, 0.38);
 
 // ---------- 布局与组件尺寸 ----------
 $header-height: 3.5rem;      // 56px
@@ -108,11 +116,20 @@ $glow-size-lg: 25rem;       // 400px
 $glow-size-md: 20rem;       // 320px
 $glow-size-sm: 16rem;       // 256px
 $blur-glow: 5rem;           // 80px
-$glow-opacity: 0.28;
-$glow-opacity-subtle: 0.15;
+$glow-opacity: 0.2;
+$glow-opacity-subtle: 0.1;
 $glow-3-bottom: 20%;
 $glow-3-right: 10%;
 $title-display-size: 1.75rem;    // 主标题字号
+$title-icon-size: 1.5rem;        // 页面标题左侧图标
+$content-max-width-sm: 28rem;   // 错误页/小卡片内容区最大宽度
+$dashboard-height: 30rem;        // 480px，上传 Dashboard 高度
+$dashboard-max-height: 40rem;   // 640px，上传区最大高度基准
+$spinner-size-lg: 2.5rem;
+$nav-indicator-width: 3px;
+$nav-indicator-height: 1.25rem;
+$nav-icon-inner: 1.25rem;        // 20px，侧栏导航图标实际显示尺寸
+$button-lift: 2px;              // 主按钮/卡片 hover 上浮位移
 
 // ---------- 动效 ----------
 $transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -121,6 +138,8 @@ $transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 // ---------- 视觉细节 ----------
 $focus-ring: 0 0 0 2px rgba(6, 186, 217, 0.4);
 $card-border-gradient: linear-gradient(135deg, rgba(10, 77, 211, 0.35), rgba(139, 92, 246, 0.25));
+$card-border-gradient-subtle: linear-gradient(135deg, rgba(10, 77, 211, 0.2), rgba(139, 92, 246, 0.15));
+$gradient-primary-subtle: linear-gradient(135deg, rgba(10, 77, 211, 0.6), rgba(6, 186, 217, 0.5));
 $nav-active-glow: inset 0 0 0 1px rgba(6, 186, 217, 0.2);
 $nav-active-accent: $accent;
 
