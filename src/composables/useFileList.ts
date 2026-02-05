@@ -16,6 +16,8 @@ interface RawFileListItem {
   storage_id?: number;
   storage_info?: StorageProviderSnapshot;
   uploaded_at: string;
+  category_uid?: string;
+  category_name?: string;
 }
 
 /** GET /media/list 响应体 */
@@ -42,6 +44,12 @@ function mapToFileListItem(row: RawFileListItem): FileListItem {
   }
   if (row.storage_info !== undefined && row.storage_info !== null) {
     item.storageInfo = row.storage_info;
+  }
+  if (row.category_uid !== undefined && row.category_uid !== '') {
+    item.categoryUid = row.category_uid;
+  }
+  if (row.category_name !== undefined && row.category_name !== '') {
+    item.categoryName = row.category_name;
   }
   return item;
 }

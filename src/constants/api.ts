@@ -49,3 +49,6 @@ export const MEDIA_LIST_PATH = '/media/list';
 
 /** 存储服务提供商列表（不鉴权，供上传前选择 providerId） */
 export const STORAGE_INFO_PATH = '/media/storage-info';
+
+/** 首页统计（需登录；管理员含 user_count） */
+export const STATS_PATH = '/stats';

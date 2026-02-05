@@ -73,6 +73,7 @@ export default {
     password: 'Password',
     login: 'Login',
     logout: 'Logout',
+    logoutConfirm: 'Are you sure you want to log out?',
     invalidCredentials: 'Invalid username or password',
     tokenExpired: 'Token expired',
     tokenInvalid: 'Invalid token',
@@ -89,10 +90,20 @@ export default {
     home: 'Home',
     files: 'File List',
     upload: 'Upload',
+    categories: 'Categories',
     users: 'User Management',
     appTitle: 'Evermedia Vault',
     adminSubtitle: 'Admin',
     welcomeDesc: 'Welcome to the admin panel',
+  },
+
+  // Index page
+  indexPage: {
+    stats: {
+      files: 'Files',
+      users: 'Users',
+      categories: 'Categories',
+    },
   },
 
   // File list
@@ -108,7 +119,28 @@ export default {
       synapseIndexId: 'Synapse ID',
       dataSetId: 'Data Set ID',
       storageProviderId: 'Storage Provider ID',
+      category: 'Category',
       uploadedAt: 'Uploaded',
+    },
+  },
+
+  // Category list
+  categoryList: {
+    title: 'Categories',
+    noData: 'No categories yet',
+    addCategory: 'Add category',
+    edit: 'Edit',
+    delete: 'Delete',
+    deleteConfirm: 'Delete category "{name}"?',
+    cannotDeleteDefault: 'Default category cannot be deleted',
+    columns: {
+      id: 'ID',
+      name: 'Name',
+      uid: 'uid',
+      description: 'Description',
+      fileCount: 'Files',
+      createdAt: 'Created',
+      actions: 'Actions',
     },
   },
 
@@ -159,6 +191,9 @@ export default {
     storageProvider: 'Storage provider *',
     storageProviderPlaceholder: 'Select a storage provider',
     storageProviderRequired: 'Please select a storage provider',
+    category: 'Category',
+    categoryPlaceholder: 'Optional; files will be assigned to this category',
+    uncategorized: 'Uncategorized',
     metaTitle: 'Metadata',
     addMeta: 'Add',
     metaName: 'Name',

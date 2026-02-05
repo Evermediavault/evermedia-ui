@@ -40,15 +40,15 @@ const props = withDefaults(
     /** v-model 控制显隐 */
     modelValue: boolean;
     /** 标题（也可用 #title 插槽） */
-    title?: string;
+    title?: string | undefined;
     /** 点击遮罩不关闭 */
     persistent?: boolean;
     /** 全屏 */
     maximized?: boolean;
     /** 内容区最大宽度（如 28rem） */
-    maxWidth?: string;
-    transitionShow?: string;
-    transitionHide?: string;
+    maxWidth?: string | undefined;
+    transitionShow?: string | undefined;
+    transitionHide?: string | undefined;
   }>(),
   { persistent: false, maximized: false }
 );

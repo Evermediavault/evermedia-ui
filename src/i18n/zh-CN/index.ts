@@ -73,6 +73,7 @@ export default {
     password: '密码',
     login: '登录',
     logout: '退出',
+    logoutConfirm: '确定要退出登录吗？',
     invalidCredentials: '用户名或密码错误',
     tokenExpired: '令牌已过期',
     tokenInvalid: '令牌无效',
@@ -89,10 +90,20 @@ export default {
     home: '首页',
     files: '文件列表',
     upload: '上传文件',
+    categories: '分类列表',
     users: '用户管理',
     appTitle: 'Evermedia Vault',
     adminSubtitle: '后台管理',
     welcomeDesc: '欢迎使用后台管理面板',
+  },
+
+  // 首页
+  indexPage: {
+    stats: {
+      files: '文件数量',
+      users: '用户数量',
+      categories: '分类数量',
+    },
   },
 
   // 文件列表
@@ -108,7 +119,28 @@ export default {
       synapseIndexId: 'Synapse 索引',
       dataSetId: '数据集 ID',
       storageProviderId: '存储提供商 ID',
+      category: '分类',
       uploadedAt: '上传时间',
+    },
+  },
+
+  // 分类列表
+  categoryList: {
+    title: '分类列表',
+    noData: '暂无分类',
+    addCategory: '添加分类',
+    edit: '编辑',
+    delete: '删除',
+    deleteConfirm: '确定要删除分类「{name}」吗？',
+    cannotDeleteDefault: '默认分类不可删除',
+    columns: {
+      id: 'ID',
+      name: '分类名称',
+      uid: 'uid',
+      description: '分类描述',
+      fileCount: '文件数量',
+      createdAt: '创建时间',
+      actions: '操作',
     },
   },
 
@@ -159,6 +191,9 @@ export default {
     storageProvider: '存储服务商 *',
     storageProviderPlaceholder: '请选择存储服务商',
     storageProviderRequired: '请选择存储服务商',
+    category: '分类',
+    categoryPlaceholder: '选填，选择后文件将归入该分类',
+    uncategorized: '不归类',
     metaTitle: '元数据',
     addMeta: '添加',
     metaName: '名称',

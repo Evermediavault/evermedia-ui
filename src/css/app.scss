@@ -343,7 +343,9 @@
   .ev-glass-card:hover {
     background: var(--ev-color-surface-hover);
     border-color: var(--ev-color-primary-tint-border);
-    box-shadow: var(--ev-shadow-lg), 0 0 0 1px var(--ev-color-primary-tint-border);
+    box-shadow:
+      var(--ev-shadow-lg),
+      0 0 0 1px var(--ev-color-primary-tint-border);
   }
   .ev-glass-card:hover::before {
     opacity: 1;
@@ -393,7 +395,9 @@
     box-shadow: var(--ev-shadow-md);
     overflow: hidden;
     border: 1px solid var(--ev-glass-border-subtle);
-    transition: box-shadow var(--ev-transition-base), border-color var(--ev-transition-base);
+    transition:
+      box-shadow var(--ev-transition-base),
+      border-color var(--ev-transition-base);
     &:hover {
       box-shadow: var(--ev-shadow-lg), var(--ev-shadow-glow);
       border-color: var(--ev-color-primary-tint-border);
@@ -456,6 +460,7 @@
     color: var(--ev-color-foreground-muted);
     font-size: var(--ev-font-size-sm);
     line-height: var(--ev-line-height-relaxed);
+    @apply flex-1;
   }
   .ev-table-empty-state .q-icon {
     display: block;

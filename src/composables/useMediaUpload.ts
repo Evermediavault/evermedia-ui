@@ -33,14 +33,18 @@ interface UploadResponse {
 }
 
 /**
- * 批量上传：FormData 格式为 providerId、file_0, file_1, …、name_0, name_1, …、metadata_0, metadata_1, …
+ * 批量上传：FormData 格式为 providerId、可选 categoryUid、file_0, file_1, …、name_0, name_1, …、metadata_0, metadata_1, …
  */
 export async function uploadBatch(
   providerId: number,
-  items: UploadItem[]
+  items: UploadItem[],
+  categoryUid?: string | null
 ): Promise<UploadFileItem[]> {
   const form = new FormData();
   form.append('providerId', String(providerId));
+  if (categoryUid != null && categoryUid.trim() !== '') {
+    form.append('categoryUid', categoryUid.trim());
+  }
   items.forEach((item, i) => {
     form.append(`file_${i}`, item.file, item.displayName || item.file.name);
     form.append(`name_${i}`, item.displayName || item.file.name);

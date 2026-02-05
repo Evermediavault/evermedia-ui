@@ -140,6 +140,8 @@ export interface FileListItem {
   storageId?: number;
   storageInfo?: StorageProviderSnapshot;
   uploadedAt: string;
+  categoryUid?: string;
+  categoryName?: string;
 }
 
 /** 文件列表分页元数据（与后端 meta 对齐） */
@@ -154,6 +156,55 @@ export interface FileListMeta {
 export interface FileListParams {
   page?: number;
   page_size?: number;
+}
+
+/** 分类列表项（与后端 GET /categories 对齐，camelCase） */
+export interface CategoryListItem {
+  id: number;
+  name: string;
+  uid: string;
+  description: string;
+  createdAt: string;
+  /** 默认分类不可删除 */
+  isDefault?: boolean;
+  /** 该分类下的文件数量 */
+  fileCount?: number;
+}
+
+/** 分类列表分页元数据（与通用 meta 对齐） */
+export interface CategoryListMeta {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+/** 分类列表查询参数（与后端 GET /categories query 对齐） */
+export interface CategoryListParams {
+  page?: number;
+  page_size?: number;
+  sort_by?: 'created_at' | 'name';
+  order?: 'asc' | 'desc';
+}
+
+/** 创建分类请求体（与后端 POST /categories 对齐） */
+export interface CreateCategoryPayload {
+  name: string;
+  description?: string;
+}
+
+/** 更新分类请求体（与后端 PATCH /categories/:uid 对齐） */
+export interface UpdateCategoryPayload {
+  uid: string;
+  name?: string;
+  description?: string;
+}
+
+/** 首页统计（GET /stats）：file_count、category_count 必有；user_count 仅管理员返回 */
+export interface DashboardStats {
+  file_count: number;
+  category_count: number;
+  user_count?: number;
 }
 
 export type { ApiResponse, PaginationParams, PaginationResponse };

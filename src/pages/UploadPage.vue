@@ -12,16 +12,14 @@
           map-options options-dense class="upload-page__provider" hide-bottom-space :loading="storageProvidersLoading"
           :disable="storageProvidersLoading"
           :rules="[(v: number | null) => v != null || t('upload.storageProviderRequired')]" :options-cover="false" />
+        <q-select v-model="selectedCategoryUid" :options="categoryOptions" outlined dark emit-value map-options
+          options-dense class="upload-page__category" hide-bottom-space :label="t('upload.category')"
+          :placeholder="t('upload.categoryPlaceholder')" :loading="categoryListLoading" :disable="categoryListLoading"
+          clearable :options-cover="false" />
       </div>
       <div class="upload-page__blocks">
-        <q-expansion-item
-          v-for="(block, index) in blocks"
-          :key="block.id"
-          :model-value="expandedBlockId === block.id"
-          class="upload-page__expansion"
-          dense
-          @update:model-value="(v: boolean) => setExpanded(block.id, v)"
-        >
+        <q-expansion-item v-for="(block, index) in blocks" :key="block.id" :model-value="expandedBlockId === block.id"
+          class="upload-page__expansion" dense @update:model-value="(v: boolean) => setExpanded(block.id, v)">
           <template #header>
             <q-item-section avatar>
               <q-icon name="insert_drive_file" />
@@ -30,16 +28,8 @@
               <q-item-label>{{ getBlockLabel(block, index) }}</q-item-label>
             </q-item-section>
             <q-item-section v-if="blocks.length > 1" side>
-              <q-btn
-                icon="delete_outline"
-                flat
-                round
-                dense
-                size="sm"
-                class="upload-page__block-remove"
-                :aria-label="t('common.delete')"
-                @click.stop="removeBlock(block.id)"
-              />
+              <q-btn icon="delete_outline" flat round dense size="sm" class="upload-page__block-remove"
+                :aria-label="t('common.delete')" @click.stop="removeBlock(block.id)" />
             </q-item-section>
           </template>
           <FileSelection v-model="block.value" />
@@ -54,13 +44,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import PageBase from 'src/components/PageBase.vue';
 import FileSelection from 'src/components/FileSelection.vue';
 import type { FileSelectionValue } from 'src/components/models';
 import { uploadBatch } from 'src/composables/useMediaUpload';
 import { useStorageProviders } from 'src/composables/useStorageProviders';
+import { useCategoryList } from 'src/composables/useCategoryList';
 import { useAuthStore } from 'src/stores/auth-store';
 import { useNotify } from 'src/utils/notify';
 import { handleAxiosError } from 'src/utils/error/handler';
@@ -96,7 +87,14 @@ const isUploading = ref(false);
 
 const { providers: storageProviders, loading: storageProvidersLoading, load: loadStorageProviders } =
   useStorageProviders();
+const { list: categoryList, loading: categoryListLoading, load: loadCategories } = useCategoryList();
+
+const selectedCategoryUid = ref<string | null>(null);
+
 void loadStorageProviders();
+onMounted(() => {
+  void loadCategories({ page: 1, page_size: 100 });
+});
 
 // -----------------------------------------------------------------------------
 // 派生数据
@@ -104,6 +102,11 @@ void loadStorageProviders();
 const storageProviderOptions = computed(() =>
   storageProviders.value.map((p) => ({ value: p.id, label: p.name }))
 );
+
+const categoryOptions = computed(() => [
+  { value: null, label: t('upload.uncategorized') },
+  ...categoryList.value.map((c) => ({ value: c.uid, label: c.name })),
+]);
 
 /** 已选文件的块（用于上传） */
 const blocksWithFile = computed(() => blocks.value.filter((b) => b.value.file != null));
@@ -204,7 +207,7 @@ async function startUpload() {
 
   isUploading.value = true;
   try {
-    const data = await uploadBatch(providerId, items);
+    const data = await uploadBatch(providerId, items, selectedCategoryUid.value);
     if (data.length > 1) {
       notify.success(t('upload.successBatch', { count: data.length }));
     } else if (data.length === 1 && data[0]?.name) {
@@ -235,9 +238,15 @@ async function startUpload() {
 
 .upload-page__provider-row {
   flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ev-space-4);
 }
 
-.upload-page__provider {
+.upload-page__provider,
+.upload-page__category {
+  flex: 1;
+  min-width: 12rem;
   max-width: var(--ev-content-max-width-form);
 }
 
@@ -281,9 +290,11 @@ async function startUpload() {
 .upload-page__block-remove {
   color: var(--ev-color-foreground-subtle);
   transition: color var(--ev-transition-fast);
+
   &:hover {
     color: var(--ev-color-negative);
   }
+
   &:focus-visible {
     outline: none;
     box-shadow: var(--ev-focus-ring);

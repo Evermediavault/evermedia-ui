@@ -61,7 +61,7 @@
           <template #body-cell-actions="props">
             <q-td :props="props" class="user-list-page__cell-actions">
               <q-btn
-                flat
+                outline
                 no-caps
                 color="primary"
                 :label="t('userList.edit')"
@@ -69,7 +69,7 @@
                 @click="openEditModal(props.row)"
               />
               <q-btn
-                flat
+                outline
                 no-caps
                 :color="props.row.disabled ? 'positive' : 'grey'"
                 :label="props.row.disabled ? t('userList.enable') : t('userList.disable')"

@@ -42,6 +42,12 @@
             </q-td>
           </template>
 
+          <template #body-cell-category="props">
+            <q-td :props="props" class="file-list-page__cell-category">
+              {{ props.row.categoryName ?? '—' }}
+            </q-td>
+          </template>
+
           <template #body-cell-uploadedAt="props">
             <q-td :props="props" class="file-list-page__cell-date">
               {{ formatDate(props.row.uploadedAt, DATE_FORMATS.DATETIME_SHORT) }}
@@ -87,6 +93,7 @@ const columns = computed<QTableProps['columns']>(() => [
   { name: 'synapseIndexId', label: t('fileList.columns.synapseIndexId'), field: 'synapseIndexId', align: 'left' },
   { name: 'synapseDataSetId', label: t('fileList.columns.dataSetId'), field: 'synapseDataSetId', align: 'left' },
   { name: 'storageId', label: t('fileList.columns.storageProviderId'), field: 'storageId', align: 'left' },
+  { name: 'category', label: t('fileList.columns.category'), field: 'categoryName', align: 'left' },
   { name: 'uploadedAt', label: t('fileList.columns.uploadedAt'), field: 'uploadedAt', align: 'right' },
 ]);
 
@@ -145,6 +152,7 @@ onMounted(() => {
 .file-list-page__cell-name,
 .file-list-page__cell-synapse,
 .file-list-page__cell-mono,
+.file-list-page__cell-category,
 .file-list-page__cell-date {
   vertical-align: middle;
 }
@@ -172,6 +180,7 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+.file-list-page__cell-category,
 .file-list-page__cell-date {
   color: var(--ev-color-foreground-subtle);
   font-size: var(--ev-font-size-xs);

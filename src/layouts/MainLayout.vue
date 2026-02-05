@@ -23,10 +23,22 @@
         <div class="main-layout__user-block">
           <span class="main-layout__user-pill">{{ userInitial }}</span>
           <span class="main-layout__user-name">{{ authStore.displayName }}</span>
-          <q-btn flat dense no-caps :label="t('auth.logout')" class="main-layout__logout" @click="onLogout" />
+          <q-btn flat dense no-caps :label="t('auth.logout')" class="main-layout__logout" @click="showLogoutConfirm = true" />
         </div>
       </div>
     </q-drawer>
+
+    <EvConfirmDialog
+      v-model="showLogoutConfirm"
+      icon="logout"
+      icon-color="grey"
+      :title="t('common.confirm')"
+      :description="t('auth.logoutConfirm')"
+      :cancel-label="t('common.cancel')"
+      :confirm-label="t('auth.logout')"
+      confirm-color="primary"
+      @confirm="onConfirmLogout"
+    />
 
     <q-page-container class="main-layout__page">
       <div class="main-layout__page-inner">
@@ -47,6 +59,7 @@ import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from 'src/stores/auth-store';
+import EvConfirmDialog from 'src/components/EvConfirmDialog.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -54,6 +67,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const leftDrawerOpen = ref(false);
+const showLogoutConfirm = ref(false);
 // q-drawer 需要数字 px，与 token $drawer-width-px 一致
 const drawerWidthPx = 240;
 // 与 token $nav-icon-inner (1.25rem) 一致，q-icon :size 需字面量
@@ -71,6 +85,7 @@ const navItems = computed(() => {
     { path: '/', title: t('nav.home'), icon: 'home' },
     { path: '/files', title: t('nav.files'), icon: 'folder' },
     { path: '/upload', title: t('nav.upload'), icon: 'cloud_upload' },
+    { path: '/categories', title: t('nav.categories'), icon: 'category' },
   ];
   if (isAdmin.value) {
     items.push({ path: '/users', title: t('nav.users'), icon: 'people' });
@@ -83,7 +98,7 @@ function isActive(path: string) {
   return route.path.startsWith(path);
 }
 
-function onLogout() {
+function onConfirmLogout() {
   authStore.logout();
   void router.push('/login');
 }
