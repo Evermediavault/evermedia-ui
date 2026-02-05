@@ -207,4 +207,13 @@ export interface DashboardStats {
   user_count?: number;
 }
 
+/** Synapse 钱包信息（GET /synapse/wallet-info，仅管理员）；金额为 wei 字符串 */
+export interface SynapseWalletInfo {
+  network: string;
+  wallet_fil_wei: string;
+  wallet_usdfc_wei: string;
+  payments_funds_wei: string;
+  payments_available_funds_wei: string;
+}
+
 export type { ApiResponse, PaginationParams, PaginationResponse };

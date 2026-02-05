@@ -104,6 +104,17 @@ export default {
       users: '用户数量',
       categories: '分类数量',
     },
+    synapseWallet: {
+      title: 'Synapse 钱包',
+      network: '网络',
+      walletFil: '钱包 FIL',
+      walletUsdfc: '钱包 USDFC',
+      recharge: '充值',
+      rechargeModalTitle: '充值 USDFC',
+      rechargeAmountLabel: '存款金额（USDFC）',
+      rechargeAmountPlaceholder: '留空使用默认',
+      rechargeSuccess: '充值成功',
+    },
   },
 
   // 文件列表

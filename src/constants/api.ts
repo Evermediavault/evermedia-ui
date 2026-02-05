@@ -16,6 +16,11 @@ export const API_TIMEOUT = 30000;
 export const UPLOAD_TIMEOUT_MS = 5 * 60 * 1000; // 5 分钟
 
 /**
+ * Synapse 充值/批准请求超时（毫秒）。链上 deposit + approve 可能较久。
+ */
+export const SYNAPSE_APPROVE_TIMEOUT_MS = 10 * 60 * 1000; // 10 分钟
+
+/**
  * API重试次数
  */
 export const API_RETRY_COUNT = 3;
@@ -52,3 +57,9 @@ export const STORAGE_INFO_PATH = '/media/storage-info';
 
 /** 首页统计（需登录；管理员含 user_count） */
 export const STATS_PATH = '/stats';
+
+/** Synapse 钱包信息（仅管理员，未配置 Synapse 时 503） */
+export const SYNAPSE_WALLET_INFO_PATH = '/synapse/wallet-info';
+
+/** Synapse 存款并批准 operator（仅管理员） */
+export const SYNAPSE_APPROVE_PATH = '/synapse/approve';

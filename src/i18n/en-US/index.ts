@@ -104,6 +104,17 @@ export default {
       users: 'Users',
       categories: 'Categories',
     },
+    synapseWallet: {
+      title: 'Synapse Wallet',
+      network: 'Network',
+      walletFil: 'Wallet FIL',
+      walletUsdfc: 'Wallet USDFC',
+      recharge: 'Recharge',
+      rechargeModalTitle: 'Recharge USDFC',
+      rechargeAmountLabel: 'Deposit amount (USDFC)',
+      rechargeAmountPlaceholder: 'Leave empty for default',
+      rechargeSuccess: 'Recharge successful',
+    },
   },
 
   // File list
