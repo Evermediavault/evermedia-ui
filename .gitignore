@@ -29,5 +29,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-# local .env files
+# local .env files（保留 .env.example 作模板）
+.env
 .env.local*
