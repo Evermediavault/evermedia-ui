@@ -2,7 +2,7 @@
   <q-layout view="hhh LpR fFf" class="main-layout" dark>
     <q-drawer v-model="leftDrawerOpen" show-if-above class="main-layout__drawer" :width="drawerWidthPx">
       <div class="main-layout__drawer-inner">
-        <div class="flex items-center justify-center py-4">
+        <div class="flex flex-center py-4">
           <q-img src="/logo.png" height="80px" width="80px" />
         </div>
         <nav class="main-layout__nav-wrap" aria-label="Main">
@@ -90,6 +90,7 @@ const navItems = computed(() => {
   if (isAdmin.value) {
     items.push({ path: '/users', title: t('nav.users'), icon: 'people' });
   }
+  items.push({ path: '/settings', title: t('nav.accountSettings'), icon: 'settings' });
   return items;
 });
 

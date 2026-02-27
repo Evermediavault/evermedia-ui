@@ -92,9 +92,16 @@ export default {
     upload: 'Upload',
     categories: 'Categories',
     users: 'User Management',
+    accountSettings: 'Account Settings',
     appTitle: 'Evermedia Vault',
     adminSubtitle: 'Admin',
     welcomeDesc: 'Welcome to the admin panel',
+  },
+
+  // Account settings
+  accountSettings: {
+    title: 'Account Settings',
+    language: 'Interface Language',
   },
 
   // Index page

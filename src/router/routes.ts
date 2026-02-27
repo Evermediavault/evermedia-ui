@@ -20,6 +20,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/UserListPage.vue'),
         meta: { [ROUTE_META_REQUIRES_ADMIN]: true },
       },
+      { path: 'settings', component: () => import('pages/AccountSettingsPage.vue') },
     ],
   },
   {

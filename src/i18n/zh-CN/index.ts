@@ -92,9 +92,16 @@ export default {
     upload: '上传文件',
     categories: '分类列表',
     users: '用户管理',
+    accountSettings: '账户设置',
     appTitle: 'Evermedia Vault',
     adminSubtitle: '后台管理',
     welcomeDesc: '欢迎使用后台管理面板',
+  },
+
+  // 账户设置
+  accountSettings: {
+    title: '账户设置',
+    language: '界面语言',
   },
 
   // 首页
