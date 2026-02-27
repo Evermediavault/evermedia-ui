@@ -128,8 +128,8 @@ const rechargeSubmitting = ref(false);
 const rechargeFormRef = ref<{ validate: (value?: boolean) => Promise<boolean>; resetValidation: () => void } | null>(null);
 
 const rechargeAmountRule = (v: string) => {
-  if (v == null || v.trim() === '') return true;
-  return /^\d+(\.\d+)?$/.test(v.trim()) && Number(v.trim()) > 0 || t('validation.positive');
+  if (v == null || v.trim() === '') return t('validation.positive');
+  return (/^\d+(\.\d+)?$/.test(v.trim()) && Number(v.trim()) > 0) || t('validation.positive');
 };
 
 function resetRechargeForm() {
@@ -138,11 +138,16 @@ function resetRechargeForm() {
 }
 
 async function onSubmitRecharge() {
+  const amount = rechargeAmount.value.trim();
+  if (!amount || Number(amount) <= 0) {
+    notify.warning(t('validation.positive'));
+    return;
+  }
   const valid = await rechargeFormRef.value?.validate(true);
   if (!valid) return;
   rechargeSubmitting.value = true;
   try {
-    await approveDeposit(rechargeAmount.value.trim() || undefined);
+    await approveDeposit(amount);
     notify.success(t('indexPage.synapseWallet.rechargeSuccess'));
     showRechargeModal.value = false;
     resetRechargeForm();

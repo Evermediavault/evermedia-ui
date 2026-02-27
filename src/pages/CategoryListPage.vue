@@ -9,6 +9,9 @@
         <q-inner-loading :showing="loading" color="primary" />
         <q-banner v-if="error" class="category-list-page__error ev-banner-error" rounded>
           {{ error.message }}
+          <template #action>
+            <q-btn flat :label="t('common.retry')" @click="() => fetchList()" />
+          </template>
         </q-banner>
         <q-table separator="none" v-model:pagination="pagination" :rows="list" :columns="columns" row-key="id" flat dark
           :rows-per-page-options="rowsPerPageOptions" :no-data-label="t('categoryList.noData')"

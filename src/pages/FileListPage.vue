@@ -5,6 +5,9 @@
         <q-inner-loading :showing="loading" color="primary" />
         <q-banner v-if="error" class="file-list-page__error ev-banner-error" rounded>
           {{ error.message }}
+          <template #action>
+            <q-btn flat :label="t('common.retry')" @click="() => fetchList()" />
+          </template>
         </q-banner>
         <q-table separator="none" v-model:pagination="pagination" :rows="list" :columns="columns" row-key="id" flat dark
           :rows-per-page-options="rowsPerPageOptions" :no-data-label="t('fileList.noData')"
@@ -20,6 +23,12 @@
           <template #body-cell-name="props">
             <q-td :props="props" class="file-list-page__cell-name">
               <span class="file-list-page__name">{{ props.row.name }}</span>
+            </q-td>
+          </template>
+
+          <template #body-cell-uploaderName="props">
+            <q-td :props="props" class="file-list-page__cell-uploader">
+              {{ props.row.uploaderName ?? '—' }}
             </q-td>
           </template>
 
@@ -90,6 +99,7 @@ const rowsPerPageOptions = [...PAGE_SIZE_OPTIONS];
 const columns = computed<QTableProps['columns']>(() => [
   { name: 'name', label: t('fileList.columns.name'), field: 'name', align: 'left' },
   { name: 'fileType', label: t('fileList.columns.fileType'), field: 'fileType', align: 'left' },
+  { name: 'uploaderName', label: t('fileList.columns.uploader'), field: 'uploaderName', align: 'left' },
   { name: 'synapseIndexId', label: t('fileList.columns.synapseIndexId'), field: 'synapseIndexId', align: 'left' },
   { name: 'synapseDataSetId', label: t('fileList.columns.dataSetId'), field: 'synapseDataSetId', align: 'left' },
   { name: 'storageId', label: t('fileList.columns.storageProviderId'), field: 'storageId', align: 'left' },

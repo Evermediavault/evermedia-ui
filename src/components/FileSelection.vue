@@ -183,7 +183,7 @@ import type { FileSelectionValue } from 'src/components/models';
 
 export type { FileSelectionValue } from './models';
 
-defineProps<{
+const props = defineProps<{
   modelValue?: FileSelectionValue | null;
 }>();
 
@@ -312,6 +312,25 @@ interface MetaEntry {
 
 const customFileName = ref('');
 const metaEntries = ref<MetaEntry[]>([]);
+
+/** 从 modelValue 同步到内部状态（切换块或外部赋值时） */
+function syncFromModelValue(val: FileSelectionValue | null | undefined) {
+  if (val == null) return;
+  customFileName.value = val.fileName ?? '';
+  metaEntries.value = (val.metaEntries ?? []).map((e) => ({
+    id: crypto.randomUUID(),
+    name: e.name ?? '',
+    type: (e.type ?? 'input'),
+    value: e.value ?? '',
+  }));
+  picker.setFile(val.file ?? null);
+}
+
+watch(
+  () => props.modelValue,
+  (val) => syncFromModelValue(val),
+  { immediate: true }
+);
 
 const metaTypeOptions = computed(() => [
   { value: 'url' as const, label: t('upload.metaTypeUrl') },

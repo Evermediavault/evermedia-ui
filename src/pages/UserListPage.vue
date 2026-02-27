@@ -9,6 +9,9 @@
         <q-inner-loading :showing="loading" color="primary" />
         <q-banner v-if="error" class="user-list-page__error ev-banner-error" rounded>
           {{ error.message }}
+          <template #action>
+            <q-btn flat :label="t('common.retry')" @click="() => fetchList()" />
+          </template>
         </q-banner>
         <q-table separator="none" v-model:pagination="pagination" :rows="list" :columns="columns" row-key="id" flat dark
           :rows-per-page-options="rowsPerPageOptions" :no-data-label="t('userList.noData')"
@@ -120,7 +123,8 @@
       </template>
     </EvModal>
 
-    <EvModal v-model="showEditModal" :title="t('userList.edit')" persistent max-width="28rem">
+    <EvModal v-model="showEditModal" :title="t('userList.edit')" persistent max-width="28rem"
+      @close="resetEditForm">
       <q-form ref="editFormRef" class="user-list-page__form" @submit.prevent="onSubmitEditUser">
         <q-input v-model="editForm.username" outlined dark :label="t('userList.columns.username')"
           :rules="[(v: string) => !!trim(v) || t('common.required')]" hide-bottom-space class="user-list-page__field"
@@ -204,6 +208,17 @@ function openEditModal(row: UserListItem) {
   showEditModal.value = true;
 }
 
+function resetEditForm() {
+  editForm.value = {
+    user_id: '',
+    username: '',
+    email: '',
+    password: '',
+    role: 'uploader' as UserRole,
+  };
+  editFormRef.value?.resetValidation?.();
+}
+
 async function onSubmitEditUser() {
   const valid = await editFormRef.value?.validate();
   if (!valid) return;
@@ -247,7 +262,7 @@ async function toggleDisabled(row: UserListItem) {
   }
 }
 
-const editFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
+const editFormRef = ref<{ validate: () => Promise<boolean>; resetValidation?: () => void } | null>(null);
 
 const roleOptions = computed(() => [
   { value: 'uploader' as UserRole, label: t('userList.roleUploader') },

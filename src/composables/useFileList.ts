@@ -18,6 +18,7 @@ interface RawFileListItem {
   uploaded_at: string;
   category_uid?: string;
   category_name?: string;
+  uploader_username?: string;
 }
 
 /** GET /media/list 响应体 */
@@ -50,6 +51,9 @@ function mapToFileListItem(row: RawFileListItem): FileListItem {
   }
   if (row.category_name !== undefined && row.category_name !== '') {
     item.categoryName = row.category_name;
+  }
+  if (row.uploader_username !== undefined && row.uploader_username !== '') {
+    item.uploaderName = row.uploader_username;
   }
   return item;
 }

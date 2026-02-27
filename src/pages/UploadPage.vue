@@ -6,6 +6,18 @@
         :label="t('upload.startButton')" @click="startUpload" />
     </template>
     <div class="upload-page">
+      <q-banner v-if="storageProvidersError" class="upload-page__error ev-banner-error" rounded>
+        {{ storageProvidersError.message }}
+        <template #action>
+          <q-btn flat :label="t('common.retry')" @click="loadStorageProviders" />
+        </template>
+      </q-banner>
+      <q-banner v-if="categoryListError" class="upload-page__error ev-banner-error" rounded>
+        {{ categoryListError.message }}
+        <template #action>
+          <q-btn flat :label="t('common.retry')" @click="() => loadCategories({ page: 1, page_size: 100 })" />
+        </template>
+      </q-banner>
       <div class="upload-page__provider-row ev-field-theme">
         <q-select v-model="selectedProviderId" :options="storageProviderOptions" outlined dark
           :label="t('upload.storageProvider')" :placeholder="t('upload.storageProviderPlaceholder')" emit-value
@@ -85,14 +97,23 @@ const expandedBlockId = ref<string | null>(initialBlock.id);
 const selectedProviderId = ref<number | null>(null);
 const isUploading = ref(false);
 
-const { providers: storageProviders, loading: storageProvidersLoading, load: loadStorageProviders } =
-  useStorageProviders();
-const { list: categoryList, loading: categoryListLoading, load: loadCategories } = useCategoryList();
+const {
+  providers: storageProviders,
+  loading: storageProvidersLoading,
+  error: storageProvidersError,
+  load: loadStorageProviders,
+} = useStorageProviders();
+const {
+  list: categoryList,
+  loading: categoryListLoading,
+  error: categoryListError,
+  load: loadCategories,
+} = useCategoryList();
 
 const selectedCategoryUid = ref<string | null>(null);
 
-void loadStorageProviders();
 onMounted(() => {
+  void loadStorageProviders();
   void loadCategories({ page: 1, page_size: 100 });
 });
 
@@ -234,6 +255,10 @@ async function startUpload() {
   display: flex;
   flex-direction: column;
   gap: var(--ev-space-6);
+}
+
+.upload-page__error {
+  margin-bottom: var(--ev-space-2);
 }
 
 .upload-page__provider-row {

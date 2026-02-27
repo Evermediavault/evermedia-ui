@@ -142,6 +142,8 @@ export interface FileListItem {
   uploadedAt: string;
   categoryUid?: string;
   categoryName?: string;
+  /** 上传者昵称（用户名） */
+  uploaderName?: string;
 }
 
 /** 文件列表分页元数据（与后端 meta 对齐） */
