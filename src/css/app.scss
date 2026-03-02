@@ -273,36 +273,117 @@
 }
 
 // -----------------------------------------------------------------------------
-// 滚动条统一：原生滚动 + Quasar QScrollArea 使用同一套 token
+// 滚动条统一：全局 + 局部 class，与项目深色/主色风格一致
 // -----------------------------------------------------------------------------
+// 滚动条轨道（与 surface 区分，略深）
+$scrollbar-track: t.$surface-hover;
+// 拇指与 hover 使用 token，与 accent/主色呼应
+$scrollbar-thumb: t.$scrollbar-thumb;
+$scrollbar-thumb-hover: t.$scrollbar-thumb-hover;
+$scrollbar-size: t.$scrollbar-size;
+$scrollbar-radius: t.$radius-sm;
+
+// 全局：html、body、主内容区、侧栏、Quasar 滚动区及带 ev-scrollbar 的容器
+html,
+body,
+.q-layout__shadow,
+.q-page-container,
+.main-layout__page,
+.q-drawer__content,
+.q-scrollarea__content,
+.ev-scrollbar,
+[class*='overflow-auto'],
+[class*='overflow-y-auto'],
+[class*='overflow-x-auto'] {
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-thumb $scrollbar-track;
+}
+// WebKit（Chrome / Safari / Edge）：全局
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.q-layout__shadow::-webkit-scrollbar,
+.q-page-container::-webkit-scrollbar,
+.main-layout__page::-webkit-scrollbar,
+.q-drawer__content::-webkit-scrollbar,
+.q-scrollarea__content::-webkit-scrollbar,
 .ev-scrollbar::-webkit-scrollbar,
-.q-scrollarea__content::-webkit-scrollbar {
-  width: var(--ev-scrollbar-size);
-  height: var(--ev-scrollbar-size);
+[class*='overflow-auto']::-webkit-scrollbar,
+[class*='overflow-y-auto']::-webkit-scrollbar,
+[class*='overflow-x-auto']::-webkit-scrollbar {
+  width: $scrollbar-size;
+  height: $scrollbar-size;
 }
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.q-layout__shadow::-webkit-scrollbar-track,
+.q-page-container::-webkit-scrollbar-track,
+.main-layout__page::-webkit-scrollbar-track,
+.q-drawer__content::-webkit-scrollbar-track,
+.q-scrollarea__content::-webkit-scrollbar-track,
 .ev-scrollbar::-webkit-scrollbar-track,
-.q-scrollarea__content::-webkit-scrollbar-track {
-  background: var(--ev-color-surface-hover);
-  border-radius: var(--ev-radius-sm);
+[class*='overflow-auto']::-webkit-scrollbar-track,
+[class*='overflow-y-auto']::-webkit-scrollbar-track,
+[class*='overflow-x-auto']::-webkit-scrollbar-track {
+  background: $scrollbar-track;
+  border-radius: $scrollbar-radius;
 }
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.q-layout__shadow::-webkit-scrollbar-thumb,
+.q-page-container::-webkit-scrollbar-thumb,
+.main-layout__page::-webkit-scrollbar-thumb,
+.q-drawer__content::-webkit-scrollbar-thumb,
+.q-scrollarea__content::-webkit-scrollbar-thumb,
 .ev-scrollbar::-webkit-scrollbar-thumb,
-.q-scrollarea__content::-webkit-scrollbar-thumb {
-  background: var(--ev-scrollbar-thumb);
-  border-radius: var(--ev-radius-sm);
+[class*='overflow-auto']::-webkit-scrollbar-thumb,
+[class*='overflow-y-auto']::-webkit-scrollbar-thumb,
+[class*='overflow-x-auto']::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb;
+  border-radius: $scrollbar-radius;
   transition: background var(--ev-transition-fast);
 }
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+.q-layout__shadow::-webkit-scrollbar-thumb:hover,
+.q-page-container::-webkit-scrollbar-thumb:hover,
+.main-layout__page::-webkit-scrollbar-thumb:hover,
+.q-drawer__content::-webkit-scrollbar-thumb:hover,
+.q-scrollarea__content::-webkit-scrollbar-thumb:hover,
 .ev-scrollbar::-webkit-scrollbar-thumb:hover,
-.q-scrollarea__content::-webkit-scrollbar-thumb:hover {
-  background: var(--ev-scrollbar-thumb-hover);
+[class*='overflow-auto']::-webkit-scrollbar-thumb:hover,
+[class*='overflow-y-auto']::-webkit-scrollbar-thumb:hover,
+[class*='overflow-x-auto']::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-thumb-hover;
 }
-/* Quasar 自定义滚动条拇指（部分场景） */
+// 表格横向滚动等：带 ev-table-theme 的容器内部滚动
+.ev-table-theme::-webkit-scrollbar,
+.ev-table-theme .q-table__container::-webkit-scrollbar {
+  width: $scrollbar-size;
+  height: $scrollbar-size;
+}
+.ev-table-theme::-webkit-scrollbar-track,
+.ev-table-theme .q-table__container::-webkit-scrollbar-track {
+  background: $scrollbar-track;
+  border-radius: $scrollbar-radius;
+}
+.ev-table-theme::-webkit-scrollbar-thumb,
+.ev-table-theme .q-table__container::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb;
+  border-radius: $scrollbar-radius;
+  transition: background var(--ev-transition-fast);
+}
+.ev-table-theme::-webkit-scrollbar-thumb:hover,
+.ev-table-theme .q-table__container::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-thumb-hover;
+}
+// Quasar QScrollArea 自定义拇指（部分组件内部使用）
 .q-scrollarea__thumb {
-  background: var(--ev-scrollbar-thumb) !important;
-  border-radius: var(--ev-radius-sm);
+  background: $scrollbar-thumb !important;
+  border-radius: $scrollbar-radius;
   transition: background var(--ev-transition-fast);
 }
 .q-scrollarea__thumb:hover {
-  background: var(--ev-scrollbar-thumb-hover) !important;
+  background: $scrollbar-thumb-hover !important;
 }
 
 // -----------------------------------------------------------------------------

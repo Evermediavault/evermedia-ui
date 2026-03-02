@@ -53,6 +53,15 @@ export interface ApiErrorResponse {
   details?: unknown;
 }
 
+/** 联盟成员扩展信息（与后端 alliance_meta 一致，仅 role=alliance_member 时有值） */
+export interface AllianceMemberMeta {
+  logo: string;
+  project_name: string;
+  intro: string;
+  website: string;
+  twitter: string;
+}
+
 /** 用户列表项（后端 snake_case 转 camelCase 后） */
 export interface UserListItem {
   id: number;
@@ -63,6 +72,8 @@ export interface UserListItem {
   disabled: boolean;
   lastLoginAt: string | null;
   createdAt: string;
+  /** 仅 role=alliance_member 时存在 */
+  allianceMeta?: AllianceMemberMeta;
 }
 
 /** 用户列表分页元数据（与后端 meta 对齐） */
@@ -102,13 +113,19 @@ export interface UserListParams {
 }
 
 /** 添加用户请求体（与后端 POST /users 对齐，无 user_id 为新增） */
-export type UserRole = 'uploader' | 'admin';
+export type UserRole = 'uploader' | 'alliance_member' | 'admin';
 
 export interface CreateUserPayload {
   username: string;
   email: string;
   password: string;
   role: UserRole;
+  /** 仅 role=alliance_member 时必填/选填 */
+  logo?: string;
+  project_name?: string;
+  intro?: string;
+  website?: string;
+  twitter?: string;
 }
 
 /** 编辑用户请求体（与后端 POST /users 对齐，传 user_id 为编辑） */
@@ -118,6 +135,11 @@ export interface UpdateUserPayload {
   email: string;
   password?: string;
   role: UserRole;
+  logo?: string;
+  project_name?: string;
+  intro?: string;
+  website?: string;
+  twitter?: string;
 }
 
 /** 存储 Provider 快照（与 GET /media/storage-info 及文件 storage_info 一致） */

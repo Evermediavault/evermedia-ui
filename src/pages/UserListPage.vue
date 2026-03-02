@@ -32,7 +32,7 @@
 
           <template #body-cell-role="props">
             <q-td :props="props" class="user-list-page__cell-role">
-              <span class="user-list-page__role-pill">{{ props.row.role }}</span>
+              <span class="user-list-page__role-pill">{{ roleDisplayLabel(props.row.role) }}</span>
             </q-td>
           </template>
 
@@ -104,6 +104,9 @@
     <EvModal v-model="showAddModal" :title="t('userList.addUserModalTitle')" persistent max-width="28rem"
       @close="resetAddForm">
       <q-form ref="addFormRef" class="user-list-page__form" @submit.prevent="onSubmitAddUser">
+        <q-select v-model="addForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
+          emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
+          class="user-list-page__field" :disabled="addSubmitting" />
         <q-input v-model="addForm.username" outlined dark :label="t('userList.columns.username')"
           :rules="[(v: string) => !!trim(v) || t('common.required')]" hide-bottom-space class="user-list-page__field"
           :disabled="addSubmitting" />
@@ -112,9 +115,26 @@
         <q-input v-model="addForm.password" type="password" outlined dark :label="t('auth.password')"
           :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space class="user-list-page__field"
           :disabled="addSubmitting" />
-        <q-select v-model="addForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
-          emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
-          class="user-list-page__field" :disabled="addSubmitting" />
+        <template v-if="addForm.role === 'alliance_member'">
+          <div class="user-list-page__alliance-hint">{{ t('userList.allianceFieldsHint') }}</div>
+          <q-input v-model="addForm.logo" outlined dark :label="t('userList.logo')"
+            :placeholder="t('userList.logoPlaceholder')"
+            :rules="allianceAddLogoRules" hide-bottom-space class="user-list-page__field" :disabled="addSubmitting" />
+          <q-input v-model="addForm.project_name" outlined dark :label="t('userList.projectName')"
+            :placeholder="t('userList.projectNamePlaceholder')"
+            :rules="[(v: string) => (addForm.role !== 'alliance_member' || !!trim(v)) || t('common.required')]"
+            hide-bottom-space class="user-list-page__field" :disabled="addSubmitting" />
+          <q-input v-model="addForm.website" outlined dark :label="t('userList.website')"
+            :placeholder="t('userList.websitePlaceholder')" :rules="websiteHttpsRules" hide-bottom-space
+            class="user-list-page__field" :disabled="addSubmitting" />
+          <q-input v-model="addForm.twitter" outlined dark :label="t('userList.twitter')"
+            :placeholder="t('userList.twitterPlaceholder')" hide-bottom-space class="user-list-page__field"
+            :disabled="addSubmitting" />
+        </template>
+        <q-input v-if="addForm.role === 'alliance_member'" v-model="addForm.intro" outlined dark
+          :label="t('userList.intro')" type="textarea" autogrow :placeholder="t('userList.introPlaceholder')"
+          hide-bottom-space class="user-list-page__field user-list-page__intro-field" :disabled="addSubmitting"
+          :min-rows="3" />
       </q-form>
       <template #actions>
         <q-btn flat no-caps :label="t('common.cancel')" color="grey" @click="showAddModal = false" />
@@ -126,6 +146,9 @@
     <EvModal v-model="showEditModal" :title="t('userList.edit')" persistent max-width="28rem"
       @close="resetEditForm">
       <q-form ref="editFormRef" class="user-list-page__form" @submit.prevent="onSubmitEditUser">
+        <q-select v-model="editForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
+          emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
+          class="user-list-page__field" :disabled="editSubmitting" />
         <q-input v-model="editForm.username" outlined dark :label="t('userList.columns.username')"
           :rules="[(v: string) => !!trim(v) || t('common.required')]" hide-bottom-space class="user-list-page__field"
           :disabled="editSubmitting" />
@@ -134,9 +157,27 @@
         <q-input v-model="editForm.password" type="password" outlined dark :label="t('auth.password')"
           hide-bottom-space class="user-list-page__field" :placeholder="t('userList.passwordPlaceholder')"
           :disabled="editSubmitting" />
-        <q-select v-model="editForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
-          emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
-          class="user-list-page__field" :disabled="editSubmitting" />
+        <template v-if="editForm.role === 'alliance_member'">
+          <div class="user-list-page__alliance-hint">{{ t('userList.allianceFieldsHint') }}</div>
+          <q-input v-model="editForm.logo" outlined dark :label="t('userList.logo')"
+            :placeholder="t('userList.logoPlaceholder')"
+            :rules="allianceEditLogoRules" hide-bottom-space class="user-list-page__field"
+            :disabled="editSubmitting" />
+          <q-input v-model="editForm.project_name" outlined dark :label="t('userList.projectName')"
+            :placeholder="t('userList.projectNamePlaceholder')"
+            :rules="[(v: string) => (editForm.role !== 'alliance_member' || !!trim(v)) || t('common.required')]"
+            hide-bottom-space class="user-list-page__field" :disabled="editSubmitting" />
+          <q-input v-model="editForm.website" outlined dark :label="t('userList.website')"
+            :placeholder="t('userList.websitePlaceholder')" :rules="websiteHttpsRules" hide-bottom-space
+            class="user-list-page__field" :disabled="editSubmitting" />
+          <q-input v-model="editForm.twitter" outlined dark :label="t('userList.twitter')"
+            :placeholder="t('userList.twitterPlaceholder')" hide-bottom-space class="user-list-page__field"
+            :disabled="editSubmitting" />
+        </template>
+        <q-input v-if="editForm.role === 'alliance_member'" v-model="editForm.intro" outlined dark
+          :label="t('userList.intro')" type="textarea" autogrow :placeholder="t('userList.introPlaceholder')"
+          hide-bottom-space class="user-list-page__field user-list-page__intro-field" :disabled="editSubmitting"
+          :min-rows="3" />
       </q-form>
       <template #actions>
         <q-btn flat no-caps :label="t('common.cancel')" color="grey" @click="showEditModal = false" />
@@ -166,6 +207,7 @@ import {
   type UserListParams,
   type UserListTableSortBy,
   type UserRole,
+  type CreateUserPayload,
   USER_LIST_SORT_BY_MAP,
 } from 'src/types/api';
 
@@ -184,6 +226,11 @@ const addForm = ref({
   email: '',
   password: '',
   role: 'uploader' as UserRole,
+  logo: '',
+  project_name: '',
+  intro: '',
+  website: '',
+  twitter: '',
 });
 
 const showEditModal = ref(false);
@@ -195,15 +242,26 @@ const editForm = ref({
   email: '',
   password: '',
   role: 'uploader' as UserRole,
+  logo: '',
+  project_name: '',
+  intro: '',
+  website: '',
+  twitter: '',
 });
 
 function openEditModal(row: UserListItem) {
+  const am = row.allianceMeta;
   editForm.value = {
     user_id: row.uid,
     username: row.username,
     email: row.email,
     password: '',
     role: row.role as UserRole,
+    logo: am?.logo ?? '',
+    project_name: am?.project_name ?? '',
+    intro: am?.intro ?? '',
+    website: am?.website ?? '',
+    twitter: am?.twitter ?? '',
   };
   showEditModal.value = true;
 }
@@ -215,9 +273,40 @@ function resetEditForm() {
     email: '',
     password: '',
     role: 'uploader' as UserRole,
+    logo: '',
+    project_name: '',
+    intro: '',
+    website: '',
+    twitter: '',
   };
   editFormRef.value?.resetValidation?.();
 }
+
+function isHttpsUrl(s: string): boolean {
+  const v = trim(s);
+  if (!v) return true;
+  try {
+    return new URL(v).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+const websiteHttpsRules = [
+  (v: string) => !trim(v) || isHttpsUrl(v) || t('validation.websiteMustHttps'),
+];
+
+const allianceAddLogoRules = [
+  (v: string) =>
+    (addForm.value.role !== 'alliance_member' || !!trim(v)) || t('common.required'),
+  (v: string) => (addForm.value.role !== 'alliance_member' || trim(v) === '' || isHttpsUrl(v)) || t('validation.logoMustHttps'),
+];
+
+const allianceEditLogoRules = [
+  (v: string) =>
+    (editForm.value.role !== 'alliance_member' || !!trim(v)) || t('common.required'),
+  (v: string) => (editForm.value.role !== 'alliance_member' || trim(v) === '' || isHttpsUrl(v)) || t('validation.logoMustHttps'),
+];
 
 async function onSubmitEditUser() {
   const valid = await editFormRef.value?.validate();
@@ -235,6 +324,13 @@ async function onSubmitEditUser() {
     };
     if (trim(editForm.value.password)) {
       payload.password = editForm.value.password;
+    }
+    if (editForm.value.role === 'alliance_member') {
+      payload.logo = trim(editForm.value.logo);
+      payload.project_name = trim(editForm.value.project_name);
+      payload.intro = trim(editForm.value.intro);
+      payload.website = trim(editForm.value.website);
+      payload.twitter = trim(editForm.value.twitter);
     }
     await updateUser(payload);
     notify.success(t('userList.updateSuccess'));
@@ -266,8 +362,18 @@ const editFormRef = ref<{ validate: () => Promise<boolean>; resetValidation?: ()
 
 const roleOptions = computed(() => [
   { value: 'uploader' as UserRole, label: t('userList.roleUploader') },
+  { value: 'alliance_member' as UserRole, label: t('userList.roleAllianceMember') },
   { value: 'admin' as UserRole, label: t('userList.roleAdmin') },
 ]);
+
+function roleDisplayLabel(role: string): string {
+  const map: Record<string, string> = {
+    uploader: t('userList.roleUploader'),
+    alliance_member: t('userList.roleAllianceMember'),
+    admin: t('userList.roleAdmin'),
+  };
+  return map[role] ?? role;
+}
 
 const emailRules = [
   (v: string) => !!trim(v) || t('common.required'),
@@ -275,7 +381,17 @@ const emailRules = [
 ];
 
 function resetAddForm() {
-  addForm.value = { username: '', email: '', password: '', role: 'uploader' };
+  addForm.value = {
+    username: '',
+    email: '',
+    password: '',
+    role: 'uploader' as UserRole,
+    logo: '',
+    project_name: '',
+    intro: '',
+    website: '',
+    twitter: '',
+  };
 }
 
 const addFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
@@ -289,7 +405,20 @@ async function onSubmitAddUser() {
   if (!u || !e || !p) return;
   addSubmitting.value = true;
   try {
-    await createUser({ username: u, email: e, password: p, role: addForm.value.role });
+    const payload: CreateUserPayload = {
+      username: u,
+      email: e,
+      password: p,
+      role: addForm.value.role,
+    };
+    if (addForm.value.role === 'alliance_member') {
+      payload.logo = trim(addForm.value.logo);
+      payload.project_name = trim(addForm.value.project_name);
+      payload.intro = trim(addForm.value.intro);
+      payload.website = trim(addForm.value.website);
+      payload.twitter = trim(addForm.value.twitter);
+    }
+    await createUser(payload);
     notify.success(t('userList.createSuccess'));
     showAddModal.value = false;
     resetAddForm();
@@ -424,6 +553,7 @@ onMounted(() => {
 
 .user-list-page__role-pill {
   display: inline-block;
+  min-width: 6.5rem;
   padding: var(--ev-space-1) var(--ev-space-3);
   font-size: var(--ev-font-size-xs);
   font-weight: var(--ev-font-weight-medium);
@@ -431,6 +561,8 @@ onMounted(() => {
   background: var(--ev-color-primary-tint-bg);
   border: 1px solid var(--ev-color-primary-tint-border);
   border-radius: var(--ev-radius-md);
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .user-list-page__cell-date {
@@ -442,6 +574,18 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: var(--ev-space-4);
+}
+
+.user-list-page__alliance-hint {
+  font-size: var(--ev-font-size-sm);
+  color: var(--ev-color-foreground-muted);
+  margin: var(--ev-space-1) 0;
+}
+
+.user-list-page__intro-field {
+  :deep(.q-field__control) {
+    min-height: 4.5rem;
+  }
 }
 
 .user-list-page__field {

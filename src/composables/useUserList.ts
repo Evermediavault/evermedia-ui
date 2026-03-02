@@ -9,6 +9,7 @@ import type {
   UserListParams,
   CreateUserPayload,
   UpdateUserPayload,
+  AllianceMemberMeta,
 } from 'src/types/api';
 
 /** 后端返回单条（snake_case，与 api/schemas/user UserListItem 一致） */
@@ -21,6 +22,7 @@ interface RawUserListItem {
   disabled: boolean;
   last_login_at: string | null;
   created_at: string;
+  alliance_meta?: AllianceMemberMeta;
 }
 
 /** GET /users 响应体 */
@@ -32,7 +34,7 @@ interface UserListBackendResponse {
 }
 
 function mapToUserListItem(row: RawUserListItem): UserListItem {
-  return {
+  const item: UserListItem = {
     id: row.id,
     uid: row.uid,
     username: row.username,
@@ -42,6 +44,10 @@ function mapToUserListItem(row: RawUserListItem): UserListItem {
     lastLoginAt: row.last_login_at,
     createdAt: row.created_at,
   };
+  if (row.alliance_meta != null) {
+    item.allianceMeta = row.alliance_meta;
+  }
+  return item;
 }
 
 /**
@@ -91,17 +97,25 @@ interface CreateUserBackendResponse {
 export async function createUser(
   payload: CreateUserPayload
 ): Promise<CreateUserBackendData['user']> {
-  const res = await api.post<CreateUserBackendResponse>('/users', {
+  const body: Record<string, unknown> = {
     username: payload.username.trim(),
     email: payload.email.trim().toLowerCase(),
     password: payload.password,
     role: payload.role,
-  });
-  const body = res.data;
-  if (!body.success || !body.data?.user) {
-    throw new Error(body.message ?? 'Failed to create user');
+  };
+  if (payload.role === 'alliance_member') {
+    if (payload.logo != null && payload.logo.trim()) body.logo = payload.logo.trim();
+    if (payload.project_name != null && payload.project_name.trim()) body.project_name = payload.project_name.trim();
+    if (payload.intro != null && payload.intro.trim()) body.intro = payload.intro.trim();
+    if (payload.website != null && payload.website.trim()) body.website = payload.website.trim();
+    if (payload.twitter != null && payload.twitter.trim()) body.twitter = payload.twitter.trim();
   }
-  return body.data.user;
+  const res = await api.post<CreateUserBackendResponse>('/users', body);
+  const data = res.data;
+  if (!data.success || !data.data?.user) {
+    throw new Error(data.message ?? 'Failed to create user');
+  }
+  return data.data.user;
 }
 
 /** POST /users 编辑用户响应 data（与后端一致） */
@@ -130,6 +144,13 @@ export async function updateUser(
   };
   if (payload.password != null && payload.password.length > 0) {
     body.password = payload.password;
+  }
+  if (payload.role === 'alliance_member') {
+    if (payload.logo != null && payload.logo.trim()) body.logo = payload.logo.trim();
+    if (payload.project_name != null && payload.project_name.trim()) body.project_name = payload.project_name.trim();
+    if (payload.intro != null && payload.intro.trim()) body.intro = payload.intro.trim();
+    if (payload.website != null && payload.website.trim()) body.website = payload.website.trim();
+    if (payload.twitter != null && payload.twitter.trim()) body.twitter = payload.twitter.trim();
   }
   const res = await api.post<{ success: true; message: string; data: UpdateUserBackendData }>(
     '/users',
