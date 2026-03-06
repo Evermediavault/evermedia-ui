@@ -54,6 +54,9 @@ export async function uploadBatch(
     headers: { 'Content-Type': 'multipart/form-data' },
     timeout: UPLOAD_TIMEOUT_MS,
   });
-  const data = res.data?.data;
-  return Array.isArray(data) ? data : [];
+  const body = res.data;
+  if (!body?.success || !Array.isArray(body.data)) {
+    throw new Error(body?.message ?? '');
+  }
+  return body.data;
 }

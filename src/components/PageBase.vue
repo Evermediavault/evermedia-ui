@@ -67,7 +67,11 @@ const scrollHeightPx = ref('0px');
 
 function setScrollHeight() {
   if (!bodyRef.value) return;
-  scrollHeightPx.value = `${bodyRef.value.clientHeight}px`;
+  const h = bodyRef.value.clientHeight;
+  const next = `${h}px`;
+  if (scrollHeightPx.value !== next) {
+    scrollHeightPx.value = next;
+  }
 }
 
 let resizeObserver: ResizeObserver | null = null;
@@ -75,7 +79,9 @@ let resizeObserver: ResizeObserver | null = null;
 onMounted(() => {
   setScrollHeight();
   if (bodyRef.value) {
-    resizeObserver = new ResizeObserver(setScrollHeight);
+    resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(setScrollHeight);
+    });
     resizeObserver.observe(bodyRef.value);
   }
 });

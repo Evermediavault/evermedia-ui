@@ -16,10 +16,10 @@
     </div>
     <template #actions>
       <div class="ev-confirm-dialog__actions">
-        <q-btn flat no-caps :label="cancelLabel" class="ev-confirm-dialog__btn ev-confirm-dialog__btn--cancel"
+        <q-btn flat no-caps :label="cancelLabelDisplay" class="ev-confirm-dialog__btn ev-confirm-dialog__btn--cancel"
           :disable="loading" @click="onCancel" />
         <q-btn unelevated no-caps :color="confirmColor" class="ev-confirm-dialog__btn ev-confirm-dialog__btn--confirm"
-          :label="confirmLabel" :loading="loading" :disable="loading" @click="onConfirm" />
+          :label="confirmLabelDisplay" :loading="loading" :disable="loading" @click="onConfirm" />
       </div>
     </template>
   </EvModal>
@@ -27,7 +27,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import EvModal from 'src/components/EvModal.vue';
+
+const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -41,9 +44,9 @@ const props = withDefaults(
     title?: string;
     /** 描述文案（也可用 #description 插槽） */
     description?: string;
-    /** 取消按钮文案 */
+    /** 取消按钮文案（不传则用 i18n common.cancel） */
     cancelLabel?: string;
-    /** 确认按钮文案 */
+    /** 确认按钮文案（不传则用 i18n common.confirm） */
     confirmLabel?: string;
     /** 确认按钮颜色 */
     confirmColor?: string;
@@ -54,13 +57,14 @@ const props = withDefaults(
   }>(),
   {
     iconColor: 'primary',
-    cancelLabel: '取消',
-    confirmLabel: '确认',
     confirmColor: 'primary',
     loading: false,
     maxWidth: '28rem',
   }
 );
+
+const cancelLabelDisplay = computed(() => props.cancelLabel ?? t('common.cancel'));
+const confirmLabelDisplay = computed(() => props.confirmLabel ?? t('common.confirm'));
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];

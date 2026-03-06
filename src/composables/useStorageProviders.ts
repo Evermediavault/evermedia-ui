@@ -29,7 +29,7 @@ export function useStorageProviders(): {
       const res = await api.get<StorageInfoResponse>(STORAGE_INFO_PATH);
       const body = res.data;
       if (!body.success || body.data?.providers == null) {
-        throw new Error(body.message ?? 'Failed to load storage providers');
+        throw new Error(body.message ?? '');
       }
       providers.value = body.data.providers.filter((p) => p.isActive);
     } catch (e) {

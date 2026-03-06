@@ -1,8 +1,8 @@
 /**
  * 文件列表 API：GET /media/list（不鉴权，分页）
  */
-import { ref, type Ref } from 'vue';
 import { api } from 'src/boot/axios';
+import { usePaginatedList } from 'src/composables/usePaginatedList';
 import { MEDIA_LIST_PATH } from 'src/constants/api';
 import type { FileListItem, FileListMeta, FileListParams, StorageProviderSnapshot } from 'src/types/api';
 
@@ -72,7 +72,7 @@ export async function fetchFileList(
   });
   const body = res.data;
   if (!body.success || body.data === undefined) {
-    throw new Error(body.message ?? 'Failed to fetch file list');
+    throw new Error(body.message ?? '');
   }
   return {
     list: body.data.map(mapToFileListItem),
@@ -84,27 +84,5 @@ export async function fetchFileList(
  * 文件列表状态与请求（用于页面：list / meta / loading / error / load）
  */
 export function useFileList() {
-  const list: Ref<FileListItem[]> = ref([]);
-  const meta: Ref<FileListMeta | null> = ref(null);
-  const loading = ref(false);
-  const error = ref<Error | null>(null);
-
-  /** 拉取一页并更新 list / meta，失败时写 error、清 list */
-  async function load(params: FileListParams) {
-    loading.value = true;
-    error.value = null;
-    try {
-      const result = await fetchFileList(params);
-      list.value = result.list;
-      meta.value = result.meta;
-    } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
-      list.value = [];
-      meta.value = null;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  return { list, meta, loading, error, load };
+  return usePaginatedList<FileListItem, FileListParams>(fetchFileList);
 }

@@ -1,8 +1,8 @@
 /**
  * 分类列表 API：GET /categories、POST /categories、PATCH /categories/:uid，所有已登录用户可访问
  */
-import { ref, type Ref } from 'vue';
 import { api } from 'src/boot/axios';
+import { usePaginatedList } from 'src/composables/usePaginatedList';
 import type {
   CategoryListItem,
   CategoryListMeta,
@@ -58,7 +58,7 @@ export async function fetchCategoryList(
   });
   const body = res.data;
   if (!body.success || body.data === undefined) {
-    throw new Error(body.message ?? 'Failed to fetch category list');
+    throw new Error(body.message ?? '');
   }
   return {
     list: body.data.map(mapToCategoryListItem),
@@ -90,7 +90,7 @@ export async function createCategory(payload: CreateCategoryPayload): Promise<Ca
   });
   const body = res.data;
   if (!body.success || !body.data) {
-    throw new Error(body.message ?? 'Failed to create category');
+    throw new Error(body.message ?? '');
   }
   return mapToCategoryListItem(body.data);
 }
@@ -106,7 +106,7 @@ export async function updateCategory(payload: UpdateCategoryPayload): Promise<Ca
   const res = await api.patch<UpdateCategoryBackendResponse>(`/categories/${uid}`, body);
   const data = res.data;
   if (!data.success || !data.data) {
-    throw new Error(data.message ?? 'Failed to update category');
+    throw new Error(data.message ?? '');
   }
   return mapToCategoryListItem(data.data);
 }
@@ -118,7 +118,7 @@ export async function deleteCategory(uid: string): Promise<void> {
   const res = await api.delete<{ success: true; message: string }>(`/categories/${uid}`);
   const data = res.data;
   if (!data.success) {
-    throw new Error(data.message ?? 'Failed to delete category');
+    throw new Error(data.message ?? '');
   }
 }
 
@@ -126,26 +126,5 @@ export async function deleteCategory(uid: string): Promise<void> {
  * 分类列表状态与请求（用于页面：list / meta / loading / error / load）
  */
 export function useCategoryList() {
-  const list: Ref<CategoryListItem[]> = ref([]);
-  const meta: Ref<CategoryListMeta | null> = ref(null);
-  const loading = ref(false);
-  const error = ref<Error | null>(null);
-
-  async function load(params: CategoryListParams) {
-    loading.value = true;
-    error.value = null;
-    try {
-      const result = await fetchCategoryList(params);
-      list.value = result.list;
-      meta.value = result.meta;
-    } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
-      list.value = [];
-      meta.value = null;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  return { list, meta, loading, error, load };
+  return usePaginatedList<CategoryListItem, CategoryListParams>(fetchCategoryList);
 }

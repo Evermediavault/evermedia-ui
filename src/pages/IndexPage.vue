@@ -153,7 +153,7 @@ async function onSubmitRecharge() {
     resetRechargeForm();
   } catch (e) {
     const appErr = handleAxiosError(e);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
     rechargeSubmitting.value = false;
   }

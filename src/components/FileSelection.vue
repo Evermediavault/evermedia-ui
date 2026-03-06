@@ -170,7 +170,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, computed, watch, onUnmounted } from 'vue';
+import { ref, computed, watch, nextTick, onUnmounted } from 'vue';
 import { useFilePicker } from 'src/composables/useFilePicker';
 import {
   validateMetaValue,
@@ -179,6 +179,7 @@ import {
   isStringLength,
   type MetaEntryType,
 } from 'src/utils/validation';
+import { getFileTypeInfo, FILE_TYPE_BG } from 'src/utils/fileType';
 import type { FileSelectionValue } from 'src/components/models';
 
 export type { FileSelectionValue } from './models';
@@ -195,19 +196,8 @@ const { t } = useI18n();
 const picker = useFilePicker();
 const pickerInputRef = picker.inputRef;
 
-type PreviewKind = 'image' | 'video' | 'audio' | 'pdf' | 'other';
-
-function getPreviewKind(file: File | null): PreviewKind {
-  if (!file?.type) return 'other';
-  const t = file.type;
-  if (t.startsWith('image/')) return 'image';
-  if (t.startsWith('video/')) return 'video';
-  if (t.startsWith('audio/')) return 'audio';
-  if (t === 'application/pdf') return 'pdf';
-  return 'other';
-}
-
-const previewKind = computed<PreviewKind>(() => getPreviewKind(picker.file.value));
+const fileTypeInfo = computed(() => getFileTypeInfo(picker.file.value));
+const previewKind = computed(() => fileTypeInfo.value.kind);
 
 const previewUrl = ref('');
 /** 仅图片、视频创建 Object URL，避免 PDF/音频等大文件占用内存 */
@@ -226,63 +216,15 @@ watch(
   { immediate: true }
 );
 
-/** 按类型返回图标（非预览时显示） */
-const fileTypeIcon = computed(() => {
-  const f = picker.file.value;
-  if (!f?.type) return 'insert_drive_file';
-  const t = f.type;
-  if (t === 'application/pdf') return 'picture_as_pdf';
-  if (
-    t === 'application/msword' ||
-    t === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  )
-    return 'description';
-  if (
-    t === 'application/vnd.ms-excel' ||
-    t === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  )
-    return 'table_chart';
-  if (t.startsWith('audio/')) return 'audiotrack';
-  if (t.startsWith('text/') || t === 'application/json' || t === 'application/xml')
-    return 'description';
-  return 'insert_drive_file';
-});
+const fileTypeIcon = computed(() => fileTypeInfo.value.icon);
 
-/** 非预览时的缩略图背景色（PDF 红、Word 蓝等），仅非 image/video 时生效 */
-const FILE_TYPE_BG: Record<string, string> = {
-  pdf: 'rgba(193, 0, 21, 0.22)',
-  word: 'rgba(43, 87, 154, 0.28)',
-  excel: 'rgba(33, 115, 70, 0.28)',
-  audio: 'rgba(139, 92, 246, 0.2)',
-  text: 'rgba(255, 255, 255, 0.08)',
-  other: 'rgba(255, 255, 255, 0.06)',
-};
-function getFileTypeBgKey(file: File | null): string {
-  if (!file?.type) return 'other';
-  const t = file.type;
-  if (t === 'application/pdf') return 'pdf';
-  if (
-    t === 'application/msword' ||
-    t === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  )
-    return 'word';
-  if (
-    t === 'application/vnd.ms-excel' ||
-    t === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  )
-    return 'excel';
-  if (t.startsWith('audio/')) return 'audio';
-  if (t.startsWith('text/') || t === 'application/json' || t === 'application/xml')
-    return 'text';
-  return 'other';
-}
 const previewThumbClass = computed(() => {
   if (previewKind.value === 'image' || previewKind.value === 'video') return '';
   return 'file-selection__preview-thumb--icon';
 });
 const previewThumbStyle = computed((): Record<string, string> => {
   if (previewKind.value === 'image' || previewKind.value === 'video') return {};
-  const bgKey = getFileTypeBgKey(picker.file.value);
+  const bgKey = fileTypeInfo.value.bgKey;
   const bg = FILE_TYPE_BG[bgKey] ?? FILE_TYPE_BG.other ?? 'rgba(255,255,255,0.06)';
   return { '--ev-file-thumb-bg': bg };
 });
@@ -313,17 +255,26 @@ interface MetaEntry {
 const customFileName = ref('');
 const metaEntries = ref<MetaEntry[]>([]);
 
-/** 从 modelValue 同步到内部状态（切换块或外部赋值时） */
+/** 同步中跳过 emit，避免 modelValue → sync → emit → modelValue 递归导致浏览器崩溃（仅线上/生产易触发） */
+let skipEmitUntilNextTick = false;
+
+/** 从 modelValue 同步到内部状态（切换块或外部赋值时）。按索引保留已有条目的 id，避免每次 emit 回写时重算 id 导致 v-for key 全变、输入框失焦或卡顿。 */
 function syncFromModelValue(val: FileSelectionValue | null | undefined) {
   if (val == null) return;
+  skipEmitUntilNextTick = true;
   customFileName.value = val.fileName ?? '';
-  metaEntries.value = (val.metaEntries ?? []).map((e) => ({
-    id: crypto.randomUUID(),
+  const incoming = val.metaEntries ?? [];
+  const current = metaEntries.value;
+  metaEntries.value = incoming.map((e, i) => ({
+    id: current[i]?.id ?? crypto.randomUUID(),
     name: e.name ?? '',
     type: (e.type ?? 'input'),
     value: e.value ?? '',
   }));
   picker.setFile(val.file ?? null);
+  void nextTick(() => {
+    skipEmitUntilNextTick = false;
+  });
 }
 
 watch(
@@ -400,6 +351,7 @@ function buildValue(): FileSelectionValue {
 }
 
 function emitValue() {
+  if (skipEmitUntilNextTick) return;
   emit('update:modelValue', buildValue());
 }
 

@@ -57,14 +57,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import PageBase from 'src/components/PageBase.vue';
 import FileSelection from 'src/components/FileSelection.vue';
 import type { FileSelectionValue } from 'src/components/models';
 import { uploadBatch } from 'src/composables/useMediaUpload';
 import { useStorageProviders } from 'src/composables/useStorageProviders';
 import { useCategoryList } from 'src/composables/useCategoryList';
-import { useAuthStore } from 'src/stores/auth-store';
 import { useNotify } from 'src/utils/notify';
 import { handleAxiosError } from 'src/utils/error/handler';
 
@@ -87,8 +85,6 @@ function createBlock(): Block {
 // 组合式与状态
 // -----------------------------------------------------------------------------
 const { t } = useI18n();
-const router = useRouter();
-const authStore = useAuthStore();
 const notify = useNotify();
 
 const initialBlock = createBlock();
@@ -237,13 +233,8 @@ async function startUpload() {
       notify.success(t('upload.success'));
     }
   } catch (err) {
-    if (err && typeof err === 'object' && 'response' in err && (err as { response?: { status?: number } }).response?.status === 401) {
-      authStore.clearAuth();
-      void router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } });
-      return;
-    }
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message, t('upload.retryHint'));
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message, t('upload.retryHint'));
   } finally {
     isUploading.value = false;
   }

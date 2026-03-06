@@ -2,7 +2,7 @@
   <PageBase :title="t('userList.title')" icon="people" content-class="full">
     <template #actions>
       <q-btn color="primary" unelevated no-caps class="ev-btn-primary user-list-page__add-btn"
-        :label="t('userList.addUser')" @click="showAddModal = true" />
+        :label="t('userList.addUser')" @click="openAddModal" />
     </template>
     <div class="user-list-page">
       <div class="ev-glass-card ev-list-card">
@@ -101,88 +101,47 @@
       </div>
     </div>
 
-    <EvModal v-model="showAddModal" :title="t('userList.addUserModalTitle')" persistent max-width="28rem"
-      @close="resetAddForm">
-      <q-form ref="addFormRef" class="user-list-page__form" @submit.prevent="onSubmitAddUser">
-        <q-select v-model="addForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
+    <EvModal v-model="showUserModal" :title="userFormMode === 'add' ? t('userList.addUserModalTitle') : t('userList.edit')" persistent max-width="28rem"
+      @close="resetUserForm">
+      <q-form ref="userFormRef" class="user-list-page__form" @submit.prevent="onSubmitUserForm">
+        <q-select v-model="userForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
           emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
-          class="user-list-page__field" :disabled="addSubmitting" />
-        <q-input v-model="addForm.username" outlined dark :label="t('userList.columns.username')"
+          class="user-list-page__field" :disabled="userFormSubmitting" />
+        <q-input v-model="userForm.username" outlined dark :label="t('userList.columns.username')"
           :rules="[(v: string) => !!trim(v) || t('common.required')]" hide-bottom-space class="user-list-page__field"
-          :disabled="addSubmitting" />
-        <q-input v-model="addForm.email" type="email" outlined dark :label="t('userList.columns.email')"
-          :rules="emailRules" hide-bottom-space class="user-list-page__field" :disabled="addSubmitting" />
-        <q-input v-model="addForm.password" type="password" outlined dark :label="t('auth.password')"
-          :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space class="user-list-page__field"
-          :disabled="addSubmitting" />
-        <template v-if="addForm.role === 'alliance_member'">
+          :disabled="userFormSubmitting" />
+        <q-input v-model="userForm.email" type="email" outlined dark :label="t('userList.columns.email')"
+          :rules="emailRules" hide-bottom-space class="user-list-page__field" :disabled="userFormSubmitting" />
+        <q-input v-model="userForm.password" type="password" outlined dark :label="t('auth.password')"
+          :placeholder="userFormMode === 'edit' ? t('userList.passwordPlaceholder') : undefined"
+          :rules="userFormMode === 'add' ? [(v: string) => !!v || t('common.required')] : []" hide-bottom-space
+          class="user-list-page__field" :disabled="userFormSubmitting" />
+        <template v-if="userForm.role === 'alliance_member'">
           <div class="user-list-page__alliance-hint">{{ t('userList.allianceFieldsHint') }}</div>
-          <q-input v-model="addForm.logo" outlined dark :label="t('userList.logo')"
+          <q-input v-model="userForm.logo" outlined dark :label="t('userList.logo')"
             :placeholder="t('userList.logoPlaceholder')"
-            :rules="allianceAddLogoRules" hide-bottom-space class="user-list-page__field" :disabled="addSubmitting" />
-          <q-input v-model="addForm.project_name" outlined dark :label="t('userList.projectName')"
+            :rules="allianceLogoRules" hide-bottom-space class="user-list-page__field" :disabled="userFormSubmitting" />
+          <q-input v-model="userForm.project_name" outlined dark :label="t('userList.projectName')"
             :placeholder="t('userList.projectNamePlaceholder')"
-            :rules="[(v: string) => (addForm.role !== 'alliance_member' || !!trim(v)) || t('common.required')]"
-            hide-bottom-space class="user-list-page__field" :disabled="addSubmitting" />
-          <q-input v-model="addForm.website" outlined dark :label="t('userList.website')"
+            :rules="[(v: string) => (userForm.role !== 'alliance_member' || !!trim(v)) || t('common.required')]"
+            hide-bottom-space class="user-list-page__field" :disabled="userFormSubmitting" />
+          <q-input v-model="userForm.website" outlined dark :label="t('userList.website')"
             :placeholder="t('userList.websitePlaceholder')" :rules="websiteHttpsRules" hide-bottom-space
-            class="user-list-page__field" :disabled="addSubmitting" />
-          <q-input v-model="addForm.twitter" outlined dark :label="t('userList.twitter')"
+            class="user-list-page__field" :disabled="userFormSubmitting" />
+          <q-input v-model="userForm.twitter" outlined dark :label="t('userList.twitter')"
             :placeholder="t('userList.twitterPlaceholder')" hide-bottom-space class="user-list-page__field"
-            :disabled="addSubmitting" />
+            :disabled="userFormSubmitting" />
         </template>
-        <q-input v-if="addForm.role === 'alliance_member'" v-model="addForm.intro" outlined dark
+        <q-input v-if="userForm.role === 'alliance_member'" v-model="userForm.intro" outlined dark
           :label="t('userList.intro')" type="textarea" autogrow :placeholder="t('userList.introPlaceholder')"
-          hide-bottom-space class="user-list-page__field user-list-page__intro-field" :disabled="addSubmitting"
+          hide-bottom-space class="user-list-page__field user-list-page__intro-field" :disabled="userFormSubmitting"
           :min-rows="3" />
       </q-form>
       <template #actions>
-        <q-btn flat no-caps :label="t('common.cancel')" color="grey" @click="showAddModal = false" />
-        <q-btn unelevated no-caps color="primary" class="ev-btn-primary" :label="t('common.submit')"
-          :loading="addSubmitting" :disable="addSubmitting" @click="onSubmitAddUser" />
-      </template>
-    </EvModal>
-
-    <EvModal v-model="showEditModal" :title="t('userList.edit')" persistent max-width="28rem"
-      @close="resetEditForm">
-      <q-form ref="editFormRef" class="user-list-page__form" @submit.prevent="onSubmitEditUser">
-        <q-select v-model="editForm.role" :options="roleOptions" outlined dark :label="t('userList.columns.role')"
-          emit-value map-options :rules="[(v: string) => !!v || t('common.required')]" hide-bottom-space
-          class="user-list-page__field" :disabled="editSubmitting" />
-        <q-input v-model="editForm.username" outlined dark :label="t('userList.columns.username')"
-          :rules="[(v: string) => !!trim(v) || t('common.required')]" hide-bottom-space class="user-list-page__field"
-          :disabled="editSubmitting" />
-        <q-input v-model="editForm.email" type="email" outlined dark :label="t('userList.columns.email')"
-          :rules="emailRules" hide-bottom-space class="user-list-page__field" :disabled="editSubmitting" />
-        <q-input v-model="editForm.password" type="password" outlined dark :label="t('auth.password')"
-          hide-bottom-space class="user-list-page__field" :placeholder="t('userList.passwordPlaceholder')"
-          :disabled="editSubmitting" />
-        <template v-if="editForm.role === 'alliance_member'">
-          <div class="user-list-page__alliance-hint">{{ t('userList.allianceFieldsHint') }}</div>
-          <q-input v-model="editForm.logo" outlined dark :label="t('userList.logo')"
-            :placeholder="t('userList.logoPlaceholder')"
-            :rules="allianceEditLogoRules" hide-bottom-space class="user-list-page__field"
-            :disabled="editSubmitting" />
-          <q-input v-model="editForm.project_name" outlined dark :label="t('userList.projectName')"
-            :placeholder="t('userList.projectNamePlaceholder')"
-            :rules="[(v: string) => (editForm.role !== 'alliance_member' || !!trim(v)) || t('common.required')]"
-            hide-bottom-space class="user-list-page__field" :disabled="editSubmitting" />
-          <q-input v-model="editForm.website" outlined dark :label="t('userList.website')"
-            :placeholder="t('userList.websitePlaceholder')" :rules="websiteHttpsRules" hide-bottom-space
-            class="user-list-page__field" :disabled="editSubmitting" />
-          <q-input v-model="editForm.twitter" outlined dark :label="t('userList.twitter')"
-            :placeholder="t('userList.twitterPlaceholder')" hide-bottom-space class="user-list-page__field"
-            :disabled="editSubmitting" />
-        </template>
-        <q-input v-if="editForm.role === 'alliance_member'" v-model="editForm.intro" outlined dark
-          :label="t('userList.intro')" type="textarea" autogrow :placeholder="t('userList.introPlaceholder')"
-          hide-bottom-space class="user-list-page__field user-list-page__intro-field" :disabled="editSubmitting"
-          :min-rows="3" />
-      </q-form>
-      <template #actions>
-        <q-btn flat no-caps :label="t('common.cancel')" color="grey" @click="showEditModal = false" />
-        <q-btn unelevated no-caps color="primary" class="ev-btn-primary" :label="t('common.save')"
-          :loading="editSubmitting" :disable="editSubmitting" @click="onSubmitEditUser" />
+        <q-btn flat no-caps :label="t('common.cancel')" color="grey" @click="showUserModal = false" />
+        <q-btn unelevated no-caps color="primary" class="ev-btn-primary"
+          :label="userFormMode === 'add' ? t('common.submit') : t('common.save')"
+          :loading="userFormSubmitting" :disable="userFormSubmitting" @click="onSubmitUserForm" />
       </template>
     </EvModal>
   </PageBase>
@@ -219,24 +178,13 @@ const { t } = useI18n();
 const notify = useNotify();
 const { list, meta, loading, error, load } = useUserList();
 
-const showAddModal = ref(false);
-const addSubmitting = ref(false);
-const addForm = ref({
-  username: '',
-  email: '',
-  password: '',
-  role: 'uploader' as UserRole,
-  logo: '',
-  project_name: '',
-  intro: '',
-  website: '',
-  twitter: '',
-});
+type UserFormMode = 'add' | 'edit';
 
-const showEditModal = ref(false);
-const editSubmitting = ref(false);
+const showUserModal = ref(false);
+const userFormMode = ref<UserFormMode>('add');
+const userFormSubmitting = ref(false);
 const toggleLoadingUid = ref<string | null>(null);
-const editForm = ref({
+const userForm = ref({
   user_id: '',
   username: '',
   email: '',
@@ -249,9 +197,29 @@ const editForm = ref({
   twitter: '',
 });
 
+const emptyUserForm = () => ({
+  user_id: '',
+  username: '',
+  email: '',
+  password: '',
+  role: 'uploader' as UserRole,
+  logo: '',
+  project_name: '',
+  intro: '',
+  website: '',
+  twitter: '',
+});
+
+function openAddModal() {
+  userFormMode.value = 'add';
+  userForm.value = { ...emptyUserForm(), password: '' };
+  showUserModal.value = true;
+}
+
 function openEditModal(row: UserListItem) {
   const am = row.allianceMeta;
-  editForm.value = {
+  userFormMode.value = 'edit';
+  userForm.value = {
     user_id: row.uid,
     username: row.username,
     email: row.email,
@@ -263,23 +231,12 @@ function openEditModal(row: UserListItem) {
     website: am?.website ?? '',
     twitter: am?.twitter ?? '',
   };
-  showEditModal.value = true;
+  showUserModal.value = true;
 }
 
-function resetEditForm() {
-  editForm.value = {
-    user_id: '',
-    username: '',
-    email: '',
-    password: '',
-    role: 'uploader' as UserRole,
-    logo: '',
-    project_name: '',
-    intro: '',
-    website: '',
-    twitter: '',
-  };
-  editFormRef.value?.resetValidation?.();
+function resetUserForm() {
+  userForm.value = emptyUserForm();
+  userFormRef.value?.resetValidation?.();
 }
 
 function isHttpsUrl(s: string): boolean {
@@ -296,51 +253,64 @@ const websiteHttpsRules = [
   (v: string) => !trim(v) || isHttpsUrl(v) || t('validation.websiteMustHttps'),
 ];
 
-const allianceAddLogoRules = [
+const allianceLogoRules = [
   (v: string) =>
-    (addForm.value.role !== 'alliance_member' || !!trim(v)) || t('common.required'),
-  (v: string) => (addForm.value.role !== 'alliance_member' || trim(v) === '' || isHttpsUrl(v)) || t('validation.logoMustHttps'),
+    (userForm.value.role !== 'alliance_member' || !!trim(v)) || t('common.required'),
+  (v: string) => (userForm.value.role !== 'alliance_member' || trim(v) === '' || isHttpsUrl(v)) || t('validation.logoMustHttps'),
 ];
 
-const allianceEditLogoRules = [
-  (v: string) =>
-    (editForm.value.role !== 'alliance_member' || !!trim(v)) || t('common.required'),
-  (v: string) => (editForm.value.role !== 'alliance_member' || trim(v) === '' || isHttpsUrl(v)) || t('validation.logoMustHttps'),
-];
-
-async function onSubmitEditUser() {
-  const valid = await editFormRef.value?.validate();
+async function onSubmitUserForm() {
+  const valid = await userFormRef.value?.validate();
   if (!valid) return;
-  const u = trim(editForm.value.username);
-  const e = trim(editForm.value.email).toLowerCase();
+  const u = trim(userForm.value.username);
+  const e = trim(userForm.value.email).toLowerCase();
   if (!u || !e) return;
-  editSubmitting.value = true;
+  if (userFormMode.value === 'add' && !trim(userForm.value.password)) return;
+  userFormSubmitting.value = true;
   try {
-    const payload: Parameters<typeof updateUser>[0] = {
-      user_id: editForm.value.user_id,
-      username: u,
-      email: e,
-      role: editForm.value.role,
-    };
-    if (trim(editForm.value.password)) {
-      payload.password = editForm.value.password;
+    if (userFormMode.value === 'add') {
+      const payload: CreateUserPayload = {
+        username: u,
+        email: e,
+        password: userForm.value.password,
+        role: userForm.value.role,
+      };
+      if (userForm.value.role === 'alliance_member') {
+        payload.logo = trim(userForm.value.logo);
+        payload.project_name = trim(userForm.value.project_name);
+        payload.intro = trim(userForm.value.intro);
+        payload.website = trim(userForm.value.website);
+        payload.twitter = trim(userForm.value.twitter);
+      }
+      await createUser(payload);
+      notify.success(t('userList.createSuccess'));
+      showUserModal.value = false;
+      resetUserForm();
+    } else {
+      const payload: Parameters<typeof updateUser>[0] = {
+        user_id: userForm.value.user_id,
+        username: u,
+        email: e,
+        role: userForm.value.role,
+      };
+      if (trim(userForm.value.password)) payload.password = userForm.value.password;
+      if (userForm.value.role === 'alliance_member') {
+        payload.logo = trim(userForm.value.logo);
+        payload.project_name = trim(userForm.value.project_name);
+        payload.intro = trim(userForm.value.intro);
+        payload.website = trim(userForm.value.website);
+        payload.twitter = trim(userForm.value.twitter);
+      }
+      await updateUser(payload);
+      notify.success(t('userList.updateSuccess'));
+      showUserModal.value = false;
     }
-    if (editForm.value.role === 'alliance_member') {
-      payload.logo = trim(editForm.value.logo);
-      payload.project_name = trim(editForm.value.project_name);
-      payload.intro = trim(editForm.value.intro);
-      payload.website = trim(editForm.value.website);
-      payload.twitter = trim(editForm.value.twitter);
-    }
-    await updateUser(payload);
-    notify.success(t('userList.updateSuccess'));
-    showEditModal.value = false;
     await fetchList();
   } catch (err) {
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
-    editSubmitting.value = false;
+    userFormSubmitting.value = false;
   }
 }
 
@@ -352,13 +322,13 @@ async function toggleDisabled(row: UserListItem) {
     await fetchList();
   } catch (err) {
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
     toggleLoadingUid.value = null;
   }
 }
 
-const editFormRef = ref<{ validate: () => Promise<boolean>; resetValidation?: () => void } | null>(null);
+const userFormRef = ref<{ validate: () => Promise<boolean>; resetValidation?: () => void } | null>(null);
 
 const roleOptions = computed(() => [
   { value: 'uploader' as UserRole, label: t('userList.roleUploader') },
@@ -379,57 +349,6 @@ const emailRules = [
   (v: string) => !!trim(v) || t('common.required'),
   (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trim(v)) || t('validation.email'),
 ];
-
-function resetAddForm() {
-  addForm.value = {
-    username: '',
-    email: '',
-    password: '',
-    role: 'uploader' as UserRole,
-    logo: '',
-    project_name: '',
-    intro: '',
-    website: '',
-    twitter: '',
-  };
-}
-
-const addFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
-
-async function onSubmitAddUser() {
-  const valid = await addFormRef.value?.validate();
-  if (!valid) return;
-  const u = trim(addForm.value.username);
-  const e = trim(addForm.value.email).toLowerCase();
-  const p = addForm.value.password;
-  if (!u || !e || !p) return;
-  addSubmitting.value = true;
-  try {
-    const payload: CreateUserPayload = {
-      username: u,
-      email: e,
-      password: p,
-      role: addForm.value.role,
-    };
-    if (addForm.value.role === 'alliance_member') {
-      payload.logo = trim(addForm.value.logo);
-      payload.project_name = trim(addForm.value.project_name);
-      payload.intro = trim(addForm.value.intro);
-      payload.website = trim(addForm.value.website);
-      payload.twitter = trim(addForm.value.twitter);
-    }
-    await createUser(payload);
-    notify.success(t('userList.createSuccess'));
-    showAddModal.value = false;
-    resetAddForm();
-    await fetchList();
-  } catch (err) {
-    const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
-  } finally {
-    addSubmitting.value = false;
-  }
-}
 
 const rowsPerPageOptions = [...PAGE_SIZE_OPTIONS];
 

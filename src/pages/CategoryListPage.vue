@@ -212,7 +212,7 @@ async function onSubmitForm() {
     void fetchList();
   } catch (err) {
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
     formSubmitting.value = false;
   }
@@ -295,7 +295,7 @@ async function onConfirmDelete() {
     void fetchList();
   } catch (err) {
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
     deleteSubmitting.value = false;
   }

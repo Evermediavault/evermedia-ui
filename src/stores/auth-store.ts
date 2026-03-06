@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', {
         const res = await api.get<BackendSuccessResponse<{ user: AuthUser }>>('/auth/me');
         const body = res.data;
         if (!body.success || !body.data?.user) {
-          throw new Error(body.message ?? 'Failed to fetch user');
+          throw new Error(body.message ?? '');
         }
         const user = body.data.user;
         this.user = user;

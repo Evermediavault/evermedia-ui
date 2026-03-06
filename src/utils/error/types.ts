@@ -23,6 +23,7 @@ export enum ErrorCode {
 
 /**
  * 应用错误类
+ * 当 messageKey 存在时，调用方应使用 t(messageKey)；否则使用 message（如后端返回的已翻译文案）。
  */
 export class AppError extends Error {
   /**
@@ -45,12 +46,18 @@ export class AppError extends Error {
    */
   originalError?: Error;
 
+  /**
+   * i18n 文案 key（如 error.network）；存在时调用方用 t(messageKey) 展示
+   */
+  messageKey?: string;
+
   constructor(
     message: string,
     code: ErrorCode | string = ErrorCode.UNKNOWN_ERROR,
     statusCode?: number,
     details?: unknown,
-    originalError?: Error
+    originalError?: Error,
+    messageKey?: string
   ) {
     super(message);
     this.name = 'AppError';
@@ -63,6 +70,9 @@ export class AppError extends Error {
     }
     if (originalError !== undefined) {
       this.originalError = originalError;
+    }
+    if (messageKey !== undefined) {
+      this.messageKey = messageKey;
     }
 
     // 保持原型链
@@ -78,6 +88,7 @@ export class AppError extends Error {
 export interface ErrorInfo {
   code: ErrorCode | string;
   message: string;
+  messageKey?: string;
   statusCode?: number;
   details?: unknown;
 }

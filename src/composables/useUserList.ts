@@ -1,8 +1,8 @@
 /**
  * 用户列表 API：GET /users（分页、排序）、POST /users（添加用户），仅管理员
  */
-import { ref, type Ref } from 'vue';
 import { api } from 'src/boot/axios';
+import { usePaginatedList } from 'src/composables/usePaginatedList';
 import type {
   UserListItem,
   UserListMeta,
@@ -50,6 +50,27 @@ function mapToUserListItem(row: RawUserListItem): UserListItem {
   return item;
 }
 
+/** 联盟成员扩展字段（logo、project_name、intro、website、twitter），仅 role=alliance_member 时写入 body */
+function buildAllianceMetaBody(
+  role: string,
+  payload: {
+    logo?: string;
+    project_name?: string;
+    intro?: string;
+    website?: string;
+    twitter?: string;
+  }
+): Record<string, unknown> {
+  if (role !== 'alliance_member') return {};
+  const out: Record<string, unknown> = {};
+  if (payload.logo != null && payload.logo.trim()) out.logo = payload.logo.trim();
+  if (payload.project_name != null && payload.project_name.trim()) out.project_name = payload.project_name.trim();
+  if (payload.intro != null && payload.intro.trim()) out.intro = payload.intro.trim();
+  if (payload.website != null && payload.website.trim()) out.website = payload.website.trim();
+  if (payload.twitter != null && payload.twitter.trim()) out.twitter = payload.twitter.trim();
+  return out;
+}
+
 /**
  * 请求用户列表（不管理 loading/error，仅做请求与数据转换）
  */
@@ -66,7 +87,7 @@ export async function fetchUserList(
   });
   const body = res.data;
   if (!body.success || body.data === undefined) {
-    throw new Error(body.message ?? 'Failed to fetch user list');
+    throw new Error(body.message ?? '');
   }
   return {
     list: body.data.map(mapToUserListItem),
@@ -102,18 +123,12 @@ export async function createUser(
     email: payload.email.trim().toLowerCase(),
     password: payload.password,
     role: payload.role,
+    ...buildAllianceMetaBody(payload.role, payload),
   };
-  if (payload.role === 'alliance_member') {
-    if (payload.logo != null && payload.logo.trim()) body.logo = payload.logo.trim();
-    if (payload.project_name != null && payload.project_name.trim()) body.project_name = payload.project_name.trim();
-    if (payload.intro != null && payload.intro.trim()) body.intro = payload.intro.trim();
-    if (payload.website != null && payload.website.trim()) body.website = payload.website.trim();
-    if (payload.twitter != null && payload.twitter.trim()) body.twitter = payload.twitter.trim();
-  }
   const res = await api.post<CreateUserBackendResponse>('/users', body);
   const data = res.data;
   if (!data.success || !data.data?.user) {
-    throw new Error(data.message ?? 'Failed to create user');
+    throw new Error(data.message ?? '');
   }
   return data.data.user;
 }
@@ -141,24 +156,16 @@ export async function updateUser(
     username: payload.username.trim(),
     email: payload.email.trim().toLowerCase(),
     role: payload.role,
+    ...(payload.password != null && payload.password.length > 0 ? { password: payload.password } : {}),
+    ...buildAllianceMetaBody(payload.role, payload),
   };
-  if (payload.password != null && payload.password.length > 0) {
-    body.password = payload.password;
-  }
-  if (payload.role === 'alliance_member') {
-    if (payload.logo != null && payload.logo.trim()) body.logo = payload.logo.trim();
-    if (payload.project_name != null && payload.project_name.trim()) body.project_name = payload.project_name.trim();
-    if (payload.intro != null && payload.intro.trim()) body.intro = payload.intro.trim();
-    if (payload.website != null && payload.website.trim()) body.website = payload.website.trim();
-    if (payload.twitter != null && payload.twitter.trim()) body.twitter = payload.twitter.trim();
-  }
   const res = await api.post<{ success: true; message: string; data: UpdateUserBackendData }>(
     '/users',
     body
   );
   const data = res.data;
   if (!data.success || !data.data?.user) {
-    throw new Error(data.message ?? 'Failed to update user');
+    throw new Error(data.message ?? '');
   }
   return data.data.user;
 }
@@ -188,7 +195,7 @@ export async function setUserDisabled(
   );
   const data = res.data;
   if (!data.success || !data.data?.user) {
-    throw new Error(data.message ?? 'Failed to update user disabled state');
+    throw new Error(data.message ?? '');
   }
   return data.data.user;
 }
@@ -197,27 +204,5 @@ export async function setUserDisabled(
  * 用户列表状态与请求（用于页面：list / meta / loading / error / load）
  */
 export function useUserList() {
-  const list: Ref<UserListItem[]> = ref([]);
-  const meta: Ref<UserListMeta | null> = ref(null);
-  const loading = ref(false);
-  const error = ref<Error | null>(null);
-
-  /** 拉取一页并更新 list / meta，失败时写 error、清 list */
-  async function load(params: UserListParams) {
-    loading.value = true;
-    error.value = null;
-    try {
-      const result = await fetchUserList(params);
-      list.value = result.list;
-      meta.value = result.meta;
-    } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
-      list.value = [];
-      meta.value = null;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  return { list, meta, loading, error, load };
+  return usePaginatedList<UserListItem, UserListParams>(fetchUserList);
 }

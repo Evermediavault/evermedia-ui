@@ -51,7 +51,7 @@ async function onSubmit() {
     await router.push(redirectTo.value);
   } catch (err) {
     const appErr = handleAxiosError(err);
-    notify.error(appErr.message);
+    notify.error(appErr.messageKey ? t(appErr.messageKey) : appErr.message);
   } finally {
     loading.value = false;
   }

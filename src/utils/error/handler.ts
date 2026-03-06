@@ -57,10 +57,12 @@ export function handleError(error: unknown): ErrorInfo {
     appError = new AppError(error, ErrorCode.UNKNOWN_ERROR);
   } else {
     appError = new AppError(
-      '发生未知错误',
+      'error.unknown',
       ErrorCode.UNKNOWN_ERROR,
       undefined,
-      error
+      error,
+      undefined,
+      'error.unknown'
     );
   }
 
@@ -85,6 +87,10 @@ export function handleError(error: unknown): ErrorInfo {
     message: appError.message,
   };
 
+  if (appError.messageKey !== undefined) {
+    errorInfo.messageKey = appError.messageKey;
+  }
+
   if (appError.statusCode !== undefined) {
     errorInfo.statusCode = appError.statusCode;
   }
@@ -106,10 +112,10 @@ export function handleAxiosError(error: unknown): AppError {
   const axiosError = error as any;
 
   if (axiosError?.response) {
-    // 服务器响应了错误状态码
+    // 服务器响应了错误状态码，message 为后端已翻译文案，不设 messageKey
     const status = axiosError.response.status;
     const data = axiosError.response.data;
-    const message = data?.message || data?.error || `HTTP ${status} 错误`;
+    const message = data?.message || data?.error || '';
 
     let code = ErrorCode.SERVER_ERROR;
     if (status === 401) {
@@ -120,36 +126,49 @@ export function handleAxiosError(error: unknown): AppError {
       code = ErrorCode.NOT_FOUND;
     } else if (status >= 500) {
       code = ErrorCode.SERVER_ERROR;
+    } else if (status >= 400) {
+      code = ErrorCode.BUSINESS_ERROR;
     }
 
-    return new AppError(message, code, status, data, axiosError);
+    const fallbackKey = 'error.badRequest';
+    return new AppError(
+      message || fallbackKey,
+      code,
+      status,
+      data,
+      axiosError,
+      message ? undefined : fallbackKey
+    );
   } else if (axiosError?.request) {
     // 请求已发出但没有收到响应
     return new AppError(
-      '网络错误，请检查网络连接',
+      'error.network',
       ErrorCode.NETWORK_ERROR,
       undefined,
       undefined,
-      axiosError
+      axiosError,
+      'error.network'
     );
   } else if (axiosError?.code === 'ECONNABORTED') {
     // 请求超时
     return new AppError(
-      '请求超时，请稍后重试',
+      'error.timeout',
       ErrorCode.TIMEOUT_ERROR,
       undefined,
       undefined,
-      axiosError
+      axiosError,
+      'error.timeout'
     );
   }
 
   // 其他错误
   return new AppError(
-    axiosError?.message || '网络请求失败',
+    'error.network',
     ErrorCode.NETWORK_ERROR,
     undefined,
     undefined,
-    axiosError
+    axiosError,
+    'error.network'
   );
 }
 
