@@ -3,6 +3,7 @@
  */
 import { ref, type Ref } from 'vue';
 import { api } from 'src/boot/axios';
+import { wrapCaughtError } from 'src/utils/error/sanitizeMessage';
 import { STORAGE_INFO_PATH } from 'src/constants/api';
 import type { StorageProviderSnapshot } from 'src/types/api';
 
@@ -33,7 +34,7 @@ export function useStorageProviders(): {
       }
       providers.value = body.data.providers.filter((p) => p.isActive);
     } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
+      error.value = wrapCaughtError(e);
       providers.value = [];
     } finally {
       loading.value = false;

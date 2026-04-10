@@ -16,6 +16,16 @@ const routes: RouteRecordRaw[] = [
       { path: 'upload', component: () => import('pages/UploadPage.vue') },
       { path: 'categories', component: () => import('pages/CategoryListPage.vue') },
       {
+        path: 'partners',
+        component: () => import('pages/PartnerListPage.vue'),
+        meta: { [ROUTE_META_REQUIRES_ADMIN]: true },
+      },
+      {
+        path: 'contact-submissions',
+        component: () => import('pages/ContactSubmissionsPage.vue'),
+        meta: { [ROUTE_META_REQUIRES_ADMIN]: true },
+      },
+      {
         path: 'users',
         component: () => import('pages/UserListPage.vue'),
         meta: { [ROUTE_META_REQUIRES_ADMIN]: true },

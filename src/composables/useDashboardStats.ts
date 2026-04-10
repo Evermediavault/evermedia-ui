@@ -3,6 +3,7 @@
  */
 import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
+import { wrapCaughtError } from 'src/utils/error/sanitizeMessage';
 import { STATS_PATH } from 'src/constants/api';
 import type { DashboardStats } from 'src/types/api';
 import type { BackendSuccessResponse } from 'src/types/api';
@@ -24,7 +25,7 @@ export function useDashboardStats() {
         stats.value = null;
       }
     } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
+      error.value = wrapCaughtError(e);
       stats.value = null;
     } finally {
       loading.value = false;

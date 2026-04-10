@@ -211,6 +211,54 @@ export interface CategoryListParams {
   order?: 'asc' | 'desc';
 }
 
+/** 合作伙伴列表项（与后端 PartnerItem camelCase） */
+export interface PartnerListItem {
+  id: number;
+  logo: string;
+  tag: string;
+  name: string;
+  description: string;
+  link: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** 管理员合作伙伴列表查询（GET /partners/manage） */
+export interface PartnerListParams {
+  page?: number;
+  page_size?: number;
+  sort_by?: 'created_at' | 'name';
+  order?: 'asc' | 'desc';
+}
+
+/** 创建/更新合作伙伴（POST /partners，带 id 为更新） */
+export interface UpsertPartnerPayload {
+  id?: number;
+  logo: string;
+  tag?: string;
+  name: string;
+  description?: string;
+  link: string;
+}
+
+/** 联系表单提交记录（GET /contact，仅管理员） */
+export interface ContactSubmissionItem {
+  id: number;
+  userName: string;
+  email: string;
+  content: string;
+  ip: string;
+  createdAt: string;
+}
+
+/** 联系提交列表查询（与后端 ContactListQuery 对齐） */
+export interface ContactSubmissionListParams {
+  page?: number;
+  page_size?: number;
+  sort_by?: 'created_at';
+  order?: 'asc' | 'desc';
+}
+
 /** 创建分类请求体（与后端 POST /categories 对齐） */
 export interface CreateCategoryPayload {
   name: string;

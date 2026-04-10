@@ -4,6 +4,7 @@
  */
 import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
+import { wrapCaughtError } from 'src/utils/error/sanitizeMessage';
 import { SYNAPSE_WALLET_INFO_PATH, SYNAPSE_APPROVE_PATH, SYNAPSE_APPROVE_TIMEOUT_MS } from 'src/constants/api';
 import type { SynapseWalletInfo } from 'src/types/api';
 import type { BackendSuccessResponse } from 'src/types/api';
@@ -42,7 +43,7 @@ export function useSynapseWallet() {
         wallet.value = null;
       }
     } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
+      error.value = wrapCaughtError(e);
       wallet.value = null;
     } finally {
       loading.value = false;

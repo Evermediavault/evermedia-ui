@@ -2,6 +2,7 @@
  * 全局错误处理器
  */
 import { ErrorCode, AppError, type ErrorInfo } from './types';
+import { isUnsafeApiMessage } from './sanitizeMessage';
 
 /**
  * 错误处理器配置
@@ -45,14 +46,24 @@ export function handleError(error: unknown): ErrorInfo {
   if (error instanceof AppError) {
     appError = error;
   } else if (error instanceof Error) {
-    // 将普通Error转换为AppError
-    appError = new AppError(
-      error.message,
-      ErrorCode.UNKNOWN_ERROR,
-      undefined,
-      undefined,
-      error
-    );
+    if (isUnsafeApiMessage(error.message)) {
+      appError = new AppError(
+        'error.server',
+        ErrorCode.UNKNOWN_ERROR,
+        undefined,
+        undefined,
+        error,
+        'error.server'
+      );
+    } else {
+      appError = new AppError(
+        error.message,
+        ErrorCode.UNKNOWN_ERROR,
+        undefined,
+        undefined,
+        error
+      );
+    }
   } else if (typeof error === 'string') {
     appError = new AppError(error, ErrorCode.UNKNOWN_ERROR);
   } else {
@@ -115,7 +126,23 @@ export function handleAxiosError(error: unknown): AppError {
     // 服务器响应了错误状态码，message 为后端已翻译文案，不设 messageKey
     const status = axiosError.response.status;
     const data = axiosError.response.data;
-    const message = data?.message || data?.error || '';
+    const rawMsg =
+      typeof data?.message === 'string'
+        ? data.message
+        : typeof data?.error === 'string'
+          ? data.error
+          : '';
+    if (typeof rawMsg === 'string' && rawMsg.length > 0 && isUnsafeApiMessage(rawMsg)) {
+      return new AppError(
+        'error.server',
+        ErrorCode.SERVER_ERROR,
+        status,
+        data,
+        axiosError,
+        'error.server'
+      );
+    }
+    const message = rawMsg;
 
     let code = ErrorCode.SERVER_ERROR;
     if (status === 401) {

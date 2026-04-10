@@ -258,12 +258,49 @@ const metaEntries = ref<MetaEntry[]>([]);
 /** 同步中跳过 emit，避免 modelValue → sync → emit → modelValue 递归导致浏览器崩溃（仅线上/生产易触发） */
 let skipEmitUntilNextTick = false;
 
+function normalizeSelectionValue(
+  val: FileSelectionValue | null | undefined
+): FileSelectionValue {
+  return {
+    fileName: val?.fileName ?? '',
+    metaEntries: (val?.metaEntries ?? []).map((entry) => ({
+      name: entry.name ?? '',
+      type: entry.type ?? 'input',
+      value: entry.value ?? '',
+    })),
+    file: val?.file ?? null,
+  };
+}
+
+function isSameSelectionValue(
+  a: FileSelectionValue | null | undefined,
+  b: FileSelectionValue | null | undefined
+): boolean {
+  const left = normalizeSelectionValue(a);
+  const right = normalizeSelectionValue(b);
+  if (left.fileName !== right.fileName || left.file !== right.file) {
+    return false;
+  }
+  if (left.metaEntries.length !== right.metaEntries.length) {
+    return false;
+  }
+  return left.metaEntries.every((entry, index) => {
+    const other = right.metaEntries[index];
+    return (
+      entry.name === other?.name &&
+      entry.type === other?.type &&
+      entry.value === other?.value
+    );
+  });
+}
+
 /** 从 modelValue 同步到内部状态（切换块或外部赋值时）。按索引保留已有条目的 id，避免每次 emit 回写时重算 id 导致 v-for key 全变、输入框失焦或卡顿。 */
 function syncFromModelValue(val: FileSelectionValue | null | undefined) {
-  if (val == null) return;
+  const normalized = normalizeSelectionValue(val);
+  if (isSameSelectionValue(normalized, buildValue())) return;
   skipEmitUntilNextTick = true;
-  customFileName.value = val.fileName ?? '';
-  const incoming = val.metaEntries ?? [];
+  customFileName.value = normalized.fileName;
+  const incoming = normalized.metaEntries;
   const current = metaEntries.value;
   metaEntries.value = incoming.map((e, i) => ({
     id: current[i]?.id ?? crypto.randomUUID(),
@@ -271,7 +308,7 @@ function syncFromModelValue(val: FileSelectionValue | null | undefined) {
     type: (e.type ?? 'input'),
     value: e.value ?? '',
   }));
-  picker.setFile(val.file ?? null);
+  picker.setFile(normalized.file);
   void nextTick(() => {
     skipEmitUntilNextTick = false;
   });
@@ -352,11 +389,14 @@ function buildValue(): FileSelectionValue {
 
 function emitValue() {
   if (skipEmitUntilNextTick) return;
-  emit('update:modelValue', buildValue());
+  const nextValue = buildValue();
+  if (isSameSelectionValue(nextValue, props.modelValue)) return;
+  emit('update:modelValue', nextValue);
 }
 
-watch([customFileName, metaEntries], emitValue, { deep: true });
-watch(() => picker.fileCount.value, () => emitValue(), { immediate: true });
+watch(customFileName, emitValue);
+watch(metaEntries, emitValue, { deep: true });
+watch(() => picker.file.value, emitValue);
 </script>
 
 <style lang="scss" scoped>

@@ -88,6 +88,12 @@ const navItems = computed(() => {
     { path: '/categories', title: t('nav.categories'), icon: 'category' },
   ];
   if (isAdmin.value) {
+    items.push({ path: '/partners', title: t('nav.partners'), icon: 'handshake' });
+    items.push({
+      path: '/contact-submissions',
+      title: t('nav.contactSubmissions'),
+      icon: 'mark_email_read',
+    });
     items.push({ path: '/users', title: t('nav.users'), icon: 'people' });
   }
   items.push({ path: '/settings', title: t('nav.accountSettings'), icon: 'settings' });

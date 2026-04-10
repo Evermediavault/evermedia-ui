@@ -3,6 +3,7 @@
  * 供 useUserList、useFileList、useCategoryList 等复用。
  */
 import { ref, type Ref } from 'vue';
+import { wrapCaughtError } from 'src/utils/error/sanitizeMessage';
 
 /** 与后端分页 meta 对齐 */
 export interface PaginationMeta {
@@ -28,7 +29,7 @@ export function usePaginatedList<T, P extends object>(
       list.value = result.list;
       meta.value = result.meta;
     } catch (e) {
-      error.value = e instanceof Error ? e : new Error(String(e));
+      error.value = wrapCaughtError(e);
       list.value = [];
       meta.value = null;
     } finally {
